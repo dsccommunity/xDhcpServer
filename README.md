@@ -99,7 +99,7 @@ configuration Sample_xDhcpServerReservation_IPReservation
 
 ### Setting the domain name for a DNS Server
 
-```
+```powershell
 configuration Sample_xDhcpServerOption_SetScopeOption
 {
     Import-DscResource -module xDHCpServer
