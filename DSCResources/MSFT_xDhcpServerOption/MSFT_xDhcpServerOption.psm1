@@ -395,6 +395,7 @@ function Validate-ResourceProperties
     }
 }
 #endregion Helper function
-
-Export-ModuleMember -Function *-TargetResource
-
+if($global:DhpcOptionTest -ne $true)
+{
+    Export-ModuleMember -Function *-TargetResource
+}
