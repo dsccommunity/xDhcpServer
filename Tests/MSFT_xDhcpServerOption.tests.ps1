@@ -16,7 +16,7 @@ Set-StrictMode -Version latest
 # should check for the server OS
 if($env:APPVEYOR_BUILD_VERSION)
 {
-  Add-WindowsFeature RSAT-DHCP
+  Add-WindowsFeature RSAT-DHCP -verbose
 }
 
 function Suite.BeforeAll {
