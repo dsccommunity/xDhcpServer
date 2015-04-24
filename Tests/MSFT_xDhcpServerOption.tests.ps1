@@ -13,6 +13,12 @@ Import-Module $PSScriptRoot\..\DSCResources\MSFT_xDhcpServerOption\MSFT_xDhcpSer
 $ErrorActionPreference = 'stop'
 Set-StrictMode -Version latest
 
+# should check for the server OS
+if($env:APPVEYOR_BUILD_VERSION)
+{
+  Add-WindowsFeature RSAT-DHCP
+}
+
 function Suite.BeforeAll {
     # Remove any leftovers from previous test runs
     Suite.AfterAll 
