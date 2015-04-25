@@ -2,7 +2,7 @@
 .summary
     Test suite for MSFT_xDhcpServerOption.psm1
     These tests require RSAT on client.
-    On 8.1 it's faund here: http://www.microsoft.com/en-us/download/confirmation.aspx?id=39296&6B49FDFB-8E5B-4B07-BC31-15695C5A2143=1
+    On 8.1 it's found here: http://www.microsoft.com/en-us/download/confirmation.aspx?id=39296&6B49FDFB-8E5B-4B07-BC31-15695C5A2143=1
 #>
 [CmdletBinding()]
 param()
