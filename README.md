@@ -46,11 +46,15 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 
 ## Versions
 
-1.1
+### 1.2
+
+* Fix "Cannot set default gateway on xDhcpServerOption".
+
+### 1.1
 
 * Bug fix, enables creating more than 1 DHCP server scope.
 
-1.0
+### 1.0
 
 * Initial release with the following resources 
     * **xDhcpServerScope**
