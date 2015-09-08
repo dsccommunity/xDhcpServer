@@ -1,7 +1,7 @@
 [ClassVersion("1.0.0.0"), FriendlyName("xDhcpServerActivation")]
 class MSFT_xDhcpServerActivation : OMI_BaseResource
 {
-    [Key, Description("DHCP Server FQDN")] String DnsName;
-    [Key, Description("DHCP Server IP Address")] String IPAddress;
+    [Write, Description("DHCP Server FQDN")] String DnsName;
+    [Write, Description("DHCP Server IP Address")] String IPAddress;
     [Write, Description("Whether the DHCP server should be authorised within Active Directory"), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
 };

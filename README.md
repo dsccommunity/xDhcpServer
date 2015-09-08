@@ -13,7 +13,8 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 * **xDhcpServerScope** sets a scope for consecutive range of possible IP addresses that the DHCP server can lease to clients on a subnet.
 * **xDhcpServerReservation** sets lease assignments used to ensure that a specified client on a subnet can always use the same IP address.
 * **xDhcpServerOptions** currently supports setting DNS domain and DNS Server IP Address options at a DHCP server scope level.
-
+* **xDhcpServerAuthorization** authorizes a DHCP in Active Directory.
+ * *This resource must run on an Active Directory domain controller.*
 
 ### xDhcpServerScope
 
@@ -43,8 +44,17 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 * **AddressFamily**: Address family type
 * **Ensure**: Whether option should be set or removed
 
+### xDhcpServerAuthorization
+
+* **Ensure**: Whether the DHCP server should be authorized.
+* **DnsName**: FQDN of the server to authorize. If not specified, it defaults to the local hostname of the enacting node.
+* **IPAddress**: IP v4 address of the server to authorized. If not specified, it default to the first IPv4 address of the enacting node.
 
 ## Versions
+
+### Unreleased
+
+* Added **xDhcpServerAuthorization** resource.
 
 ### 1.2
 
@@ -115,6 +125,34 @@ configuration Sample_xDhcpServerOption_SetScopeOption
         DnsServerIPAddress = '192.168.1.22','192.168.1.1'
         AddressFamily = 'IPv4'
         Router = '192.168.1.1'
+    }
+}
+```
+
+### Authorizing the local DHCP server
+
+```powershell
+configuration Sample_Local_xDhcpServerAuthorization
+{
+    Import-DscResource -module xDHCpServer
+    xDhcpServerAuthorization LocalServerActivation
+    {
+        Ensure = 'Present'
+    }
+}
+```
+
+### Authorizing a remote DHCP server
+
+```powershell
+configuration Sample_Remote_xDhcpServerAuthorization
+{
+    Import-DscResource -module xDHCpServer
+    xDhcpServerAuthorization RemoteServerActivation
+    {
+        Ensure = 'Present'
+        DnsName = 'servertoauthorize.contoso.com'
+        IPAddress = '192.168.0.1'
     }
 }
 ```
