@@ -103,10 +103,6 @@ Describe 'xDhcpServerAuthorization' {
                 Mock Get-DhcpServerInDC { return $fakeDhcpServersMismatchIPAddress; }
                 Test-TargetResource @testPresentParams | Should Be $false;
             }
-
-
-
-
             It 'Passes when DHCP Server authorization does exist and Ensure is Present' {
                 Mock Get-DhcpServerInDC { return $fakeDhcpServersPresent; }
                 (Test-TargetResource @testPresentParams) -is [System.Boolean] | Should Be $true;
@@ -118,64 +114,6 @@ Describe 'xDhcpServerAuthorization' {
         
         } #end Context Validate Test-TargetResource method
 
-        #    It "Fails when group does not exist and Ensure is Present" {
-        #        Mock Get-TargetResource { return $testAbsentParams }
-        #        Test-TargetResource @testPresentParams | Should Be $false
-        #    }
-        #    It "Fails when group exists, Ensure is Present but Scope is wrong" {
-        #        Mock Get-TargetResource {
-        #            $duffADGroup = $testPresentParams.Clone();
-        #            $duffADGroup['GroupScope'] = 'Universal';
-        #            return $duffADGroup;
-        #        }
-        #        Test-TargetResource @testPresentParams | Should Be $false;
-        #    }
-        #    It "Fails when group exists, Ensure is Present but Category is wrong" {
-        #        Mock Get-TargetResource {
-        #            $duffADGroup = $testPresentParams.Clone();
-        #            $duffADGroup['Category'] = 'Distribution';
-        #            return $duffADGroup;
-        #        }
-        #        Test-TargetResource @testPresentParams | Should Be $false;
-        #    }
-        #    It "Fails when group exists, Ensure is Present but Path is wrong" {
-        #        Mock Get-TargetResource {
-        #            $duffADGroup = $testPresentParams.Clone();
-        #            $duffADGroup['Path'] = 'OU=WrongPath,DC=contoso,DC=com';
-        #            return $duffADGroup;
-        #        }
-        #        Test-TargetResource @testPresentParams | Should Be $false;
-        #    }
-        #    It "Fails when group exists, Ensure is Present but Description is wrong" {
-        #        Mock Get-TargetResource {
-        #            $duffADGroup = $testPresentParams.Clone();
-        #            $duffADGroup['Description'] = 'Test AD group description is wrong';
-        #            return $duffADGroup;
-        #        }
-        #        Test-TargetResource @testPresentParams | Should Be $false;
-        #    }
-        #    It "Fails when group exists, Ensure is Present but DisplayName is wrong" {
-        #        Mock Get-TargetResource {
-        #            $duffADGroup = $testPresentParams.Clone();
-        #            $duffADGroup['DisplayName'] = 'Wrong display name';
-        #            return $duffADGroup;
-        #        }
-        #        Test-TargetResource @testPresentParams | Should Be $false;
-        #    }
-        #    It "Fails when group exists and Ensure is Absent" {
-        #        Mock Get-TargetResource { return $testPresentParams }
-        #        Test-TargetResource @testAbsentParams | Should Be $false
-        #    }
-        #    It "Passes when group exists, target matches and Ensure is Present" {
-        #        Mock Get-TargetResource { return $testPresentParams } 
-        #        Test-TargetResource @testPresentParams | Should Be $true
-        #    }
-        #    It "Passes when group does not exist and Ensure is Absent" {
-        #        Mock Get-TargetResource { return $testAbsentParams } 
-        #        Test-TargetResource @testAbsentParams | Should Be $true
-        #    }
-        #} #end Context Validate Test-TargetResource method
-        #
         Context 'Validate Set-TargetResource method' {
             Mock Assert-Module { };
 
