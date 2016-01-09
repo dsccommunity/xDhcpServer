@@ -46,6 +46,10 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 
 ## Versions
 
+### Unreleased
+
+* Bug Fix LeaseDuration is no longer mandatory for xDhcpServerScope resource.
+
 ### 1.2
 
 * Fix "Cannot set default gateway on xDhcpServerOption".
