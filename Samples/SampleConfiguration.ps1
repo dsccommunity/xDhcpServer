@@ -8,10 +8,11 @@
      }
      xDhcpServerScope Scope 
      { 
-         Ensure = 'Present' 
-         IPEndRange = '192.168.1.254' 
+         Ensure = 'Present'
          IPStartRange = '192.168.1.1' 
-         Name = 'PowerShellScope' 
+         IPEndRange = '192.168.1.254' 
+
+         Name = 'ContosoScope' 
          SubnetMask = '255.255.255.0' 
          LeaseDuration = '00:08:00' 
          State = 'Active' 
