@@ -18,7 +18,7 @@ Import-Module (Join-Path $RepoRoot "DSCResources\$ModuleName\$ModuleName.psm1") 
 Describe 'xDhcpServerAuthorization' {
 
     InModuleScope $ModuleName {
-        
+
         ## Mock missing functions
         function Get-DhcpServerInDc { }
         function Add-DhcpServerInDc { }
@@ -54,28 +54,29 @@ Describe 'xDhcpServerAuthorization' {
             @{ IPAddress = '192.168.1.3'; DnsName = 'test3.contoso.com'; }
         )
 
-        Context 'Validate Assert-Module method' {
-            It 'Throws if DHCP Server module is not present' {
-                Mock Get-Module -ParameterFilter { $ModuleName -eq 'DHCPServer'} -MockWith { throw; }
-                { Assert-Module -ModuleName DHCPServer } | Should Throw;
-            }
-        } #end Context Validate Assert-Module method
-
-        
         Context 'Validate Get-TargetResource method' {
             Mock Assert-Module { };
 
             It 'Returns a [System.Collection.Hashtable] type' {
                 Mock Get-DhcpServerInDC { return $fakeDhcpServersPresent; }
-                (Get-TargetResource @testPresentParams) -is [System.Collections.Hashtable] | Should Be $true;
+                
+                $result = Get-TargetResource @testPresentParams;
+                
+                $result -is [System.Collections.Hashtable] | Should Be $true;
             }
             It 'Returns Ensure is Present when DHCP server authorization exists' {
                 Mock Get-DhcpServerInDC { return $fakeDhcpServersPresent; }
-                (Get-TargetResource @testPresentParams).Ensure | Should Be 'Present';
+                
+                $result = Get-TargetResource @testPresentParams
+                
+                $result.Ensure | Should Be 'Present';
             }
             It 'Returns Ensure is Absent when DHCP server authorization does not exist' {
-                Mock Get-DhcpServerInDC { return $fakeDhcpServersAbsent; }
-                (Get-TargetResource @testPresentParams).Ensure | Should Be 'Absent';
+                Mock Get-DhcpServerInDC { }
+                
+                $result = Get-TargetResource @testPresentParams;
+                
+                $result.Ensure | Should Be 'Absent';
             }
 
         } #end Context Validate Get-TargetResource method
@@ -85,31 +86,44 @@ Describe 'xDhcpServerAuthorization' {
 
             It 'Returns a [System.Boolean] type' {
                 Mock Get-DhcpServerInDC { return $fakeDhcpServersPresent; }
-                (Test-TargetResource @testPresentParams) -is [System.Boolean] | Should Be $true;
+                
+                $result = Test-TargetResource @testPresentParams;
+                
+                $result -is [System.Boolean] | Should Be $true;
             }
             It 'Fails when DHCP Server authorization does not exist and Ensure is Present' {
                 Mock Get-DhcpServerInDC { return $fakeDhcpServersAbsent; }
+                
                 Test-TargetResource @testPresentParams | Should Be $false;
             }
             It 'Fails when DHCP Server authorization does exist and Ensure is Absent' {
                 Mock Get-DhcpServerInDC { return $fakeDhcpServersPresent; }
+                
                 Test-TargetResource @testAbsentParams | Should Be $false;
             }
             It 'Fails when DHCP Server authorization does exist, Ensure is Present but DnsName is wrong' {
                 Mock Get-DhcpServerInDC { return $fakeDhcpServersMismatchDnsName; }
+                
                 Test-TargetResource @testPresentParams | Should Be $false;
             }
             It 'Fails when DHCP Server authorization does exist, Ensure is Present but IPAddress is wrong' {
                 Mock Get-DhcpServerInDC { return $fakeDhcpServersMismatchIPAddress; }
+                
                 Test-TargetResource @testPresentParams | Should Be $false;
             }
             It 'Passes when DHCP Server authorization does exist and Ensure is Present' {
                 Mock Get-DhcpServerInDC { return $fakeDhcpServersPresent; }
-                (Test-TargetResource @testPresentParams) -is [System.Boolean] | Should Be $true;
+                
+                $result = Test-TargetResource @testPresentParams
+                
+                $result -is [System.Boolean] | Should Be $true;
             }
             It 'Passes when DHCP Server authorization does not exist and Ensure is Absent' {
                 Mock Get-DhcpServerInDC { return $fakeDhcpServersAbsent; }
-                (Test-TargetResource @testAbsentParams) -is [System.Boolean] | Should Be $true;
+                
+                $result = Test-TargetResource @testAbsentParams
+                
+                $result -is [System.Boolean] | Should Be $true;
             }
         
         } #end Context Validate Test-TargetResource method
@@ -119,15 +133,20 @@ Describe 'xDhcpServerAuthorization' {
 
             It 'Calls Add-DhcpServerInDc when Ensure is Present' {
                 Mock Add-DhcpServerInDC { }
+                
                 Set-TargetResource @testPresentParams;
+                
                 Assert-MockCalled Add-DhcpServerInDC -Scope It;
             }
             It 'Calls Remove-DhcpServerInDc when Ensure is Present' {
                 Mock Get-DhcpServerInDC { return $fakeDhcpServersPresent; }
                 Mock Remove-DhcpServerInDC { }
+                
                 Set-TargetResource @testAbsentParams;
+                
                 Assert-MockCalled Remove-DhcpServerInDC -Scope It;
             }
+
         } #end Context Validate Set-TargetResource method
     
     } #end InModuleScope
