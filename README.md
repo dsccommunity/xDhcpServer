@@ -55,6 +55,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 ### Unreleased
 
 * Added **xDhcpServerAuthorization** resource.
+* Bug Fix LeaseDuration is no longer mandatory for xDhcpServerScope resource.
 
 ### 1.2
 
