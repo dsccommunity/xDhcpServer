@@ -54,11 +54,8 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 
 ### Unreleased
 
-<<<<<<< HEAD
-* Bug Fix LeaseDuration is no longer mandatory for xDhcpServerScope resource.
-=======
 * Added **xDhcpServerAuthorization** resource.
->>>>>>> refs/remotes/PowerShell/dev
+* Bug Fix LeaseDuration is no longer mandatory for xDhcpServerScope resource.
 
 ### 1.2
 
