@@ -11,7 +11,9 @@ AddingScopeIDMessage      = Adding DHCP server options for scopeID {0} ...
 SetScopeIDMessage         = DHCP server options is set for scopeID {0}.
 FoundScopeIDMessage       = Found DHCP server options for scopeID {0} and they should be {1}
 NotFoundScopeIDMessage    = Can not find DHCP server options for scopeID {0} and they should be {1}
-                          
+RemovingScopeOptions      = Removing DHCP Server options for scopeID {0}...
+ScopeOptionsRemoved       = DHCP Server options are removed.
+
 CheckPropertyMessage      = Checking {0} option ...
 NotDesiredPropertyMessage = {0} is not correct. Expected {1}, actual {2}
 DesiredPropertyMessage    = {0} option is correct.
@@ -30,7 +32,7 @@ function Get-TargetResource
         [parameter(Mandatory = $true)]
         [String]$ScopeID,
 
-        [parameter(Mandatory = $true)]
+        [parameter()]
         [String[]]$DnsServerIPAddress,
 
         [ValidateSet('IPv4')]
@@ -87,7 +89,6 @@ function Set-TargetResource
         [parameter(Mandatory = $true)]
         [String]$ScopeID,
 
-        [parameter(Mandatory = $true)]
         [String[]]$DnsServerIPAddress,
 
         [String[]]$Router,
@@ -144,7 +145,6 @@ function Test-TargetResource
         [parameter(Mandatory = $true)]
         [String]$ScopeID,
 
-        [parameter(Mandatory = $true)]
         [String[]]$DnsServerIPAddress,
 
         [String[]]$Router,
@@ -169,6 +169,9 @@ function Test-TargetResource
     # Convert the ScopeID to be a valid IPAddress
     $ScopeID = (Get-ValidIpAddress -ipString $ScopeID -AddressFamily $AddressFamily -parameterName 'ScopeID').ToString()
 
+   # Array of valid IP Address
+    [String[]]$validDnSServer = @()
+    
     # Convert the input to be valid IPAddress
     foreach ($dnsServerIp in $DnsServerIPAddress)
     {
@@ -214,7 +217,6 @@ function Validate-ResourceProperties
         [Parameter(Mandatory)]
         [string]$ScopeID,
 
-        [parameter(Mandatory)]
         [String[]]$DnsServerIPAddress,
 
         [String]$DnsDomain,
@@ -241,37 +243,40 @@ function Validate-ResourceProperties
         # If Options should be present, check other properties
         if($Ensure -eq 'Present')
         {
-            # Test the DNS Server IPs
-            $checkPropertyMessage = $($LocalizedData.CheckPropertyMessage) -f 'Dns server ip'
-            Write-Verbose -Message $checkPropertyMessage
 
-            $dnsServerIP = ($dhcpOption | Where-Object Name -like 'DNS Servers').value
-
-            # If comparison return something, they are not equal
-            if((-not $dnsServerIP) -or (Compare-Object $dnsServerIP $DnsServerIPAddress))
+            if($PSBoundParameters.ContainsKey('DnsServerIPAddress'))
             {
-                $notDesiredPropertyMessage = $($LocalizedData.NotDesiredPropertyMessage) -f 'DNS server ip', $DnsServerIPAddress, $dnsServerIP
-                Write-Verbose -Message $notDesiredPropertyMessage
-                if($Apply)
+                # Test the DNS Server IPs
+                $checkPropertyMessage = $($LocalizedData.CheckPropertyMessage) -f 'Dns server ip'
+                Write-Verbose -Message $checkPropertyMessage
+                
+                $dnsServerIP = ($dhcpOption | Where-Object Name -like 'DNS Servers').value
+                # If comparison return something, they are not equal
+                if((-not $dnsServerIP) -or (Compare-Object $dnsServerIP $DnsServerIPAddress))
                 {
-                    $settingPropertyMessage = $($LocalizedData.SettingPropertyMessage) -f 'DNS server ip'
-                    Write-Verbose -Message $settingPropertyMessage
+                    $notDesiredPropertyMessage = $($LocalizedData.NotDesiredPropertyMessage) -f 'DNS server ip', ($DnsServerIPAddress -join ', '), ($dnsServerIP -join ', ')
+                    Write-Verbose -Message $notDesiredPropertyMessage
+                    if($Apply)
+                    {
+                        $settingPropertyMessage = $($LocalizedData.SettingPropertyMessage) -f 'DNS server ip'
+                        Write-Verbose -Message $settingPropertyMessage
 
-                    Set-DhcpServerv4OptionValue -ScopeId $ScopeID -DnsServer $DnsServerIPAddress -Force
-                    
-                    $setPropertyMessage = $($LocalizedData.SetPropertyMessage) -f 'DNS server ip',$DnsServerIPAddress
-                    Write-Verbose -Message $setPropertyMessage
-                     
-                } # end $Apply
+                        Set-DhcpServerv4OptionValue -ScopeId $ScopeID -DnsServer $DnsServerIPAddress -Force
+                        
+                        $setPropertyMessage = $($LocalizedData.SetPropertyMessage) -f 'DNS server ip', ($DnsServerIPAddress -join ', ')
+                        Write-Verbose -Message $setPropertyMessage
+                        
+                    } # end $Apply
+                    else
+                    {
+                        return $false
+                    }
+                } # end Compare-object
                 else
                 {
-                    return $false
+                    $desiredPropertyMessage = $($LocalizedData.DesiredPropertyMessage) -f 'DNS server ip'
+                    Write-Verbose -Message $desiredPropertyMessage
                 }
-            } # end Compare-object
-            else
-            {
-                $desiredPropertyMessage = $($LocalizedData.DesiredPropertyMessage) -f 'DNS server ip'
-                Write-Verbose -Message $desiredPropertyMessage
             }
 
             # If DNS Domain is specified, test that
@@ -283,7 +288,7 @@ function Validate-ResourceProperties
                 $dnsDomainName = ($DhcpOption | Where-Object Name -like 'DNS Domain Name').value
                 if($dnsDomainName -ne $DnsDomain) 
                 {
-                    $notDesiredPropertyMessage = $($LocalizedData.NotDesiredPropertyMessage) -f 'DNS domain name', $DnsDomain, $dnsDomainName
+                    $notDesiredPropertyMessage = $($LocalizedData.NotDesiredPropertyMessage) -f 'DNS domain name', $DnsDomain, ($dnsDomainName -join ', ')
                     Write-Verbose -Message $notDesiredPropertyMessage
 
                     if($Apply)
@@ -293,7 +298,7 @@ function Validate-ResourceProperties
 
                         Set-DhcpServerv4OptionValue -ScopeId $ScopeID -DnsDomain $DnsDomain
 
-                        $setPropertyMessage = $($LocalizedData.SetPropertyMessage) -f 'DNS domain name',$DnsDomain
+                        $setPropertyMessage = $($LocalizedData.SetPropertyMessage) -f 'DNS domain name', ($DnsDomain -join ', ')
                         Write-Verbose -Message $setPropertyMessage
                     } # end $Apply
                     else
@@ -319,7 +324,7 @@ function Validate-ResourceProperties
 
                 if((-not $propertyValue) -or (Compare-Object $propertyValue $Router))
                 {
-                    $notDesiredPropertyMessage = $($LocalizedData.NotDesiredPropertyMessage) -f $propertyName, $DnsDomain, $dnsDomainName
+                    $notDesiredPropertyMessage = $($LocalizedData.NotDesiredPropertyMessage) -f $propertyName, ($Router -join ', '), ($propertyValue -join ', ')
                     Write-Verbose -Message $notDesiredPropertyMessage
 
                     if($Apply)
@@ -329,7 +334,7 @@ function Validate-ResourceProperties
 
                         Set-DhcpServerv4OptionValue -ScopeId $ScopeID -Router $Router
 
-                        $setPropertyMessage = $($LocalizedData.SetPropertyMessage) -f $propertyName,$Router
+                        $setPropertyMessage = $($LocalizedData.SetPropertyMessage) -f $propertyName, ($Router -join ', ')
                         Write-Verbose -Message $setPropertyMessage
                     } # end $Apply
                     else
@@ -354,12 +359,12 @@ function Validate-ResourceProperties
         {
             if($Apply)
             {
-                Write-Verbose -Message "Removing DHCP Server options for $ScopeID..."
+                Write-Verbose -Message ($LocalizedData.RemovingScopeOptions -f $ScopeID)
                 foreach($option in $dhcpOption.OptionID)
                 {
                     Remove-DhcpServerv4OptionValue -ScopeId $ScopeID -OptionId $option
                 }
-                Write-Verbose -Message 'DHCP Server options are removed'
+                Write-Verbose -Message ($LocalizedData.ScopeOptionsRemoved)
             } # end if $Apply
             else {return $false}
         }
@@ -377,9 +382,19 @@ function Validate-ResourceProperties
                 $addingScopeIdMessage = $($LocalizedData.AddingScopeIDMessage) -f $ScopeID
                 Write-Verbose -Message $addingScopeIdMessage
 
-                $parameters = @{ScopeID = $ScopeID; DnsServer = $DnsServerIPAddress}
+                $parameters = @{ScopeID = $ScopeID;}
+                
+                ## If DnsServer(s) specified, pass it
+                if ($PSBoundParameters.ContainsKey('DnsServerIPAddress'))
+                {
+                    $parameters['DnsServer'] = $DnsServerIPAddress
+                }
+                
                 # If Dns domain is specified pass it
-                if($PSBoundParameters.ContainsKey('DnsDomain')){$parameters['DnsDomain'] = $DnsDomain}
+                if($PSBoundParameters.ContainsKey('DnsDomain'))
+                {
+                    $parameters['DnsDomain'] = $DnsDomain
+                }
 
                 Set-DhcpServerv4OptionValue @parameters -Force
 
