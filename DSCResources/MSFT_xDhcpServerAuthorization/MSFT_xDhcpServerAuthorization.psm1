@@ -5,8 +5,8 @@ data LocalizedData
 {
     # culture="en-US"
     ConvertFrom-StringData @'
-ResolvingIPv4Address      = Resolving local IPv4 IP addresses
-ResolvingHostname         = Resolving local hostname
+ResolvingIPv4Address      = Resolving first local IPv4 IP address ...
+ResolvingHostname         = Resolving local hostname ...
 AuthorizingServer         = Authorizing DHCP Server '{0}' with IP address '{1}'
 UnauthorizingServer       = Unauthorizing DHCP Server '{0}' with IP address '{1}'
 ServerIsAuthorized        = DHCP Server '{0}' with IP address '{1}' IS authorized
@@ -141,9 +141,8 @@ function Get-IPv4Address
     {
         Write-Verbose $LocalizedData.ResolvingIPv4Address
         Get-WmiObject Win32_NetworkAdapterConfiguration -Namespace 'root\CIMV2' |
-            Where IPEnabled -eq 'True' |
-                ForEach-Object
-                {
+            Where-Object IPEnabled -eq 'True' |
+                ForEach-Object {
                     Write-Output ($_.IPAddress -notmatch ':')
                 }
     } #end process
