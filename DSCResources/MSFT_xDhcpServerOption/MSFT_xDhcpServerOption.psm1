@@ -32,10 +32,10 @@ function Get-TargetResource
         [parameter(Mandatory = $true)]
         [String]$ScopeID,
 
-        [parameter()]
+        [Parameter()] [ValidateNotNullOrEmpty()]
         [String[]]$DnsServerIPAddress,
 
-        [ValidateSet('IPv4')]
+        [Parameter()] [ValidateSet('IPv4')]
         [String]$AddressFamily = 'IPv4'
     )
 
@@ -89,10 +89,13 @@ function Set-TargetResource
         [parameter(Mandatory = $true)]
         [String]$ScopeID,
 
+        [Parameter()] [ValidateNotNullOrEmpty()]
         [String[]]$DnsServerIPAddress,
 
+        [Parameter()] [ValidateNotNullOrEmpty()]
         [String[]]$Router,
 
+        [Parameter()] [ValidateNotNullOrEmpty()]
         [String]$DnsDomain,
 
         [ValidateSet('IPv4')]
@@ -133,7 +136,7 @@ function Set-TargetResource
     If($PSBoundParameters['Debug'])      {$null = $PSBoundParameters.Remove('Debug')}
     If($PSBoundParameters['AddressFamily']){$null = $PSBoundParameters.Remove('AddressFamily')}
 
-    Validate-ResourceProperties @PSBoundParameters -Apply
+    ValidateResourceProperties @PSBoundParameters -Apply
 }
 
 function Test-TargetResource
@@ -145,10 +148,13 @@ function Test-TargetResource
         [parameter(Mandatory = $true)]
         [String]$ScopeID,
 
+        [Parameter()] [ValidateNotNullOrEmpty()]
         [String[]]$DnsServerIPAddress,
 
+        [Parameter()] [ValidateNotNullOrEmpty()]
         [String[]]$Router,
 
+        [Parameter()] [ValidateNotNullOrEmpty()]
         [String]$DnsDomain,
 
         [ValidateSet('IPv4')]
@@ -203,13 +209,13 @@ function Test-TargetResource
     If($PSBoundParameters['Debug'])      {$null = $PSBoundParameters.Remove('Debug')}
     If($PSBoundParameters['AddressFamily']){$null = $PSBoundParameters.Remove('AddressFamily')}
 
-    Validate-ResourceProperties @PSBoundParameters
+    ValidateResourceProperties @PSBoundParameters
 }
 
 #region Helper function
 
 # Internal function to validate dhcpOptions properties
-function Validate-ResourceProperties
+function ValidateResourceProperties
 {
     [CmdletBinding()]
     param
@@ -217,10 +223,13 @@ function Validate-ResourceProperties
         [Parameter(Mandatory)]
         [string]$ScopeID,
 
+        [Parameter()] [ValidateNotNullOrEmpty()]
         [String[]]$DnsServerIPAddress,
 
+        [Parameter()] [ValidateNotNullOrEmpty()]
         [String]$DnsDomain,
 
+        [Parameter()] [ValidateNotNullOrEmpty()]
         [String[]]$Router,
 
         [ValidateSet('Present','Absent')]
@@ -320,18 +329,18 @@ function Validate-ResourceProperties
                 $checkPropertyMessage = $($LocalizedData.CheckPropertyMessage) -f 'Router ip addresses'
                 Write-Verbose -Message $checkPropertyMessage
 
-                $propertyValue = ($DhcpOption | Where-Object OptionId -eq 3).value
+                $routerIP = ($DhcpOption | Where-Object OptionId -eq 3).value
 
-                if((-not $propertyValue) -or (Compare-Object $propertyValue $Router))
+                if((-not $routerIP) -or (Compare-Object $routerIP $Router))
                 {
-                    $notDesiredPropertyMessage = $($LocalizedData.NotDesiredPropertyMessage) -f $propertyName, ($Router -join ', '), ($propertyValue -join ', ')
+                    $notDesiredPropertyMessage = $($LocalizedData.NotDesiredPropertyMessage) -f $propertyName, ($Router -join ', '), ($routerIP -join ', ')
                     Write-Verbose -Message $notDesiredPropertyMessage
 
                     if($Apply)
                     {
                         $settingPropertyMessage = $($LocalizedData.SettingPropertyMessage) -f $propertyName
                         Write-Verbose -Message $settingPropertyMessage
-
+                      
                         Set-DhcpServerv4OptionValue -ScopeId $ScopeID -Router $Router
 
                         $setPropertyMessage = $($LocalizedData.SetPropertyMessage) -f $propertyName, ($Router -join ', ')
@@ -341,13 +350,14 @@ function Validate-ResourceProperties
                     { 
                         return $false
                     }
-                } # end $dnsDomainName -ne $DnsDomain
+                } # end $routerIP -ne $Router
                 else
                 {
                     $desiredPropertyMessage = $($LocalizedData.DesiredPropertyMessage) -f $propertyName
                     Write-Verbose -Message $desiredPropertyMessage
                 }
-            } # end $PSBoundParameters.ContainsKey('DnsDomain')
+            } # end $PSBoundParameters.ContainsKey('Router')
+            
             if(-not $Apply)
             {
                 return $true
