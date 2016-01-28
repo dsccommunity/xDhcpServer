@@ -53,6 +53,28 @@ Describe 'xDhcpServerAuthorization' {
             @{ IPAddress = '192.168.1.2'; DnsName = 'test2.contoso.com'; },
             @{ IPAddress = '192.168.1.3'; DnsName = 'test3.contoso.com'; }
         )
+        
+        Context 'Validate Get-IPv4Address method' {
+            
+            It 'Returns a IPv4 address' {
+                $result = Get-IPv4Address;
+                
+                $result -match '\d+\.\d+\.\d+\.\d+' | Should Be $true;
+            }
+            
+        } #end context Validate Get-IPv4Address method
+        
+        Context 'Validate Get-Hostname method' {
+            
+            It 'Returns at least the current NetBIOS name' {
+                $hostname = [System.Net.Dns]::GetHostname();
+                
+                $result = Get-Hostname;
+            
+                $result -match $hostname | Should Be $true;
+            }
+            
+        } #end context Validate Get-Hostname method
 
         Context 'Validate Get-TargetResource method' {
             Mock Assert-Module { };
