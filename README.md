@@ -56,6 +56,8 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 
 * Added **xDhcpServerAuthorization** resource.
 * Bug Fix LeaseDuration is no longer mandatory for xDhcpServerScope resource.
+* Bug Fix DnsServerIPAddress is no longer mandatory for xDhcpServerOption resource. 
+* Bug Fix corrects verbose display output in xDhcpServerOption resource.
 
 ### 1.2
 
@@ -112,7 +114,7 @@ configuration Sample_xDhcpServerReservation_IPReservation
 }
 ```
 
-### Setting the domain name for a DNS Server
+### Setting the domain name, DNS server and default gateway option for a DHCP scope
 
 ```powershell
 configuration Sample_xDhcpServerOption_SetScopeOption
