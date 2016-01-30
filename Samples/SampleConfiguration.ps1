@@ -39,4 +39,13 @@
          Router = '192.168.1.1'
          DependsOn = @('[WindowsFeature]DHCP') 
      } 
+     xDhcpServerExclusionRange Range
+     {
+         Ensure = 'Present'
+         ScopeID = '192.168.1.0'
+         StartRange = '192.168.1.200'
+         EndRange = '192.168.1.254'
+         AddressFamily = 'IPv4'
+         DependsOn = @('[WindowsFeature]DHCP')
+     }
  } 
