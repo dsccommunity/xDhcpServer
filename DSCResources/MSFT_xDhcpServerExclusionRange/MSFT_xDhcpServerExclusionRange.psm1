@@ -63,7 +63,11 @@ function Get-TargetResource
 
     if ($AddressFamily -eq "IPv4")
     {
-      $dhcpExclusionRange = Get-DhcpServerv4ExclusionRange | ? {($_.ScopeId -eq $ScopeId) -and ($_.StartRange -eq $StartRange) -and ($_.EndRange -eq $EndRange)}
+      $exclusionRangeSelector = ($_.ScopeId -eq $ScopeId) `
+                              -and ($_.StartRange -eq $StartRange) `
+                              -and ($_.EndRange -eq $EndRange)
+
+      $dhcpExclusionRange = Get-DhcpServerv4ExclusionRange | Where-Object { $exclusionRangeSelector }
     }
     elseif ($AddressFamily -eq "IPv6")
     {
@@ -111,8 +115,14 @@ function Set-TargetResource
     )
 
 
-    if($PSBoundParameters.ContainsKey('Debug')){ $null = $PSBoundParameters.Remove('Debug')}
-    if($PSBoundParameters.ContainsKey('AddressFamily')) {$null = $PSBoundParameters.Remove('AddressFamily')}
+    if($PSBoundParameters.ContainsKey('Debug'))
+    {
+        $null = $PSBoundParameters.Remove('Debug')
+    }
+
+    if($PSBoundParameters.ContainsKey('AddressFamily')) {
+        $null = $PSBoundParameters.Remove('AddressFamily')
+    }
 
     Validate-ResourceProperties @PSBoundParameters -Apply
 
@@ -163,8 +173,14 @@ function Test-TargetResource
 
 #endregion Input Validation
 
-    if($PSBoundParameters.ContainsKey('Debug')){ $null = $PSBoundParameters.Remove('Debug')}
-    if($PSBoundParameters.ContainsKey('AddressFamily')) {$null = $PSBoundParameters.Remove('AddressFamily')}
+    if($PSBoundParameters.ContainsKey('Debug'))
+    {
+        $null = $PSBoundParameters.Remove('Debug')
+    }
+
+    if($PSBoundParameters.ContainsKey('AddressFamily')) {
+        $null = $PSBoundParameters.Remove('AddressFamily')
+    }
 
     Validate-ResourceProperties @PSBoundParameters
 
@@ -193,7 +209,11 @@ function Validate-ResourceProperties
     $checkExclusionRangeMessage = $LocalizedData.CheckExclusionRangeMessage
     Write-Verbose -Message $checkExclusionRangeMessage
 
-    $dhcpExclusionRange = Get-DhcpServerv4ExclusionRange | ? {($_.ScopeId -eq $ScopeId) -and ($_.StartRange -eq $StartRange) -and ($_.EndRange -eq $EndRange)}
+    $exclusionRangeSelector = ($_.ScopeId -eq $ScopeId) `
+                            -and ($_.StartRange -eq $StartRange) `
+                            -and ($_.EndRange -eq $EndRange)
+
+    $dhcpExclusionRange = Get-DhcpServerv4ExclusionRange | Where-Object { $exclusionRangeSelector }
 
     # Initialize the parameter collection
     if($Apply)
@@ -260,7 +280,7 @@ function Validate-ResourceProperties
                 Write-Verbose -Message $removingExclusionRangeMsg
 
                 # Remove the scope
-                Remove-DhcpServerv4ExclusionRange -ScopeId $dhcpExclusionRange.ScopeId
+                Remove-DhcpServerv4ExclusionRange -ScopeId $dhcpExclusionRange.ScopeId -Confirm:$false
 
                 $deleteExclusionRangeMsg = $LocalizedData.deleteExclusionRangeMessage
                 Write-Verbose -Message $deleteExclusionRangeMsg
