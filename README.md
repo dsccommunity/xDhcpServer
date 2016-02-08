@@ -2,7 +2,7 @@
 
 # xDhcpServer
 
-The **xDhcpServer** DSC resources are used for configuring and managing a DHCP server. They include **xDhcpServerScope**, **xDhcpServerReservation**, **xDhcpServerOptions** and **xDhcpServerAuthorization**. 
+The **xDhcpServer** DSC resources are used for configuring and managing a DHCP server. They include **xDhcpServerScope**, **xDhcpServerReservation**, **xDhcpServerOptions**, **xDhcpServerExclusionRange**, and **xDhcpServerAuthorization**.
 
 ## Contributing
 Please check out common DSC Resources [contributing guidelines](https://github.com/PowerShell/DscResource.Kit/blob/master/CONTRIBUTING.md).
@@ -13,6 +13,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 * **xDhcpServerScope** sets a scope for consecutive range of possible IP addresses that the DHCP server can lease to clients on a subnet.
 * **xDhcpServerReservation** sets lease assignments used to ensure that a specified client on a subnet can always use the same IP address.
 * **xDhcpServerOptions** currently supports setting DNS domain and DNS Server IP Address options at a DHCP server scope level.
+* **xDhcpServerExclusionRange** sets a DHCP exclusion range on a given DHCP scope.
 * **xDhcpServerAuthorization** authorizes a DHCP in Active Directory.
  * *This resource must run on an Active Directory domain controller.*
 
@@ -44,6 +45,14 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 * **AddressFamily**: Address family type
 * **Ensure**: Whether option should be set or removed
 
+### xDhcpServerExclusionRange
+
+* **ScopeID**: Specifies the identifier (ID) of the IPv4 scope from which the IP addresses are being excluded
+* **StartRange**: Specifies the starting IP address of the range being excluded
+* **EndRange**: The end IP address of the range being excluded
+* **AddressFamily**: Address family type. Note: at this time, only IPv4 is supported.
+* **Ensure**: Whether option should be set or removed
+
 ### xDhcpServerAuthorization
 
 * **Ensure**: Whether the DHCP server should be authorized.
@@ -60,6 +69,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 * Bug Fix LeaseDuration is no longer mandatory for xDhcpServerScope resource.
 * Bug Fix DnsServerIPAddress is no longer mandatory for xDhcpServerOption resource. 
 * Bug Fix corrects verbose display output in xDhcpServerOption resource.
+* Added **xDhcpServerExclusionRange** resource.
 
 ### 1.2
 
@@ -83,7 +93,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 ```powershell
 configuration Sample_xDhcpsServerScope_NewScope
 {
-    Import-DscResource -module xDHCpServer
+    Import-DscResource -module xDhcpServer
     xDhcpServerScope Scope
     {
         Ensure = 'Present'
@@ -103,7 +113,7 @@ configuration Sample_xDhcpsServerScope_NewScope
 ```powershell
 configuration Sample_xDhcpServerReservation_IPReservation
 {
-    Import-DscResource -module xDHCpServer
+    Import-DscResource -module xDhcpServer
     xDhcpServerReservation PullServerIP
     {
         Ensure = 'Present'
@@ -121,7 +131,7 @@ configuration Sample_xDhcpServerReservation_IPReservation
 ```powershell
 configuration Sample_xDhcpServerOption_SetScopeOption
 {
-    Import-DscResource -module xDHCpServer
+    Import-DscResource -module xDhcpServer
     xDhcpServerOption Option
     {
         Ensure = 'Present'
@@ -134,12 +144,29 @@ configuration Sample_xDhcpServerOption_SetScopeOption
 }
 ```
 
+### Setting a DHCP exclusion range on a DHCP scope
+
+```powershell
+configuration Sample_xDhcpServerExclusionRange_SetExclusionRange
+{
+    Import-DscResource -module xDhcpServer
+    xDhcpServerExclusionRange ExclusionRange
+    {
+        Ensure = 'Present'
+        ScopeID = '192.168.1.0'
+        StartRange = '192.168.1.200'
+        EndRange = '192.168.1.254'
+        AddressFamily = 'IPv4'
+    }
+}
+```
+
 ### Authorizing the local DHCP server
 
 ```powershell
 configuration Sample_Local_xDhcpServerAuthorization
 {
-    Import-DscResource -module xDHCpServer
+    Import-DscResource -module xDhcpServer
     xDhcpServerAuthorization LocalServerActivation
     {
         Ensure = 'Present'
@@ -152,7 +179,7 @@ configuration Sample_Local_xDhcpServerAuthorization
 ```powershell
 configuration Sample_Remote_xDhcpServerAuthorization
 {
-    Import-DscResource -module xDHCpServer
+    Import-DscResource -module xDhcpServer
     xDhcpServerAuthorization RemoteServerActivation
     {
         Ensure = 'Present'
