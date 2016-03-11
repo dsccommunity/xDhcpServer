@@ -23,8 +23,8 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 * **Name**: Name of this DHCP Scope
 * **SubnetMask**: Subnet mask for the scope specified in IP address format
 * **LeaseDuration**: Time interval for which an IP address should be leased
- * This should be specified in the following format: `Days:Hours:Minutes:Seconds`
- * For example, '`02:00:00:00`' is 2 days and '`08:00:00`' is 8 hours.
+ * This should be specified in the following format: `Days.Hours:Minutes:Seconds`
+ * For example, '`02.00:00:00`' is 2 days and '`08:00:00`' is 8 hours.
 * **State**: Whether scope should be active or inactive.
 * **Ensure**: Whether DHCP scope should be present or removed
 * **ScopeID**: Scope Identifier. This is a read-only property for this resource.
@@ -55,6 +55,8 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 ## Versions
 
 ### Unreleased
+
+* Bug Fix fixes localization bug in xDhcpServerScope option enumeration
 
 ### 1.3.0.0
 
