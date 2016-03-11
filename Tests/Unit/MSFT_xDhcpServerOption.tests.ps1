@@ -1,53 +1,40 @@
-<# 
-.summary
-    Test suite for MSFT_xDhcpServerOption.psm1
-    These tests require RSAT on client.
-    On 8.1 it's found here: http://www.microsoft.com/en-us/download/confirmation.aspx?id=39296&6B49FDFB-8E5B-4B07-BC31-15695C5A2143=1
-#>
-[CmdletBinding()]
-param()
+$Global:DSCModuleName      = 'xDhcpServer' # Example xNetworking
+$Global:DSCResourceName    = 'MSFT_xDhcpServerOption' # Example MSFT_xFirewall
 
-$global:DhpcOptionTest=$true
-$ModuleName = 'MSFT_xDhcpServerOption'
-Import-Module "$PSScriptRoot\..\DSCResources\$ModuleName\$ModuleName.psm1"
-
-$ErrorActionPreference = 'stop'
-Set-StrictMode -Version latest
-
-# should check for the server OS
-if($env:APPVEYOR_BUILD_VERSION)
+#region HEADER
+[String] $moduleRoot = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $Script:MyInvocation.MyCommand.Path))
+if ( (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
+     (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1'))) )
 {
-  Add-WindowsFeature RSAT-DHCP -verbose
+    & git @('clone','https://github.com/PowerShell/DscResource.Tests.git',(Join-Path -Path $moduleRoot -ChildPath '\DSCResource.Tests\'))
 }
-
-function Suite.BeforeAll {
-    # Remove any leftovers from previous test runs
-    Suite.AfterAll 
-
+else
+{
+    & git @('-C',(Join-Path -Path $moduleRoot -ChildPath '\DSCResource.Tests\'),'pull')
 }
+Import-Module (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1') -Force
+$TestEnvironment = Initialize-TestEnvironment `
+    -DSCModuleName $Global:DSCModuleName `
+    -DSCResourceName $Global:DSCResourceName `
+    -TestType Unit 
+#endregion
 
-function Suite.AfterAll {
-    Remove-Module MSFT_xDhcpServerOption
-    $global:DhpcOptionTest=$null
-}
-
-function Suite.BeforeEach {
-}
+# Begin Testing
 
 try
 {
-    Describe 'Validate "ValidateResourceProperties" method' {
-        InModuleScope $ModuleName {
+    InModuleScope $Global:DSCResourceName {
 
-        BeforeEach {
-            Suite.BeforeEach
-        }
+        #region Pester Test Initialization
+        # TODO: Optopnal Load Mock for use in Pester tests here...
+        #endregion
 
-        AfterEach {
-        }
-            $global:dnsDomainName = 'contoso.com'
-            $global:dnsIpAddress = @('2.1.1.2','2.1.1.3')
-            $global:routeripAddress = '1.1.1.2'
+        #region Function ValidateResourceProperties
+        Describe "$($Global:DSCResourceName)\ValidateResourceProperties" {
+    
+            $dnsDomainName = 'contoso.com'
+            $dnsIpAddress = @('2.1.1.2','2.1.1.3')
+            $routeripAddress = '1.1.1.2'
             Mock -CommandName Set-DhcpServerv4OptionValue -ModuleName MSFT_xDhcpServerOption -MockWith { }
             
             # Absent removes the whole option, so this is not new to this issue.
@@ -56,7 +43,7 @@ try
             {
                 It "Return true when DNS Server scalar match, apply: $($params.Apply), Ensure: $($params.Ensure)" {
                     Mock -CommandName Get-DhcpServerv4OptionValue -ModuleName MSFT_xDhcpServerOption -MockWith {
-                        return @(new-object psobject -property @{name='DNS Servers';Value=$dnsIpAddress[1]})
+                        return @(new-object psobject -property @{OptionId=6;Value=$dnsIpAddress[1]})
                     } 
 
                     $expectedReturn = $true
@@ -68,15 +55,16 @@ try
                     {
                         $expectedReturn = $null
                     }    
-                    $result = MSFT_xDhcpServerOption\ValidateResourceProperties @params -scopeId '1.1.1.0' -DnsServerIPAddress $dnsIpAddress[1] -Verbose
+                    $result = ValidateResourceProperties @params -scopeId '1.1.1.0' -DnsServerIPAddress $dnsIpAddress[1] -Verbose
                     
                     $result | should be $expectedReturn
                     Assert-MockCalled -ModuleName MSFT_xDhcpServerOption -commandName Get-DhcpServerv4OptionValue  -Scope It
                     Assert-MockCalled -ModuleName MSFT_xDhcpServerOption -commandName set-DhcpServerv4OptionValue -Exactly 0 -Scope It
                 }
+                
                 It "Return true when DNS Server array match, apply: $($params.Apply), Ensure: $($params.Ensure)" {
                     Mock -CommandName Get-DhcpServerv4OptionValue -ModuleName MSFT_xDhcpServerOption -MockWith {
-                        return @(new-object psobject -property @{name='DNS Servers';Value=$dnsIpAddress})
+                        return @(new-object psobject -property @{OptionId=6;Value=$dnsIpAddress})
                     } 
 
                     $expectedReturn = $true
@@ -88,15 +76,16 @@ try
                     {
                         $expectedReturn = $null
                     }      
-                    $result = MSFT_xDhcpServerOption\ValidateResourceProperties @params -scopeId '1.1.1.0' -DnsServerIPAddress $dnsIpAddress -Verbose
+                    $result = ValidateResourceProperties @params -scopeId '1.1.1.0' -DnsServerIPAddress $dnsIpAddress -Verbose
                     
                     $result | should be $expectedReturn
                     Assert-MockCalled -ModuleName MSFT_xDhcpServerOption -commandName Get-DhcpServerv4OptionValue -Scope It
                     Assert-MockCalled -ModuleName MSFT_xDhcpServerOption -commandName set-DhcpServerv4OptionValue -Exactly 0 -Scope It
                 }
+                
                 It "Return false when DNS Server mismatch, apply: $($params.Apply), Ensure: $($params.Ensure)" {
                     Mock -CommandName Get-DhcpServerv4OptionValue -ModuleName MSFT_xDhcpServerOption -MockWith {
-                        return @(new-object psobject -property @{name='DNS Servers';Value=$dnsIpAddress})
+                        return @(new-object psobject -property @{OptionId=6;Value=$dnsIpAddress})
                     } 
 
                     $expectedReturn = $false
@@ -110,7 +99,7 @@ try
                         $setMockCalledParams.Add('Exactly',$true)
                         $setMockCalledParams.Add('Times',0)
                     }  
-                    $result = MSFT_xDhcpServerOption\ValidateResourceProperties @params -scopeId '1.1.1.0' -DnsServerIPAddress '1.2.2.1' -Verbose
+                    $result = ValidateResourceProperties @params -scopeId '1.1.1.0' -DnsServerIPAddress '1.2.2.1' -Verbose
                     
                     $result | should be $expectedReturn
                     Assert-MockCalled -ModuleName MSFT_xDhcpServerOption -commandName Get-DhcpServerv4OptionValue -Scope It           
@@ -119,7 +108,7 @@ try
                 
                 It "Return false when DNS Server empty, apply: $($params.Apply), Ensure: $($params.Ensure)" {
                     Mock -CommandName Get-DhcpServerv4OptionValue -ModuleName MSFT_xDhcpServerOption -MockWith {
-                        return @(new-object psobject -property @{name='DNS Domain Name';Value=$dnsDomainName})
+                        return @(new-object psobject -property @{OptionId=15;Value=$dnsDomainName})
                     } 
 
                     $expectedReturn = $false
@@ -133,7 +122,7 @@ try
                         $setMockCalledParams.Add('Exactly',$true)
                         $setMockCalledParams.Add('Times',0)
                     }  
-                    $result = MSFT_xDhcpServerOption\ValidateResourceProperties @params -scopeId '1.1.1.0' -DnsServerIPAddress '1.2.2.1' -Verbose
+                    $result = ValidateResourceProperties @params -scopeId '1.1.1.0' -DnsServerIPAddress '1.2.2.1' -Verbose
                     
                     $result | should be $expectedReturn
                     Assert-MockCalled -ModuleName MSFT_xDhcpServerOption -commandName Get-DhcpServerv4OptionValue -Scope It           
@@ -142,7 +131,7 @@ try
                 
                 It "Return true when DNS domain name match, apply: $($params.Apply), Ensure: $($params.Ensure)" {
                     Mock -CommandName Get-DhcpServerv4OptionValue -ModuleName MSFT_xDhcpServerOption -MockWith {
-                        return @(new-object psobject -property @{name='DNS Domain Name';Value=$dnsDomainName})
+                        return @(new-object psobject -property @{OptionId=15;Value=$dnsDomainName})
                     } 
 
                     $expectedReturn = $true
@@ -154,7 +143,7 @@ try
                     {
                         $expectedReturn = $null
                     }          
-                    $result = MSFT_xDhcpServerOption\ValidateResourceProperties @params -scopeId '1.1.1.0' -DnsDomain $dnsDomainName -Verbose
+                    $result = ValidateResourceProperties @params -scopeId '1.1.1.0' -DnsDomain $dnsDomainName -Verbose
                     
                     $result | should be $expectedReturn
                     Assert-MockCalled -ModuleName MSFT_xDhcpServerOption -commandName Get-DhcpServerv4OptionValue -Scope It
@@ -163,7 +152,7 @@ try
                 
                 It "Return false when DNS domain name mismatch, apply: $($params.Apply), Ensure: $($params.Ensure)" {
                     Mock -CommandName Get-DhcpServerv4OptionValue -ModuleName MSFT_xDhcpServerOption -MockWith {
-                        return @(new-object psobject -property @{name='DNS Domain Name';Value=$dnsDomainName})
+                        return @(new-object psobject -property @{OptionId=15;Value=$dnsDomainName})
                     } 
 
                     $expectedReturn = $false
@@ -177,12 +166,13 @@ try
                         $setMockCalledParams.Add('Exactly',$true)
                         $setMockCalledParams.Add('Times',0)
                     }  
-                    $result = MSFT_xDhcpServerOption\ValidateResourceProperties @params -scopeId '1.1.1.0' -DnsDomain 'wrong.com' -Verbose
+                    $result = ValidateResourceProperties @params -scopeId '1.1.1.0' -DnsDomain 'wrong.com' -Verbose
                     
                     $result | should be $expectedReturn
                     Assert-MockCalled -ModuleName MSFT_xDhcpServerOption -commandName Get-DhcpServerv4OptionValue -Scope It           
                     Assert-MockCalled -ModuleName MSFT_xDhcpServerOption -commandName set-DhcpServerv4OptionValue @setMockCalledParams -Scope It
                 }
+                
                 It "Return true when Router scalar match, apply: $($params.Apply), Ensure: $($params.Ensure)" {
                     Mock -CommandName Get-DhcpServerv4OptionValue -ModuleName MSFT_xDhcpServerOption -MockWith {
                         return @(new-object psobject -property @{OptionId=3;Value=$routeripAddress})
@@ -197,7 +187,7 @@ try
                     {
                         $expectedReturn = $null
                     }          
-                    $result = MSFT_xDhcpServerOption\ValidateResourceProperties @params -scopeId '1.1.1.0' -Router $routeripAddress -Verbose
+                    $result = ValidateResourceProperties @params -scopeId '1.1.1.0' -Router $routeripAddress -Verbose
                     
                     $result | should be $expectedReturn
                     Assert-MockCalled -ModuleName MSFT_xDhcpServerOption -commandName Get-DhcpServerv4OptionValue -Scope It
@@ -218,7 +208,7 @@ try
                     {
                         $expectedReturn = $null
                     }          
-                    $result = MSFT_xDhcpServerOption\ValidateResourceProperties @params -scopeId '1.1.1.0' -Router $routeripAddress -Verbose
+                    $result = ValidateResourceProperties @params -scopeId '1.1.1.0' -Router $routeripAddress -Verbose
                     
                     $result | should be $expectedReturn
                     Assert-MockCalled -ModuleName MSFT_xDhcpServerOption -commandName Get-DhcpServerv4OptionValue -Scope It        
@@ -241,7 +231,7 @@ try
                         $setMockCalledParams.Add('Exactly',$true)
                         $setMockCalledParams.Add('Times',0)
                     }  
-                    $result = MSFT_xDhcpServerOption\ValidateResourceProperties @params -scopeId '1.1.1.0' -Router '1.1.1.3' -Verbose
+                    $result = ValidateResourceProperties @params -scopeId '1.1.1.0' -Router '1.1.1.3' -Verbose
                     
                     $result | should be $expectedReturn
                     Assert-MockCalled -ModuleName MSFT_xDhcpServerOption -commandName Get-DhcpServerv4OptionValue -Scope It           
@@ -266,7 +256,7 @@ try
                     }  
                     
                     
-                    $result = MSFT_xDhcpServerOption\ValidateResourceProperties @params -scopeId '1.1.1.0' -Router  @('1.1.1.2','1.1.1.4') -Verbose
+                    $result = ValidateResourceProperties @params -scopeId '1.1.1.0' -Router @('1.1.1.2','1.1.1.4') -Verbose
                     
                     $result | should be $expectedReturn
                     Assert-MockCalled -ModuleName MSFT_xDhcpServerOption -commandName Get-DhcpServerv4OptionValue -Scope It         
@@ -290,7 +280,7 @@ try
                         $setMockCalledParams.Add('Times',0)
                     }  
                     
-                    $result = MSFT_xDhcpServerOption\ValidateResourceProperties @params -scopeId '1.1.1.0'-Router  @('1.1.1.2','1.1.1.3', '1.1.1.4') -Verbose
+                    $result = ValidateResourceProperties @params -scopeId '1.1.1.0'-Router @('1.1.1.2','1.1.1.3', '1.1.1.4') -Verbose
                     
                     $result | should be $expectedReturn
                     Assert-MockCalled -ModuleName MSFT_xDhcpServerOption -commandName Get-DhcpServerv4OptionValue -Scope It             
@@ -313,19 +303,24 @@ try
                         $setMockCalledParams.Add('Exactly',$true)
                         $setMockCalledParams.Add('Times',0)
                     }  
-                    $result = MSFT_xDhcpServerOption\ValidateResourceProperties @params -scopeId '1.1.1.0' -Router  @('1.1.1.2','1.1.1.3') -Verbose
+                    $result = ValidateResourceProperties @params -scopeId '1.1.1.0' -Router @('1.1.1.2','1.1.1.3') -Verbose
                     
                     $result | should be $expectedReturn
                     Assert-MockCalled -ModuleName MSFT_xDhcpServerOption -commandName Get-DhcpServerv4OptionValue -Scope It
                     Assert-MockCalled -ModuleName MSFT_xDhcpServerOption -commandName set-DhcpServerv4OptionValue @setMockCalledParams -Scope It
                 }
             }
+            #endregion
 
-    } #end in module scope
-    } #end describe
+        } #endregion InModuleScope
+        
+    }
+    #endregion
+
 }
 finally
 {
-    Suite.AfterAll
+     #region FOOTER
+    Restore-TestEnvironment -TestEnvironment $TestEnvironment
+    #endregion
 }
-

@@ -1,24 +1,38 @@
-[CmdletBinding()]
-param()
+$Global:DSCModuleName      = 'xDhcpServer'
+$Global:DSCResourceName    = 'MSFT_xDhcpServerAuthorization'
 
-if (!$PSScriptRoot) # $PSScriptRoot is not defined in 2.0
+#region HEADER
+[String] $moduleRoot = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $Script:MyInvocation.MyCommand.Path))
+if ( (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
+     (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1'))) )
 {
-    $PSScriptRoot = [System.IO.Path]::GetDirectoryName($MyInvocation.MyCommand.Path)
+    & git @('clone','https://github.com/PowerShell/DscResource.Tests.git',(Join-Path -Path $moduleRoot -ChildPath '\DSCResource.Tests\'))
 }
+else
+{
+    & git @('-C',(Join-Path -Path $moduleRoot -ChildPath '\DSCResource.Tests\'),'pull')
+}
+Import-Module (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1') -Force
+$TestEnvironment = Initialize-TestEnvironment `
+    -DSCModuleName $Global:DSCModuleName `
+    -DSCResourceName $Global:DSCResourceName `
+    -TestType Unit 
+#endregion
 
-$ErrorActionPreference = 'Stop'
-Set-StrictMode -Version Latest
+# TODO: Other Optional Init Code Goes Here...
 
-$RepoRoot = (Resolve-Path $PSScriptRoot\..).Path
-Write-Host $RepoRoot -ForegroundColor Green
+# Begin Testing
+try
+{
 
-$ModuleName = 'MSFT_xDhcpServerAuthorization'
-Import-Module (Join-Path $RepoRoot "DSCResources\$ModuleName\$ModuleName.psm1") -Force;
+    #region Pester Tests
 
-Describe 'xDhcpServerAuthorization' {
+    # The InModuleScope command allows you to perform white-box unit testing on the internal
+    # (non-exported) code of a Script Module.
+    InModuleScope $Global:DSCResourceName {
 
-    InModuleScope $ModuleName {
-
+        #region Pester Test Initialization
+        
         ## Mock missing functions
         function Get-DhcpServerInDc { }
         function Add-DhcpServerInDc { }
@@ -54,29 +68,11 @@ Describe 'xDhcpServerAuthorization' {
             @{ IPAddress = '192.168.1.3'; DnsName = 'test3.contoso.com'; }
         )
         
-        Context 'Validate Get-IPv4Address method' {
-            
-            It 'Returns a IPv4 address' {
-                $result = Get-IPv4Address;
-                
-                $result -match '\d+\.\d+\.\d+\.\d+' | Should Be $true;
-            }
-            
-        } #end context Validate Get-IPv4Address method
-        
-        Context 'Validate Get-Hostname method' {
-            
-            It 'Returns at least the current NetBIOS name' {
-                $hostname = [System.Net.Dns]::GetHostname();
-                
-                $result = Get-Hostname;
-            
-                $result -match $hostname | Should Be $true;
-            }
-            
-        } #end context Validate Get-Hostname method
+        #endregion
 
-        Context 'Validate Get-TargetResource method' {
+        #region Function Get-TargetResource
+        Describe "$($Global:DSCResourceName)\Get-TargetResource" {
+            
             Mock Assert-Module { };
 
             It 'Returns a [System.Collection.Hashtable] type' {
@@ -101,9 +97,11 @@ Describe 'xDhcpServerAuthorization' {
                 $result.Ensure | Should Be 'Absent';
             }
 
-        } #end Context Validate Get-TargetResource method
+        }
+        #endregion Function Get-TargetResource
         
-        Context 'Validate Test-TargetResource method' {
+        #region Function Test-TargetResource
+        Describe "$($Global:DSCResourceName)\Test-TargetResource" {
             Mock Assert-Module { };
 
             It 'Returns a [System.Boolean] type' {
@@ -148,9 +146,11 @@ Describe 'xDhcpServerAuthorization' {
                 $result -is [System.Boolean] | Should Be $true;
             }
         
-        } #end Context Validate Test-TargetResource method
+        }
+        #endregion Function Test-TargetResource
 
-        Context 'Validate Set-TargetResource method' {
+        #region Function Set-TargetResource
+        Describe "$($Global:DSCResourceName)\Set-TargetResource" {
             Mock Assert-Module { };
 
             It 'Calls Add-DhcpServerInDc when Ensure is Present' {
@@ -169,7 +169,41 @@ Describe 'xDhcpServerAuthorization' {
                 Assert-MockCalled Remove-DhcpServerInDC -Scope It;
             }
 
-        } #end Context Validate Set-TargetResource method
+        }
+        #endregion Function Set-TargetResource
+        
+        #region Function Get-IPv4Address
+        Describe "$($Global:DSCResourceName)\Get-IPv4Address" {
+            
+            It 'Returns a IPv4 address' {
+                $result = Get-IPv4Address;
+                
+                $result -match '\d+\.\d+\.\d+\.\d+' | Should Be $true;
+            }
+            
+        }
+        #endregion Function Get-IPv4Address
+        
+        #region Function Get-Hostname
+        Describe "$($Global:DSCResourceName)\Get-Hostname" {
+            
+            It 'Returns at least the current NetBIOS name' {
+                $hostname = [System.Net.Dns]::GetHostname();
+                
+                $result = Get-Hostname;
+            
+                $result -match $hostname | Should Be $true;
+            }
+            
+        }
+        #endregion Function Get-Hostname
     
     } #end InModuleScope
+
+}
+finally
+{
+    #region FOOTER
+    Restore-TestEnvironment -TestEnvironment $TestEnvironment
+    #endregion
 }
