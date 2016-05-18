@@ -56,6 +56,8 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 
 ### Unreleased
 
+### 1.4.0.0
+
 * Bug Fix fixes localization bug in xDhcpServerScope option enumeration
 
 ### 1.3.0.0
