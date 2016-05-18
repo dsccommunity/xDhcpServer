@@ -1,6 +1,6 @@
 @{
 # Version number of this module.
-ModuleVersion = '1.3.0.0'
+ModuleVersion = '1.4.0.0'
 
 # ID used to uniquely identify this module
 GUID = '286890c9-a6c3-4605-9cd5-03c8413c8325'
@@ -47,7 +47,9 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        # ReleaseNotes = ''
+        ReleaseNotes = '* Bug Fix fixes localization bug in xDhcpServerScope option enumeration
+
+'
 
     } # End of PSData hashtable
 
