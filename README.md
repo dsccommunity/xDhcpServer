@@ -4,6 +4,9 @@
 
 The **xDhcpServer** DSC resources are used for configuring and managing a DHCP server. They include **xDhcpServerScope**, **xDhcpServerReservation**, **xDhcpServerOptions** and **xDhcpServerAuthorization**. 
 
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
 ## Contributing
 Please check out common DSC Resources [contributing guidelines](https://github.com/PowerShell/DscResource.Kit/blob/master/CONTRIBUTING.md).
 
