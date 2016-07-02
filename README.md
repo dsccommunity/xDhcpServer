@@ -58,7 +58,6 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 ## Versions
 
 ### Unreleased
-
 * Converted AppVeyor.yml to pull Pester from PSGallery instead of Chocolatey
 
 ### 1.4.0.0
