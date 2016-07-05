@@ -2,7 +2,7 @@
 
 # xDhcpServer
 
-The **xDhcpServer** DSC resources are used for configuring and managing a DHCP server. They include **xDhcpServerScope**, **xDhcpServerReservation**, **xDhcpServerOptions** and **xDhcpServerAuthorization**. 
+The **xDhcpServer** DSC resources are used for configuring and managing a DHCP server. They include **xDhcpServerScope**, **xDhcpServerReservation**, **xDhcpServerOptions** and **xDhcpServerAuthorization**.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
@@ -58,6 +58,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 ## Versions
 
 ### Unreleased
+* Converted AppVeyor.yml to pull Pester from PSGallery instead of Chocolatey
 
 ### 1.4.0.0
 
@@ -67,7 +68,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 
 * Added **xDhcpServerAuthorization** resource.
 * Bug Fix LeaseDuration is no longer mandatory for xDhcpServerScope resource.
-* Bug Fix DnsServerIPAddress is no longer mandatory for xDhcpServerOption resource. 
+* Bug Fix DnsServerIPAddress is no longer mandatory for xDhcpServerOption resource.
 * Bug Fix corrects verbose display output in xDhcpServerOption resource.
 
 ### 1.2
@@ -80,7 +81,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 
 ### 1.0
 
-* Initial release with the following resources 
+* Initial release with the following resources
     * **xDhcpServerScope**
     * **xDhcpServerReservation**
     * **xDhcpServerOptions**
