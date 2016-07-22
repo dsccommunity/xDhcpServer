@@ -66,6 +66,7 @@ function Get-TargetResource
             $dnsDomain = (($dhcpOption | Where-Object Name -like 'DNS Domain Name').value)[0]
             $ensure = 'Present'
             $dnsServerIP = ($dhcpOption | Where-Object Name -like 'DNS Servers').value
+            $Router = ($dhcpOption | Where-Object OptionId -Like 3).value
         }
     }
     catch
@@ -78,6 +79,7 @@ function Get-TargetResource
         AddressFamily = 'IPv4'
         Ensure = $ensure
         DnsServerIPAddress = $dnsServerIP
+        Router = $Router
     }
 }
 
