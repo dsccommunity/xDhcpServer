@@ -29,6 +29,48 @@ try
         # TODO: Optopnal Load Mock for use in Pester tests here...
         #endregion
 
+        $testScopeID = '192.168.1.0';
+        $testDnsServerIPAddress = '192.168.1.10';
+        $testDnsDomain = 'contoso.com';
+        $testRouter = '192.168.1.1';
+        
+        $testParams = @{
+            ScopeID = $testScopeID;
+            DnsServerIPAddress = $testDnsServerIPAddress;
+        }
+                
+        $fakeDhcpServerv4Option = [PSCustomObject] @{
+            ScopeID = $testScopeID;
+            DnsDomain = $testDnsDomain;
+            AddressFamily = 'IPv4';
+            DnsServerIPAddress = $testDnsServerIPAddress;
+            Router = $testRouter;
+        }
+
+        $fakeDhcpServerv4Scope = [PSCustomObject] @{
+            ScopeID = $testScopeID;
+        }
+
+        #region Function Get-TargetResource
+        Describe "$($Global:DSCResourceName)\Get-TargetResource" {
+
+            It 'Returns all properties' {
+                Mock Get-DhcpServerv4Scope { return $fakeDhcpServerv4Scope; }
+                Mock Get-DhcpServerv4OptionValue { return $fakeDhcpServerv4Option }
+                $result = Get-TargetResource @testParams;
+                
+                $missingCount = 
+                (
+                    $fakeDhcpServerv4Option.psobject.properties.ForEach{
+                        $result.ContainsKey($_.Name)
+                    } | Where-Object { -not $_ } | Measure-Object
+                ).Count
+
+                $missingCount | Should Be 0;
+            }
+        }
+        #endregion Function Get-TargetResource
+
         #region Function ValidateResourceProperties
         Describe "$($Global:DSCResourceName)\ValidateResourceProperties" {
     
