@@ -58,6 +58,8 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 ## Versions
 
 ### Unreleased
+
+### 1.5.0.0
 * Converted AppVeyor.yml to pull Pester from PSGallery instead of Chocolatey
 * Bug Fix fixes xDhcpServerOption\Get-TargetResource not returning Router property
 
