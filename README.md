@@ -2,7 +2,10 @@
 
 # xDhcpServer
 
-The **xDhcpServer** DSC resources are used for configuring and managing a DHCP server. They include **xDhcpServerScope**, **xDhcpServerReservation**, **xDhcpServerOptions** and **xDhcpServerAuthorization**. 
+The **xDhcpServer** DSC resources are used for configuring and managing a DHCP server. They include **xDhcpServerScope**, **xDhcpServerReservation**, **xDhcpServerOptions** and **xDhcpServerAuthorization**.
+
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
 ## Contributing
 Please check out common DSC Resources [contributing guidelines](https://github.com/PowerShell/DscResource.Kit/blob/master/CONTRIBUTING.md).
@@ -56,6 +59,10 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 
 ### Unreleased
 
+### 1.5.0.0
+* Converted AppVeyor.yml to pull Pester from PSGallery instead of Chocolatey
+* Bug Fix fixes xDhcpServerOption\Get-TargetResource not returning Router property
+
 ### 1.4.0.0
 
 * Bug Fix fixes localization bug in xDhcpServerScope option enumeration
@@ -64,7 +71,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 
 * Added **xDhcpServerAuthorization** resource.
 * Bug Fix LeaseDuration is no longer mandatory for xDhcpServerScope resource.
-* Bug Fix DnsServerIPAddress is no longer mandatory for xDhcpServerOption resource. 
+* Bug Fix DnsServerIPAddress is no longer mandatory for xDhcpServerOption resource.
 * Bug Fix corrects verbose display output in xDhcpServerOption resource.
 
 ### 1.2
@@ -77,7 +84,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 
 ### 1.0
 
-* Initial release with the following resources 
+* Initial release with the following resources
     * **xDhcpServerScope**
     * **xDhcpServerReservation**
     * **xDhcpServerOptions**
