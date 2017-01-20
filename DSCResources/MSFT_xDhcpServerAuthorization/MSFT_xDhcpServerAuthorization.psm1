@@ -12,6 +12,8 @@ UnauthorizingServer       = Unauthorizing DHCP Server '{0}' with IP address '{1}
 ServerIsAuthorized        = DHCP Server '{0}' with IP address '{1}' IS authorized
 ServerNotAuthorized       = DHCP Server '{0}' with IP address '{1}' is NOT authorized
 IncorrectPropertyValue    = Property '{0}' is incorrect. Expected '{1}', actual '{2}'
+SecurityGroupsPresent     = DHCP security groups are present on the machine.
+SecurityGroupsNotPresent  = DHCP security groups are not present on the machine.
 ResourceInDesiredState    = DHCP Server '{0}' is in the desired state
 ResourceNotInDesiredState = DHCP Server '{0}' is NOT in the desired state
 '@
@@ -25,17 +27,28 @@ function Get-TargetResource
     (
         [Parameter(Mandatory)]
         [ValidateSet('Present','Absent')]
-        [System.String] $Ensure,
+        [System.String] 
+        $Ensure,
 
+        [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [System.String] $DnsName = ( Get-Hostname ),
+        [System.String] 
+        $DnsName = ( Get-Hostname ),
 
+        [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [System.String] $IPAddress = ( Get-IPv4Address | Select-Object -First 1 )
+        [System.String] 
+        $IPAddress = ( Get-IPv4Address | Select-Object -First 1 ),
+
+        [Parameter()]
+        [ValidateSet('Present', 'Absent')]
+        [System.String]
+        $EnsureDhcpServerSecurityGroup = 'Absent'
     )
     Assert-Module -ModuleName 'DHCPServer';
     $IPAddress = Get-ValidIPAddress -IPString $IPAddress -AddressFamily 'IPv4' -ParameterName 'IPAddress'
     $dhcpServer = Get-DhcpServerInDC | Where-Object { ($_.DnsName -eq $DnsName) -and ($_.IPAddress -eq $IPAddress) }
+
     $targetResource = @{
         DnsName = $dhcpServer.DnsName
         IPAddress = $dhcpServer.IPAddress
@@ -43,14 +56,32 @@ function Get-TargetResource
     if ($dhcpServer)
     {
         Write-Verbose ($LocalizedData.ServerIsAuthorized -f $DnsName, $IPAddress)
-        $targetResource['Ensure'] = 'Present'
+        $returnEnsure = 'Present'
     }
     else
     {
         Write-Verbose ($LocalizedData.ServerNotAuthorized -f $DnsName, $IPAddress)
-        $targetResource['Ensure'] = 'Absent'
+        $returnEnsure = 'Absent'
     }
-    return $targetResource
+
+    $systemGroupStatus = Get-SystemGroupsStatus
+    if($systemGroupStatus -eq 'Present')
+    {
+        Write-Verbose ($LocalizedData.SecurityGroupsPresent)
+    }
+    else
+    {
+        Write-Verbose ($LocalizedData.SecurityGroupsNotPresent)
+    }
+
+    $returnValue = @{
+        Ensure = $returnEnsure
+        DnsName = $DnsName
+        IPAddress = $IPAddress
+        EnsureDhcpServerSecurityGroup = $systemGroupStatus
+    }
+
+    $returnValue
 }
 
 function Set-TargetResource
@@ -60,16 +91,25 @@ function Set-TargetResource
     (
         [Parameter(Mandatory)]
         [ValidateSet('Present','Absent')]
-        [System.String] $Ensure,
+        [System.String] 
+        $Ensure,
 
         [ValidateNotNullOrEmpty()]
-        [System.String] $DnsName = ( Get-Hostname ),
+        [System.String] 
+        $DnsName = ( Get-Hostname ),
 
         [ValidateNotNullOrEmpty()]
-        [System.String] $IPAddress = ( Get-IPv4Address | Select-Object -First 1 )
+        [System.String] 
+        $IPAddress = ( Get-IPv4Address | Select-Object -First 1 ),
+
+        [Parameter()]
+        [ValidateSet('Present', 'Absent')]
+        [System.String]
+        $EnsureDhcpServerSecurityGroup = 'Absent'
     )
     Assert-Module -ModuleName 'DHCPServer'
     $IPAddress = Get-ValidIPAddress -IPString $IPAddress -AddressFamily 'IPv4' -ParameterName 'IPAddress'
+
     if ($Ensure -eq 'Present')
     {
         Write-Verbose ($LocalizedData.AuthorizingServer -f $DnsName, $IPAddress)
@@ -79,6 +119,19 @@ function Set-TargetResource
     {
         Write-Verbose ($LocalizedData.UnauthorizingServer -f $DnsName, $IPAddress)
         Get-DhcpServerInDC | Where-Object { ($_.DnsName -eq $DnsName) -and ($_.IPAddress -eq $IPAddress) } | Remove-DhcpServerInDc
+    }
+
+    $systemGroupStatus = Get-SystemGroupsStatus
+    if ($EnsureDhcpServerSecurityGroup -and $systemGroupStatus -ne $EnsureDhcpServerSecurityGroup)
+    {
+        if($EnsureDhcpServerSecurityGroup -eq 'Present')
+        {
+            Add-DhcpServerSecurityGroup
+        }
+        else
+        {
+            Remove-DhcpServerSecurityGroup
+        }
     }
 }
 
@@ -90,13 +143,21 @@ function Test-TargetResource
     (
         [Parameter(Mandatory)]
         [ValidateSet('Present','Absent')]
-        [System.String] $Ensure,
+        [System.String] 
+        $Ensure,
 
         [ValidateNotNullOrEmpty()]
-        [System.String] $DnsName = ( Get-Hostname ),
+        [System.String] 
+        $DnsName = ( Get-Hostname ),
 
         [ValidateNotNullOrEmpty()]
-        [System.String] $IPAddress = ( Get-IPv4Address | Select-Object -First 1 )
+        [System.String] 
+        $IPAddress = ( Get-IPv4Address | Select-Object -First 1 ),
+
+        [Parameter()]
+        [ValidateSet('Present', 'Absent')]
+        [System.String]
+        $EnsureDhcpServerSecurityGroup = 'Absent'
     )
     $targetResource = Get-TargetResource @PSBoundParameters
     $isCompliant = $true
@@ -119,6 +180,14 @@ function Test-TargetResource
             Write-Verbose ($LocalizedData.IncorrectPropertyValue -f 'IPAddress', $IPAddress, $targetResource.IPAddress)
             $isCompliant = $false
         }
+    }
+
+    
+
+    if ($targetResource.EnsureDhcpServerSecurityGroup -ne $EnsureDhcpServerSecurityGroup)
+    {
+        Write-Verbose ($LocalizedData.IncorrectPropertyValue -f 'EnsureDhcpServerSecurityGroup', $EnsureDhcpServerSecurityGroup, $targetResource.EnsureDhcpServerSecurityGroup)
+        $isCompliant = $false
     }
     
     if ($isCompliant)
@@ -149,7 +218,8 @@ function Get-IPv4Address
 } #end function Get-IPv4Address
 
 ## Internal function used to resolve the local hostname
-function Get-Hostname {
+function Get-Hostname 
+{
     [CmdletBinding()]
     [OutputType([System.String])]
     param ( )
@@ -167,5 +237,55 @@ function Get-Hostname {
         }
     } #end process
 } #end function Get-Hostname
+
+function Get-SystemGroupsStatus
+{
+    [CmdletBinding(SupportsShouldProcess = $false)]
+    [OutputType([System.String])]
+    param()
+
+    $adsiComp = [adsi]("WinNT://localhost,computer")
+    try
+    {
+        $adsiComp.Children.Find('DHCP Administrators', 'Group') | Out-Null
+        return 'Present'
+    }
+    catch [System.Management.Automation.MethodInvocationException]
+    {}
+
+    try
+    {
+        $adsiComp.Children.Find('DHCP Users', 'Group') | Out-Null
+        return 'Present'
+    }
+    catch [System.Management.Automation.MethodInvocationException]
+    {}
+    
+    return 'Absent'
+}
+
+function Remove-DhcpServerSecurityGroup
+{
+    [CmdletBinding(SupportsShouldProcess = $false)]
+    param()
+
+    $adsiComp = [adsi]("WinNT://localhost,computer")
+
+    try
+    {
+        $adminGroup = $adsiComp.Children.Find('DHCP Administrators', 'Group')
+        $adsiComp.Children.Remove($adminGroup)
+    }
+    catch [System.Management.Automation.MethodInvocationException]
+    {}
+
+    try
+    {
+        $userGroup = $adsiComp.Children.Find('DHCP Users', 'Group')
+        $adsiComp.Children.Remove($userGroup)
+    }
+    catch [System.Management.Automation.MethodInvocationException]
+    {}
+}
 
 Export-ModuleMember -Function *-TargetResource;
