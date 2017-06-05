@@ -29,14 +29,17 @@ function Get-TargetResource
     [OutputType([System.Collections.Hashtable])]
     param
     (
-        [parameter(Mandatory = $true)]
+        [parameter(Mandatory = $false)]
         [String]$ScopeID,
 
         [Parameter()] [ValidateNotNullOrEmpty()]
         [String[]]$DnsServerIPAddress,
 
         [Parameter()] [ValidateSet('IPv4')]
-        [String]$AddressFamily = 'IPv4'
+        [String]$AddressFamily = 'IPv4',
+
+        [Parameter(Mandatory = $true)]
+        [bool]$ServerOption = $true
     )
 
 #region Input Validation
@@ -45,174 +48,28 @@ function Get-TargetResource
     Assert-Module -moduleName DHCPServer
     
     # Convert the ScopeID to be a valid IPAddress
-    $ScopeID = (Get-ValidIpAddress -ipString $ScopeID -AddressFamily $AddressFamily -parameterName 'ScopeID').ToString()
+    #$ScopeID = (Get-ValidIpAddress -ipString $ScopeID -AddressFamily $AddressFamily -parameterName 'ScopeID').ToString()
 
     # Test if the ScopeID is valid
-    $null = Get-DhcpServerv4Scope -ScopeId $ScopeID -ErrorAction SilentlyContinue -ErrorVariable err
-    if($err)
-    {
-        $errorMsg = $($LocalizedData.InvalidScopeIdMessage) -f $ScopeID
-        New-TerminatingError -errorId ScopeIdNotFound -errorMessage $errorMsg -errorCategory InvalidOperation
-    }
+    #$null = Get-DhcpServerv4Scope -ScopeId $ScopeID -ErrorAction SilentlyContinue -ErrorVariable err
+    #if($err)
+    #{
+    #    $errorMsg = $($LocalizedData.InvalidScopeIdMessage) -f $ScopeID
+    #    New-TerminatingError -errorId ScopeIdNotFound -errorMessage $errorMsg -errorCategory InvalidOperation
+    #}
 
 #endregion Input Validation
 
-    $ensure = 'Absent'
-    try
-    {
-        $dhcpOption = Get-DhcpServerv4OptionValue -ScopeID $ScopeID
-        if($dhcpOption)
-        {
-            $dnsDomain = (($dhcpOption | Where-Object Name -like 'DNS Domain Name').value)[0]
-            $ensure = 'Present'
-            $dnsServerIP = ($dhcpOption | Where-Object Name -like 'DNS Servers').value
-            $Router = ($dhcpOption | Where-Object OptionId -Like 3).value
-        }
-    }
-    catch
-    {
-    }
 
-    @{
-        ScopeID = $ScopeID
-        DnsDomain = $dnsDomain
-        AddressFamily = 'IPv4'
-        Ensure = $ensure
-        DnsServerIPAddress = $dnsServerIP
-        Router = $Router
-    }
+
+
 }
 
 function Set-TargetResource
-{
-    [CmdletBinding()]
-    param
-    (
-        [parameter(Mandatory = $true)]
-        [String]$ScopeID,
-
-        [Parameter()] [ValidateNotNullOrEmpty()]
-        [String[]]$DnsServerIPAddress,
-
-        [Parameter()] [ValidateNotNullOrEmpty()]
-        [String[]]$Router,
-
-        [Parameter()] [ValidateNotNullOrEmpty()]
-        [String]$DnsDomain,
-
-        [ValidateSet('IPv4')]
-        [String]$AddressFamily = 'IPv4',
-
-        [ValidateSet('Present','Absent')]
-        [String]$Ensure = 'Present'
-    )
-
-#region Input Validation
-    
-    # Array of valid IP Address
-    [String[]]$validDnSServer = @()
-
-    # Convert the ScopeID to be a valid IPAddress
-    $ScopeID = (Get-ValidIpAddress -ipString $ScopeID -AddressFamily $AddressFamily -parameterName 'ScopeID').ToString()
-
-    # Convert the input to be valid IPAddress
-    foreach ($dnsServerIp in $DnsServerIPAddress)
-    {
-        $validDnSServer += (Get-ValidIpAddress -ipString $dnsServerIp -AddressFamily $AddressFamily -parameterName 'DnsServerIPAddress').ToString()
-    }
-    $DnsServerIPAddress = $validDnSServer
-
-    # Array of valid IP Address
-    [String[]]$validRouter = @()
-
-    # Convert the input to be valid IPAddress
-    foreach ($routerIp in $Router)
-    {
-        $validRouter += (Get-ValidIpAddress -ipString $routerIp -AddressFamily $AddressFamily -parameterName 'Router').ToString()
-    }
-    $Router = $validRouter
-
-#endregion Input Validation
-
-    # Remove $AddressFamily and $debug from PSBoundParameters and pass it to validate-properties helper function
-    If($PSBoundParameters['Debug'])      {$null = $PSBoundParameters.Remove('Debug')}
-    If($PSBoundParameters['AddressFamily']){$null = $PSBoundParameters.Remove('AddressFamily')}
-
-    ValidateResourceProperties @PSBoundParameters -Apply
-}
+{}
 
 function Test-TargetResource
-{
-    [CmdletBinding()]
-    [OutputType([System.Boolean])]
-    param
-    (
-        [parameter(Mandatory = $true)]
-        [String]$ScopeID,
-
-        [Parameter()] [ValidateNotNullOrEmpty()]
-        [String[]]$DnsServerIPAddress,
-
-        [Parameter()] [ValidateNotNullOrEmpty()]
-        [String[]]$Router,
-
-        [Parameter()] [ValidateNotNullOrEmpty()]
-        [String]$DnsDomain,
-
-        [ValidateSet('IPv4')]
-        [String]$AddressFamily = 'IPv4',
-
-        [ValidateSet('Present','Absent')]
-        [String]$Ensure = 'Present'
-    )
-
-#region Input Validation
-
-    # Array of valid IP Address
-    [String[]]$validDnSServer = @()
-
-    # Check for DhcpServer module/role
-    Assert-Module -moduleName DHCPServer
-
-    # Convert the ScopeID to be a valid IPAddress
-    $ScopeID = (Get-ValidIpAddress -ipString $ScopeID -AddressFamily $AddressFamily -parameterName 'ScopeID').ToString()
-
-   # Array of valid IP Address
-    [String[]]$validDnSServer = @()
-    
-    # Convert the input to be valid IPAddress
-    foreach ($dnsServerIp in $DnsServerIPAddress)
-    {
-        $validDnSServer += (Get-ValidIpAddress -ipString $dnsServerIp -AddressFamily $AddressFamily -parameterName 'DnsServerIPAddress').ToString()
-    }
-    $DnsServerIPAddress = $validDnSServer
-
-    # Array of valid IP Address
-    [String[]]$validRouter = @()
-
-    # Convert the input to be valid IPAddress
-    foreach ($routerIp in $Router)
-    {
-        $validRouter += (Get-ValidIpAddress -ipString $routerIp -AddressFamily $AddressFamily -parameterName 'Router').ToString()
-    }
-    $Router = $validRouter
-
-    # Test if the ScopeID is valid
-    $null = Get-DhcpServerv4Scope -ScopeId $ScopeID -ErrorAction SilentlyContinue -ErrorVariable err
-    if($err)
-    {
-        $errorMsg = $($LocalizedData.InvalidScopeIdMessage) -f $ScopeID
-        New-TerminatingError -errorId ScopeIdNotFound -errorMessage $errorMsg -errorCategory InvalidOperation
-    }
-
-#endregion Input Validation
-
-    # Remove $AddressFamily and $debug from PSBoundParameters and pass it to validateProperties helper function
-    If($PSBoundParameters['Debug'])      {$null = $PSBoundParameters.Remove('Debug')}
-    If($PSBoundParameters['AddressFamily']){$null = $PSBoundParameters.Remove('AddressFamily')}
-
-    ValidateResourceProperties @PSBoundParameters
-}
+{}
 
 #region Helper function
 
