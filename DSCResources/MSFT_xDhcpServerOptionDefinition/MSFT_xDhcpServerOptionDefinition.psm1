@@ -18,14 +18,9 @@ function Get-TargetResource
 
 
     $ensure = 'Absent'
-    try
-    {
-        $dhcpServerOptionDefinition = Get-DhcpServerv4OptionDefinition -OptionId $OptionID -ErrorAction SilentlyContinue
-    }
-    catch
-    {
-    }
-
+ 
+    $dhcpServerOptionDefinition = Get-DhcpServerv4OptionDefinition -OptionId $OptionID -ErrorAction SilentlyContinue
+  
     @{
         OptionId = $OptionID
         Name =  $dhcpServerOptionDefinition.Name
@@ -65,7 +60,7 @@ function Set-TargetResource
         [String]$Ensure = 'Present',
         
         [ValidateNotNullOrEmpty()]
-        [string]$Vendorclass  #vendor class is case sensitive
+        [string]$Vendorclass
 
     )
         
