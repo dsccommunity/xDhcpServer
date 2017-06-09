@@ -15,7 +15,7 @@ function Get-TargetResource
         [string] $AsciiData,
         
         [AllowEmptyString()]
-        [string]$Description = "",
+        [string]$Description = '',
         
         [parameter(Mandatory)][ValidateSet('IPv4')]
         [String]$AddressFamily
@@ -23,13 +23,29 @@ function Get-TargetResource
     
     $DhcpServerClass = Get-DhcpServerv4Class -Name $Name -ErrorAction SilentlyContinue
 
-    @{
-        Name=$DhcpServerClass.Name
-        Type=$DhcpServerClass.Type
-        Data = $DhcpServerClass.AsciiData
-        Description = $DhcpServerClass.Description
-        AddressFamily = $AddressFamily
+    if ($DhcpServerClass)
+    {
+        $HashTable = @{
+        'Name'=$DhcpServerClass.Name
+        'Type'=$DhcpServerClass.Type
+        'AsciiData' = $DhcpServerClass.AsciiData
+        'Description' = $DhcpServerClass.Description
+        'AddressFamily' = 'IPv4'
+        }
     }
+    else
+    {
+        $HashTable = @{
+        'Name' = ''
+        'Type' = ''
+        'AsciiData' = ''
+        'Description' = ''
+        'AddressFamily' = ''
+        }
+    }
+
+    $HashTable
+
 }
 function Set-TargetResource
 {
@@ -48,7 +64,7 @@ function Set-TargetResource
         [string] $AsciiData,
         
         [AllowEmptyString()]
-        [string]$Description = "",
+        [string]$Description = '',
         
         [parameter(Mandatory)][ValidateSet('IPv4')]
         [String]$AddressFamily
@@ -100,7 +116,7 @@ function Test-TargetResource
         [string] $AsciiData,
         
         [AllowEmptyString()]
-        [string]$Description = "",
+        [string]$Description = '',
         
         [parameter(Mandatory)][ValidateSet('IPv4')]
         [String]$AddressFamily
@@ -147,6 +163,5 @@ function Test-TargetResource
             $result = $true
         }
     }
-
     $result
 }
