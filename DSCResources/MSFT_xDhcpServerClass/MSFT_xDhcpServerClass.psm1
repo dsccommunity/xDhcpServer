@@ -1,3 +1,12 @@
+Import-Module $PSScriptRoot\..\Helper.psm1 -Verbose:$false
+
+# Localized messages
+data LocalizedData
+{
+
+
+}
+
 function Get-TargetResource
 {
     param
@@ -20,7 +29,16 @@ function Get-TargetResource
         [parameter(Mandatory)][ValidateSet('IPv4')]
         [String]$AddressFamily
     )
-    
+
+
+#region Input Validation
+
+    # Check for DhcpServer module/role
+    Assert-Module -moduleName DHCPServer
+
+
+#endregion Input Validation
+
     $DhcpServerClass = Get-DhcpServerv4Class -Name $Name -ErrorAction SilentlyContinue
 
     if ($DhcpServerClass)
@@ -47,6 +65,11 @@ function Get-TargetResource
     $HashTable
 
 }
+
+
+
+
+
 function Set-TargetResource
 {
     param

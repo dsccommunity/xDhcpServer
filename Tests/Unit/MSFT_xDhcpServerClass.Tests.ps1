@@ -31,6 +31,11 @@ try
     # (non-exported) code of a Script Module.
     InModuleScope $Global:DSCResourceName {
 
+        ## Mock missing functions
+        function Get-DhcpServerv4Class { }
+
+
+
         #region Pester Test Initialization
         
         $testClassName = 'Test Class';
@@ -46,6 +51,7 @@ try
             Type = $testClassType;
             AsciiData = $testAsciiData;
             AddressFamily = 'IPv4'
+            Description = $testClassDescription
             Ensure = $testEnsure
         }
         
@@ -63,65 +69,48 @@ try
         #region Function Get-TargetResource
         Describe "$($Global:DSCResourceName)\Get-TargetResource" {
             
-         #   Mock Assert-Module { };
+        Mock Assert-Module -ParameterFilter { $ModuleName -eq 'DHCPServer' } { }
 
 
-         function Get-DhcpServerv4Class {}
+        It 'Calls "Assert-Module" to ensure "DHCPServer" module is available' {
+            Mock Get-DhcpServerv4Class { return $fakeDhcpServerClass; }
+     
+            $result = Get-TargetResource @testParams;
+                           
+            Assert-MockCalled Assert-Module -ParameterFilter { $ModuleName -eq 'DHCPServer' } -Scope It;
+            }
+
 
         It 'Returns a "System.Collections.Hashtable" object type' {
             Mock Get-DhcpServerv4Class { return $fakeDhcpServerClass; }
                 $result = Get-TargetResource @testParams;
                 $result -is [System.Collections.Hashtable] | Should Be $true;
             }
-
         }
         #endregion Function Get-TargetResource
         
         #region Function Test-TargetResource
         Describe "$($Global:DSCResourceName)\Test-TargetResource" {
-            Mock Assert-Module { };
 
-            It 'Returns a [System.Boolean] type' {
-                Mock Get-DhcpServerInDC { return $fakeDhcpServersPresent; }
-                
-                $result = Test-TargetResource @testPresentParams;
-                
+            Mock Assert-Module -ParameterFilter { $ModuleName -eq 'DHCPServer' } { }
+
+            It 'Returns a "System.Boolean" object type' {
+                Mock Get-DhcpServerv4Class { return $fakeDhcpServerClass; }
+
+                $result = Test-TargetResource @testParams;
+
                 $result -is [System.Boolean] | Should Be $true;
             }
-            It 'Fails when DHCP Server authorization does not exist and Ensure is Present' {
-                Mock Get-DhcpServerInDC { return $fakeDhcpServersAbsent; }
+
+            It 'Passes when all parameters are correct' {
+                Mock Get-DhcpServerv4Class { return $fakeDhcpServerClass; }
                 
-                Test-TargetResource @testPresentParams | Should Be $false;
+                $result = Test-TargetResource @testParams;
+                
+                $result | Should Be $true;
             }
-            It 'Fails when DHCP Server authorization does exist and Ensure is Absent' {
-                Mock Get-DhcpServerInDC { return $fakeDhcpServersPresent; }
-                
-                Test-TargetResource @testAbsentParams | Should Be $false;
-            }
-            It 'Fails when DHCP Server authorization does exist, Ensure is Present but DnsName is wrong' {
-                Mock Get-DhcpServerInDC { return $fakeDhcpServersMismatchDnsName; }
-                
-                Test-TargetResource @testPresentParams | Should Be $false;
-            }
-            It 'Fails when DHCP Server authorization does exist, Ensure is Present but IPAddress is wrong' {
-                Mock Get-DhcpServerInDC { return $fakeDhcpServersMismatchIPAddress; }
-                
-                Test-TargetResource @testPresentParams | Should Be $false;
-            }
-            It 'Passes when DHCP Server authorization does exist and Ensure is Present' {
-                Mock Get-DhcpServerInDC { return $fakeDhcpServersPresent; }
-                
-                $result = Test-TargetResource @testPresentParams
-                
-                $result -is [System.Boolean] | Should Be $true;
-            }
-            It 'Passes when DHCP Server authorization does not exist and Ensure is Absent' {
-                Mock Get-DhcpServerInDC { return $fakeDhcpServersAbsent; }
-                
-                $result = Test-TargetResource @testAbsentParams
-                
-                $result -is [System.Boolean] | Should Be $true;
-            }
+
+   
         
         }
         #endregion Function Test-TargetResource 
