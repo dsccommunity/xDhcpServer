@@ -3,8 +3,12 @@ Import-Module $PSScriptRoot\..\Helper.psm1 -Verbose:$false
 # Localized messages
 data LocalizedData
 {
-
-
+    # culture="en-US"
+    ConvertFrom-StringData @'
+    SettingClassIDMessage     = Setting DHCP Server Class {0}
+    AddingClassIDMessage      = Adding DHCP Server Class {0}
+    RemovingClassIDMessage    = Removing DHCP Server Class {0}
+'@
 }
 
 function Get-TargetResource
@@ -68,8 +72,6 @@ function Get-TargetResource
 
 
 
-
-
 function Set-TargetResource
 {
     param
@@ -103,14 +105,16 @@ function Set-TargetResource
         if ($DhcpServerClass)
         {
             #if it exists we use the set verb
-            Write-Verbose "Setting DHCP Server Class $Name"
+            $scopeIDMessage = $($LocalizedData.SettingClassIDMessage) -f $Name
+            Write-Verbose -Message $scopeIDMessage
             set-DhcpServerv4Class -Name $Name -Type $Type -Data $AsciiData -Description $Description
         }
 
         #class not exists
         else
         {
-            Write-Verbose "Adding DHCP Server Class $Name"
+            $scopeIDMessage = $($LocalizedData.AddingClassIDMessage) -f $Name
+            Write-Verbose -Message $scopeIDMessage
             Add-DhcpServerv4Class -Name $Name -Type $Type -Data $AsciiData -Description $Description
         }
     }
@@ -118,7 +122,8 @@ function Set-TargetResource
     #ensure = absent
     else
     {
-        Write-Verbose "Removing DHCP Server Class $Name"
+        $scopeIDMessage = $($LocalizedData.RemovingClassIDMessage) -f $Name
+        Write-Verbose -Message $scopeIDMessage
         Remove-DhcpServerv4Class -Name $Name -Type $Type
     }
 }
