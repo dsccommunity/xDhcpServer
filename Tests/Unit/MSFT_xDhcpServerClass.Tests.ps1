@@ -33,6 +33,9 @@ try
 
         ## Mock missing functions
         function Get-DhcpServerv4Class { }
+        function Add-DhcpServerv4Class { }
+        function Set-DhcpServerv4Class { }
+        function Remove-DhcpServerv4Class { }
 
 
 
@@ -52,7 +55,7 @@ try
             AsciiData = $testAsciiData;
             AddressFamily = 'IPv4'
             Description = $testClassDescription
-            Ensure = $testEnsure
+            #Ensure = $testEnsure
         }
         
         $fakeDhcpServerClass = [PSCustomObject] @{
@@ -75,7 +78,7 @@ try
         It 'Calls "Assert-Module" to ensure "DHCPServer" module is available' {
             Mock Get-DhcpServerv4Class { return $fakeDhcpServerClass; }
      
-            $result = Get-TargetResource @testParams;
+            $result = Get-TargetResource @testParams -Ensure Present;
                            
             Assert-MockCalled Assert-Module -ParameterFilter { $ModuleName -eq 'DHCPServer' } -Scope It;
             }
@@ -83,7 +86,7 @@ try
 
         It 'Returns a "System.Collections.Hashtable" object type' {
             Mock Get-DhcpServerv4Class { return $fakeDhcpServerClass; }
-                $result = Get-TargetResource @testParams;
+                $result = Get-TargetResource @testParams -Ensure Present;
                 $result -is [System.Collections.Hashtable] | Should Be $true;
             }
         }
@@ -97,7 +100,7 @@ try
             It 'Returns a "System.Boolean" object type' {
                 Mock Get-DhcpServerv4Class { return $fakeDhcpServerClass; }
 
-                $result = Test-TargetResource @testParams;
+                $result = Test-TargetResource @testParams -Ensure Present;
 
                 $result -is [System.Boolean] | Should Be $true;
             }
@@ -105,65 +108,45 @@ try
             It 'Passes when all parameters are correct' {
                 Mock Get-DhcpServerv4Class { return $fakeDhcpServerClass; }
                 
-                $result = Test-TargetResource @testParams;
+                $result = Test-TargetResource @testParams -Ensure Present;
                 
                 $result | Should Be $true;
             }
-
-   
         
         }
         #endregion Function Test-TargetResource 
 
         #region Function Set-TargetResource
- <#       Describe "$($Global:DSCResourceName)\Set-TargetResource" {
-            Mock Assert-Module { };
+        Describe "$($Global:DSCResourceName)\Set-TargetResource" {
+           
+            Mock Assert-Module -ParameterFilter { $ModuleName -eq 'DHCPServer' } { }
 
-            It 'Calls Add-DhcpServerInDc when Ensure is Present' {
-                Mock Add-DhcpServerInDC { }
+            It 'Calls "Add-DhcpServerv4Class" when "Ensure" = "Present" and class does not exist' {
+                Mock Set-DhcpServerv4Class { }
+                Mock Add-DhcpServerv4Class { }
                 
-                Set-TargetResource @testPresentParams;
+                Set-TargetResource @testParams -Ensure Present;
                 
-                Assert-MockCalled Add-DhcpServerInDC -Scope It;
-            }
-            It 'Calls Remove-DhcpServerInDc when Ensure is Present' {
-                Mock Get-DhcpServerInDC { return $fakeDhcpServersPresent; }
-                Mock Remove-DhcpServerInDC { }
-                
-                Set-TargetResource @testAbsentParams;
-                
-                Assert-MockCalled Remove-DhcpServerInDC -Scope It;
+                Assert-MockCalled Add-DhcpServerv4Class -Scope It;
             }
 
-        }
-        #endregion Function Set-TargetResource
-        
-        #region Function Get-IPv4Address
-        Describe "$($Global:DSCResourceName)\Get-IPv4Address" {
+
+            It 'Calls "Remove-DhcpServerv4Class" when "Ensure" = "Absent" and scope does exist' {
             
-            It 'Returns a IPv4 address' {
-                $result = Get-IPv4Address;
+            Mock Get-DhcpServerv4Class { return $fakeDhcpServerClass; }
+            Mock Remove-DhcpServerv4Class { }
                 
-                $result -match '\d+\.\d+\.\d+\.\d+' | Should Be $true;
-            }
-            
-        }
-        #endregion Function Get-IPv4Address
-        
-        #region Function Get-Hostname
-        Describe "$($Global:DSCResourceName)\Get-Hostname" {
-            
-            It 'Returns at least the current NetBIOS name' {
-                $hostname = [System.Net.Dns]::GetHostname();
+            Set-TargetResource @testParams -Ensure 'Absent';
                 
-                $result = Get-Hostname;
-            
-                $result -match $hostname | Should Be $true;
+            Assert-MockCalled Remove-DhcpServerv4Class -Scope It;
+
             }
-            
+
+        #End region Function Set-TargetResource
+
+
         }
-        #endregion Function Get-Hostname
-        #>
+        
     
     } #end InModuleScope
 

@@ -17,6 +17,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 * **xDhcpServerReservation** sets lease assignments used to ensure that a specified client on a subnet can always use the same IP address.
 * **xDhcpServerOptions** currently supports setting DNS domain and DNS Server IP Address options at a DHCP server scope level.
 * **xDhcpServerAuthorization** authorizes a DHCP in Active Directory.
+* **xDhcpServerClass manage DHCP Classes (Vendor or User).
  * *This resource must run on an Active Directory domain controller.*
 
 ### xDhcpServerScope
@@ -55,9 +56,20 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 * **DnsName**: FQDN of the server to authorize. If not specified, it defaults to the local hostname of the enacting node.
 * **IPAddress**: IP v4 address of the server to authorized. If not specified, it default to the first IPv4 address of the enacting node.
 
+### xDhcpServerClass
+        
+ * **Name**: Class Name
+ * **Type**: Class type, Vendor or User
+ * **AsciiData**: Class Data, in Ascii formated string
+ * **AddressFamily**: Currently should be "IPv4"
+ * **Description**: Class Description
+ * **Ensure**: Whether class should be set or removed
+
 ## Versions
 
 ### Unreleased
+added xDhcpServerClass
+
 
 ### 1.5.0.0
 * Converted AppVeyor.yml to pull Pester from PSGallery instead of Chocolatey
