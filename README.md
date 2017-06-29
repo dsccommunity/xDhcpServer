@@ -185,7 +185,7 @@ configuration Sample_Remote_xDhcpServerAuthorization
         IPAddress = '192.168.0.1'
     }
 }
-
+```
 
 ### Adding a DHCP Server class
 ```powershell
