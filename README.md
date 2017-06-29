@@ -188,8 +188,8 @@ configuration Sample_Remote_xDhcpServerAuthorization
 ```
 
 ### Adding a DHCP Server class
-```powershell
 
+```powershell
 configuration Sample_DHCPServerClass
 {
 	Import-DscResource -module xDHCpServer
