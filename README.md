@@ -58,7 +58,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 
 ### xDhcpServerClass
         
- * **Name**: Class Name.
+ * **Name**: DHCP Class Name.
  * **Type**: Class type, should be Vendor or User.
  * **AsciiData**: Class Data in a ascii formated string.
  * **AddressFamily**: Currently should be "IPv4".
@@ -184,5 +184,23 @@ configuration Sample_Remote_xDhcpServerAuthorization
         DnsName = 'servertoauthorize.contoso.com'
         IPAddress = '192.168.0.1'
     }
+}
+
+
+### Adding a DHCP Server class
+```powershell
+
+configuration Sample_DHCPServerClass
+{
+	Import-DscResource -module xDHCpServer
+    xDhcpServerClass DHCPServerClass
+	{
+        ensure = 'Present'
+        Name = 'VendorClass'
+        Type = 'Vendor'
+        AsciiData = 'sampledata'
+        AddressFamily = 'IPv4'
+        Description = 'Vendor Class Description' 
+     }
 }
 ```
