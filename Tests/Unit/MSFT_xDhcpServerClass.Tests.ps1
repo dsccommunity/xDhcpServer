@@ -133,19 +133,27 @@ try
 
             It 'Calls "Remove-DhcpServerv4Class" when "Ensure" = "Absent" and scope does exist' {
             
-            Mock Get-DhcpServerv4Class { return $fakeDhcpServerClass; }
-            Mock Remove-DhcpServerv4Class { }
+                Mock Get-DhcpServerv4Class { return $fakeDhcpServerClass; }
+                Mock Remove-DhcpServerv4Class { }
                 
-            Set-TargetResource @testParams -Ensure 'Absent';
+                Set-TargetResource @testParams -Ensure 'Absent';
                 
-            Assert-MockCalled Remove-DhcpServerv4Class -Scope It;
-
+                Assert-MockCalled Remove-DhcpServerv4Class -Scope It;
             }
 
-        #End region Function Set-TargetResource
+
+            It 'Calls Set-DhcpServerv4Class when asciidata changes' {
+            
+                   Mock Get-DhcpServerv4Class { return $fakeDhcpServerClass; }
+                   Mock Set-DhcpServerv4Class { }
+                   $testParams.AsciiData = 'differentdata'
+                   Set-TargetResource @testParams -Ensure 'Present';
+
+                   Assert-MockCalled Set-DhcpServerv4Class -Scope It;
+            }
 
 
-        }
+        }#End region Function Set-TargetResource
         
     
     } #end InModuleScope

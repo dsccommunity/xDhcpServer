@@ -34,12 +34,10 @@ function Get-TargetResource
         [String]$AddressFamily
     )
 
-
 #region Input Validation
 
     # Check for DhcpServer module/role
     Assert-Module -moduleName DHCPServer
-
 
 #endregion Input Validation
 
@@ -65,12 +63,8 @@ function Get-TargetResource
         'AddressFamily' = ''
         }
     }
-
     $HashTable
-
 }
-
-
 
 function Set-TargetResource
 {
@@ -94,7 +88,6 @@ function Set-TargetResource
         [parameter(Mandatory)][ValidateSet('IPv4')]
         [String]$AddressFamily
     )
-        
 
     $DhcpServerClass = Get-DhcpServerv4Class $Name -ErrorAction SilentlyContinue
     
@@ -175,7 +168,6 @@ function Test-TargetResource
             $result = $false        
         }
     }
-    
     
     #ensure = absent
     else

@@ -13,7 +13,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 
 ## Resources
 
-* **xDhcpServerClass** manage DHCP Classes (Vendor or User).
+* **xDhcpServerClass** manages DHCP Classes (Vendor or User).
 * **xDhcpServerScope** sets a scope for consecutive range of possible IP addresses that the DHCP server can lease to clients on a subnet.
 * **xDhcpServerReservation** sets lease assignments used to ensure that a specified client on a subnet can always use the same IP address.
 * **xDhcpServerOptions** currently supports setting DNS domain and DNS Server IP Address options at a DHCP server scope level.
@@ -58,12 +58,12 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 
 ### xDhcpServerClass
         
- * **Name**: Class Name
- * **Type**: Class type, Vendor or User
- * **AsciiData**: Class Data, in Ascii formated string
- * **AddressFamily**: Currently should be "IPv4"
- * **Description**: Class Description
- * **Ensure**: Whether class should be set or removed
+ * **Name**: Class Name.
+ * **Type**: Class type, should be Vendor or User.
+ * **AsciiData**: Class Data in a ascii formated string.
+ * **AddressFamily**: Currently should be "IPv4".
+ * **Description**: Class Description.
+ * **Ensure**: Whether class should be set or removed.
 
 ## Versions
 
