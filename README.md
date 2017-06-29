@@ -192,7 +192,7 @@ configuration Sample_Remote_xDhcpServerAuthorization
 ```powershell
 configuration Sample_DHCPServerClass
 {
-	Import-DscResource -module xDHCpServer
+    Import-DscResource -module xDHCpServer
     xDhcpServerClass DHCPServerClass
 	{
         ensure = 'Present'
