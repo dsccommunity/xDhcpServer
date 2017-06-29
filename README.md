@@ -194,13 +194,13 @@ configuration Sample_DHCPServerClass
 {
     Import-DscResource -module xDHCpServer
     xDhcpServerClass DHCPServerClass
-	{
+    {
         ensure = 'Present'
         Name = 'VendorClass'
         Type = 'Vendor'
         AsciiData = 'sampledata'
         AddressFamily = 'IPv4'
         Description = 'Vendor Class Description' 
-     }
+    }
 }
 ```
