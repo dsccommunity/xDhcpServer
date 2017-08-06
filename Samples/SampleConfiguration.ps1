@@ -39,4 +39,14 @@
          Router = '192.168.1.1'
          DependsOn = @('[WindowsFeature]DHCP') 
      } 
+
+     xDhcpServerclass DHCPServerClass
+     {
+        ensure = 'Present'
+        Name = 'VendorClass'
+        Type = 'Vendor'
+        AsciiData = 'sampledata'
+        AddressFamily = 'IPv4'
+        Description = 'Vendor Class Description' 
+     }
  } 

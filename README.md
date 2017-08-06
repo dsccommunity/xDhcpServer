@@ -13,6 +13,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 
 ## Resources
 
+* **xDhcpServerClass** manages DHCP Classes (Vendor or User).
 * **xDhcpServerScope** sets a scope for consecutive range of possible IP addresses that the DHCP server can lease to clients on a subnet.
 * **xDhcpServerReservation** sets lease assignments used to ensure that a specified client on a subnet can always use the same IP address.
 * **xDhcpServerOptions** currently supports setting DNS domain and DNS Server IP Address options at a DHCP server scope level.
@@ -55,9 +56,20 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 * **DnsName**: FQDN of the server to authorize. If not specified, it defaults to the local hostname of the enacting node.
 * **IPAddress**: IP v4 address of the server to authorized. If not specified, it default to the first IPv4 address of the enacting node.
 
+### xDhcpServerClass
+        
+ * **Name**: DHCP Class Name.
+ * **Type**: Class type, should be Vendor or User.
+ * **AsciiData**: Class Data in a ascii formated string.
+ * **AddressFamily**: Currently should be "IPv4".
+ * **Description**: Class Description.
+ * **Ensure**: Whether class should be set or removed.
+
 ## Versions
 
 ### Unreleased
+added xDhcpServerClass
+
 
 ### 1.5.0.0
 * Converted AppVeyor.yml to pull Pester from PSGallery instead of Chocolatey
@@ -171,6 +183,24 @@ configuration Sample_Remote_xDhcpServerAuthorization
         Ensure = 'Present'
         DnsName = 'servertoauthorize.contoso.com'
         IPAddress = '192.168.0.1'
+    }
+}
+```
+
+### Adding a DHCP Server class
+
+```powershell
+configuration Sample_DHCPServerClass
+{
+    Import-DscResource -module xDHCpServer
+    xDhcpServerClass DHCPServerClass
+    {
+        ensure = 'Present'
+        Name = 'VendorClass'
+        Type = 'Vendor'
+        AsciiData = 'sampledata'
+        AddressFamily = 'IPv4'
+        Description = 'Vendor Class Description' 
     }
 }
 ```
