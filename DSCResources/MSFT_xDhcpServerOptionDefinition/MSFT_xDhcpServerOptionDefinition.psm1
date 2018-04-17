@@ -1,11 +1,15 @@
+Import-Module $PSScriptRoot\..\Helper.psm1 -Verbose:$false
+
 # Localized messages
 data LocalizedData
 {
     # culture="en-US"
     ConvertFrom-StringData @'
-   # SettingClassIDMessage     = Setting DHCP Server Class {0}
-   # AddingClassIDMessage      = Adding DHCP Server Class {0}
-   # RemovingClassIDMessage    = Removing DHCP Server Class {0}
+    GettingOptionDefinitionIDMessage = Getting DHCP Server Option Definition {0}
+    RemovingOptionDefinitionIDMessage    = Removing DHCP Server Option Definition {0}
+    RecreatingOptionDefinitionIDMessage = Recreating {0}
+    AddingOptionDefinitionIDMessage = Adding DHCP server option definition {0}
+    SettingOptionDefinitionIDMessage = "Setting DHCP server option definition {0}"
 '@
 }
 
@@ -30,11 +34,11 @@ function Get-TargetResource
         [AllowEmptyString()]
         [String]$VendorClass,
 
-        [Parameter(mandatory)][ValidateSet('Byte','Word','DWord','DWordDword','IPAddress','String','BinaryData','EncapsulatedData','IPv6Address')]
+        [Parameter(mandatory)][ValidateSet('Byte','Word','DWord','DWordDword','IPv4Address','String','BinaryData','EncapsulatedData')]
         [String] $Type,
 
         [Parameter()]
-        [SwitchParameter]$MultiValued,
+        [Bool]$MultiValued,
 
         [Parameter()]
         [String[]]$DefaultValue,
@@ -83,32 +87,34 @@ function Get-TargetResource
 }
 function Set-TargetResource
 {
-    [CmdletBinding()]
     param
     (
-        [parameter(Mandatory)] [ValidateNotNullOrEmpty()]
+        [Parameter(mandatory)][ValidateSet('Present','Absent')]
+        [String] $Ensure,
+
+        [Parameter(mandatory)][Validaterange(1,255)]
+        [UInt32]$OptionID,
+        
+        [Parameter(mandatory)][ValidateNotNullOrEmpty()]
         [String]$Name,
 
-        [Parameter(Mandatory)] [ValidateNotNullOrEmpty()]
-        [UInt32]$OptionID,
+        [AllowEmptyString()]
+        [String]$Description = '',
 
-        [ValidateSet('Byte','Word','DWord','DWordDWord','IPv4Address','String','BinaryData','EncapsulatedData')]
-        [String]$Type,
+        [AllowEmptyString()]
+        [String]$VendorClass,
 
-        [ValidateNotNullOrEmpty()]
-        [string]$Description,
-        
-        [switch]$MultiValued,
+        [Parameter(mandatory)][ValidateSet('Byte','Word','DWord','DWordDword','IPv4Address','String','BinaryData','EncapsulatedData')]
+        [String] $Type,
 
-        [ValidateSet('IPv4')]
-        [String]$AddressFamily = 'IPv4',
+        [Parameter()]
+        [Bool]$MultiValued,
 
-        [ValidateSet('Present','Absent')]
-        [String]$Ensure = 'Present',
-        
-        [ValidateNotNullOrEmpty()]
-        [string]$Vendorclass
+        [Parameter()]
+        [String[]]$DefaultValue,
 
+        [Parameter()] [ValidateSet('IPv4')]
+        [String]$AddressFamily = 'IPv4'
     )
         
     #reading the dhcp option
@@ -120,17 +126,18 @@ function Set-TargetResource
         #testing if exists
         if ($dhcpServerOptionDefinition)
         {
-            #if it exists and  any of multivalued or type is being changed remote then re-add the option
+            #if it exists and  any of multivalued, type or vendorclass is being changed remove then re-add the whole option definition
             if (($dhcpServerOptionDefinition.type -ne $Type) -or ($dhcpServerOptionDefinition.MultiValued -ne $MultiValued) -or ($dhcpServerOptionDefinition.VendorClass -ne $Vendorclass))
             {
-                Write-Verbose "Recreating option $OptionID because of changed type or multivalued"
+                
+                Write-Verbose "($LocalizedData.RecreatingptionDefinitionIDMessage) $OptionID"
                 Remove-DhcpServerv4OptionDefinition -OptionId $OptionID
                 Add-DhcpServerv4OptionDefinition -OptionId $OptionID -name $Name -Type $Type -Description $Description -MultiValued:$MultiValued -VendorClass $Vendorclass
             }
             else
             {
                 #if option exists we need only to adjust the parameters
-                Write-Verbose "Modifying DHCP Option Definition $OptionID"
+                Write-Verbose "($LocalizedData.SettingOptionDefinitionIDMessage) $OptionID"
                 set-DhcpServerv4OptionDefinition -OptionId $OptionID -name $Name -Description $Description
             }
         }
@@ -138,7 +145,7 @@ function Set-TargetResource
         #if option does not exist we need to add it
         else
         {
-            write-verbose "Adding DHCP Option Definition $OptionID"
+            Write-Verbose "($LocalizedData.AddingOptionDefinitionIDMessage) $OptionID"
             Add-DhcpServerv4OptionDefinition -OptionId $OptionID -name $Name -Type $Type -Description $Description -MultiValued:$MultiValued -VendorClass $Vendorclass
         }
     }
@@ -148,7 +155,8 @@ function Set-TargetResource
     {
     if ($dhcpServerOptionDefinition)
         {
-            Write-Verbose "Removing option $OptionID"
+            
+            Write-Verbose "$($LocalizedData.RemovingOptionDefinitionIDMessage) $OptionID"
             Remove-DhcpServerv4OptionDefinition -OptionId $OptionID
         }
     
@@ -173,11 +181,11 @@ function Test-TargetResource
         [AllowEmptyString()]
         [String]$VendorClass,
 
-        [Parameter(mandatory)][ValidateSet('Byte','Word','DWord','DWordDword','IPAddress','String','BinaryData','EncapsulatedData','IPv6Address')]
+        [Parameter(mandatory)][ValidateSet('Byte','Word','DWord','DWordDword','IPv4Address','String','BinaryData','EncapsulatedData')]
         [String] $Type,
 
         [Parameter()]
-        [SwitchParameter]$MultiValued,
+        [Bool]$MultiValued,
 
         [Parameter()]
         [String[]]$DefaultValue,
@@ -193,7 +201,7 @@ function Test-TargetResource
     #endregion Input Validation
 
     #geting the dhcp option definition
-    Write-Verbose "Getting DHCP ServerOptionDefinition $OptionID"
+    Write-Verbose "$($LocalizedData.GettingOptionDefinitionMessage) $OptionID"
     $DhcpServerOptionDefinition = Get-DhcpServerv4OptionDefinition -OptionId $OptionID -ErrorAction SilentlyContinue
     
     #testing for Ensure = Present
@@ -232,6 +240,5 @@ function Test-TargetResource
             $result = $true
         }
     }
-    
 $result
 }
