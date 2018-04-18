@@ -64,14 +64,28 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
  * **AddressFamily**: Currently should be "IPv4".
  * **Description**: Class Description.
  * **Ensure**: Whether class should be set or removed.
+ 
+ ### xDhcpServerOptionDefinition
+ 
+ *  **OptionID**: Option ID, should be a number between 1 and 255.
+ *  **VendorClass**: Vendor class.
+ *  **Name**: Option name.
+ *  **Type**: Option type, should be one of: "Byte", "Word", "Dword", "DwordDword", "IPv4Address", "String", "BinaryData", "EncapsulatedData". 
+ *  **Multivalued**: Whether option is multivalued or not.
+ *  **Description**: Option description.
+ *  **AddressFamily**: Currently should be "IPv4".
+ *  **Ensure**: Whether option should be set or removed.
 
 ## Versions
 
 ### Unreleased
 
+### 1.7.0.0
+
+Added xDhcpServerOptionDefinition
+
 ### 1.6.0.0
 added xDhcpServerClass
-
 
 ### 1.5.0.0
 * Converted AppVeyor.yml to pull Pester from PSGallery instead of Chocolatey

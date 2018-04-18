@@ -30,8 +30,7 @@ try
         $AddressFamily = 'IPv4'
         $Description = 'Test Description'
         $Type = 'IPv4Address'
-        $DefaultValue = ''
-        $VendorClass = ''
+        $VendorClass = ""
         $MultiValued = $false
         
         $testParams = @{
@@ -40,7 +39,6 @@ try
             AddressFamily = $AddressFamily
             Description = $Description
             Type = $Type
-            DefaultValue = $DefaultValue
             VendorClass = $VendorClass
             MultiValued = $MultiValued
         }
@@ -51,7 +49,6 @@ try
             AddressFamily = $AddressFamily
             Description = $Description
             Type = $Type
-            DefaultValue = $DefaultValue
             VendorClass = $VendorClass
             MultiValued = $MultiValued
             }
@@ -120,7 +117,7 @@ try
 
             It 'Calls "Add-DhcpServerv4OptionDefinition" when "Ensure" = "Present" and definition does not exist' {
                 
-                Set-TargetResource -OptionID 2 -Name "name test"  -Type Byte -Ensure 'Present'
+                Set-TargetResource -OptionID 2 -Name "name test" -AddressFamily IPv4 -Type Byte -Ensure 'Present'
             
                 Assert-MockCalled Add-DhcpServerv4OptionDefinition -Scope It
             }
@@ -132,7 +129,7 @@ try
                 Assert-MockCalled -CommandName Remove-DhcpServerv4OptionDefinition -Scope It
             }
 
-            it 'Calls Set-DhcpServerv4OptionDefinition when "Ensure" = "Present" and Name, Description or DefaultValue has changed' {
+            it 'Calls Set-DhcpServerv4OptionDefinition when "Ensure" = "Present" and Name or Description has changed' {
                
                 $TempParams = $testParams.Clone() 
                 $testParams.Description = 'New Description'

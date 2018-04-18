@@ -5,14 +5,18 @@ data LocalizedData
 {
     # culture="en-US"
     ConvertFrom-StringData @'
-    GettingOptionDefinitionIDMessage = Getting DHCP Server Option Definition {0}
-    RemovingOptionDefinitionIDMessage    = Removing DHCP Server Option Definition {0}
-    RecreatingOptionDefinitionIDMessage = Recreating {0}
-    AddingOptionDefinitionIDMessage = Adding DHCP server option definition {0}
-    SettingOptionDefinitionIDMessage = "Setting DHCP server option definition {0}"
+GettingOptionDefinitionIDMessage     = Getting DHCP Server Option Definition {0} with Vendor Class "{1}"
+TestingOptionDefinitionIDMessage     = Begin testing DHCP Server Option Definition {0} with Vendor Class "{1}"
+RemovingOptionDefinitionIDMessage    = Removing DHCP Server Option Definition {0}
+RecreatingOptionDefinitionIDMessage  = Recreating {0}
+AddingOptionDefinitionIDMessage      = Adding DHCP server option definition {0}
+SettingOptionDefinitionIDMessage     = Setting DHCP server option definition {0} with Vendor Class "{1}"
+FoundOptionDefinitionIDMessage       = Found DHCP server option Definition {0} with Vendor Class "{1}"
+ComparingOptionDefinitionIDMessage   = Comparing Option Definition {0}, Vendor Class "{1}" with existing definition
+ExactMatchOptionDefinitionIDMessage  = Matched Option Definition {0} Vendor Class "{1}" with existing definition
+NotMatchOptionDefinitionIDMessage    = Not matched all parameters Option Definition {0} Vendor Class "{1}", should adjust
 '@
 }
-
 
 
 function Get-TargetResource
@@ -23,30 +27,26 @@ function Get-TargetResource
         [String] $Ensure,
 
         [Parameter(mandatory)][Validaterange(1,255)]
-        [UInt32]$OptionID,
+        [UInt32] $OptionID,
         
         [Parameter(mandatory)][ValidateNotNullOrEmpty()]
-        [String]$Name,
-
-        [AllowEmptyString()]
-        [String]$Description = '',
-
-        [AllowEmptyString()]
-        [String]$VendorClass,
+        [String] $Name,
 
         [Parameter(mandatory)][ValidateSet('Byte','Word','DWord','DWordDword','IPv4Address','String','BinaryData','EncapsulatedData')]
         [String] $Type,
 
-        [Parameter()]
-        [Bool]$MultiValued,
+        [AllowEmptyString()]
+        [String] $Description = '',
+
+        [AllowEmptyString()]
+        [String] $VendorClass = '',
 
         [Parameter()]
-        [String[]]$DefaultValue,
+        [Bool] $MultiValued,
 
-        [Parameter()] [ValidateSet('IPv4')]
-        [String]$AddressFamily = 'IPv4'
+        [Parameter(mandatory)] [ValidateSet('IPv4')]
+        [String] $AddressFamily
     )
-
 
     #region Input Validation
 
@@ -55,7 +55,7 @@ function Get-TargetResource
 
     #endregion Input Validation
      
-    $DhcpServerOptionDefinition = Get-DhcpServerv4OptionDefinition -OptionId $OptionID -ErrorAction SilentlyContinue
+    $DhcpServerOptionDefinition = Get-DhcpServerv4OptionDefinition -OptionId $OptionID -VendorClass $VendorClass -ErrorAction SilentlyContinue
   
     if ($DhcpServerOptionDefinition)
     {
@@ -65,7 +65,6 @@ function Get-TargetResource
         AddressFamily = 'IPv4'
         Description = $DhcpServerOptionDefinition.Description
         Type = $DhcpServerOptionDefinition.Type
-        DefaultValue = $DhcpServerOptionDefinition.DefaultValue
         VendorClass = $DhcpServerOptionDefinition.VendorClass
         MultiValued = $DhcpServerOptionDefinition.MultiValued
         }
@@ -78,7 +77,6 @@ function Get-TargetResource
         AddressFamily = ''
         Description = ''
         Type = ''
-        DefaultValue = ''
         VendorClass = ''
         MultiValued = ''
         }
@@ -93,32 +91,29 @@ function Set-TargetResource
         [String] $Ensure,
 
         [Parameter(mandatory)][Validaterange(1,255)]
-        [UInt32]$OptionID,
+        [UInt32] $OptionID,
         
         [Parameter(mandatory)][ValidateNotNullOrEmpty()]
-        [String]$Name,
+        [String] $Name,
 
         [AllowEmptyString()]
-        [String]$Description = '',
+        [String] $Description = '',
 
         [AllowEmptyString()]
-        [String]$VendorClass,
+        [String] $VendorClass = '',
 
         [Parameter(mandatory)][ValidateSet('Byte','Word','DWord','DWordDword','IPv4Address','String','BinaryData','EncapsulatedData')]
         [String] $Type,
 
         [Parameter()]
-        [Bool]$MultiValued,
+        [Bool] $MultiValued,
 
-        [Parameter()]
-        [String[]]$DefaultValue,
-
-        [Parameter()] [ValidateSet('IPv4')]
-        [String]$AddressFamily = 'IPv4'
+        [Parameter(mandatory)] [ValidateSet('IPv4')]
+        [String] $AddressFamily
     )
         
     #reading the dhcp option
-    $dhcpServerOptionDefinition = Get-DhcpServerv4OptionDefinition -OptionId $OptionID -ErrorAction SilentlyContinue
+    $dhcpServerOptionDefinition = Get-DhcpServerv4OptionDefinition -OptionId $OptionID -VendorClass $VendorClass -ErrorAction SilentlyContinue
 
     #testing for present
     if ($Ensure -eq 'Present')
@@ -130,22 +125,25 @@ function Set-TargetResource
             if (($dhcpServerOptionDefinition.type -ne $Type) -or ($dhcpServerOptionDefinition.MultiValued -ne $MultiValued) -or ($dhcpServerOptionDefinition.VendorClass -ne $Vendorclass))
             {
                 
-                Write-Verbose "($LocalizedData.RecreatingptionDefinitionIDMessage) $OptionID"
+                $scopeIDMessage = $($LocalizedData.RecreatingOptionDefinitionIDMessage) -f $OptionID
+                Write-Verbose -Message $scopeIDMessage
                 Remove-DhcpServerv4OptionDefinition -OptionId $OptionID
                 Add-DhcpServerv4OptionDefinition -OptionId $OptionID -name $Name -Type $Type -Description $Description -MultiValued:$MultiValued -VendorClass $Vendorclass
             }
             else
             {
                 #if option exists we need only to adjust the parameters
-                Write-Verbose "($LocalizedData.SettingOptionDefinitionIDMessage) $OptionID"
-                set-DhcpServerv4OptionDefinition -OptionId $OptionID -name $Name -Description $Description
+                $SettingIDMessage = $($LocalizedData.SettingOptionDefinitionIDMessage) -f $OptionID, $VendorClass
+                Write-Verbose -Message $SettingIDMessage
+                set-DhcpServerv4OptionDefinition -OptionId $OptionID -VendorClass $VendorClass -name $Name -Description $Description
             }
         }
 
         #if option does not exist we need to add it
         else
         {
-            Write-Verbose "($LocalizedData.AddingOptionDefinitionIDMessage) $OptionID"
+            $scopeIDMessage = $($LocalizedData.AddingOptionDefinitionIDMessage) -f $OptionID
+            Write-Verbose -Message $scopeIDMessage
             Add-DhcpServerv4OptionDefinition -OptionId $OptionID -name $Name -Type $Type -Description $Description -MultiValued:$MultiValued -VendorClass $Vendorclass
         }
     }
@@ -155,8 +153,8 @@ function Set-TargetResource
     {
     if ($dhcpServerOptionDefinition)
         {
-            
-            Write-Verbose "$($LocalizedData.RemovingOptionDefinitionIDMessage) $OptionID"
+            $scopeIDMessage = $($LocalizedData.RemovingOptionDefinitionIDMessage) -f $OptionID
+            Write-Verbose -Message $scopeIDMessage            
             Remove-DhcpServerv4OptionDefinition -OptionId $OptionID
         }
     
@@ -170,28 +168,25 @@ function Test-TargetResource
         [System.String] $Ensure,
         
         [Parameter(mandatory)][Validaterange(1,255)]
-        [UInt32]$OptionID,
+        [UInt32] $OptionID,
         
         [Parameter(mandatory)][ValidateNotNullOrEmpty()]
-        [String]$Name,
+        [String] $Name,
 
         [AllowEmptyString()]
-        [String]$Description = '',
+        [String] $Description = '',
 
         [AllowEmptyString()]
-        [String]$VendorClass,
+        [String] $VendorClass = '',
 
         [Parameter(mandatory)][ValidateSet('Byte','Word','DWord','DWordDword','IPv4Address','String','BinaryData','EncapsulatedData')]
         [String] $Type,
 
         [Parameter()]
-        [Bool]$MultiValued,
+        [Bool] $MultiValued,
 
-        [Parameter()]
-        [String[]]$DefaultValue,
-
-        [Parameter()] [ValidateSet('IPv4')]
-        [String]$AddressFamily = 'IPv4'
+        [Parameter(mandatory)] [ValidateSet('IPv4')]
+        [String] $AddressFamily
     )
     
     #region Input Validation
@@ -200,24 +195,41 @@ function Test-TargetResource
     Assert-Module -moduleName DHCPServer
     #endregion Input Validation
 
+    $TestingIDMessage = $($LocalizedData.TestingOptionDefinitionIDMessage) -f $OptionID, $VendorClass
     #geting the dhcp option definition
-    Write-Verbose "$($LocalizedData.GettingOptionDefinitionMessage) $OptionID"
-    $DhcpServerOptionDefinition = Get-DhcpServerv4OptionDefinition -OptionId $OptionID -ErrorAction SilentlyContinue
+    Write-Verbose -Message $TestingIDMessage
+
+    $GettingIDMessage = $($LocalizedData.GettingOptionDefinitionIDMessage) -f $OptionID, $VendorClass
+    Write-Verbose -Message $GettingIDMessage
+    $DhcpServerOptionDefinition = Get-DhcpServerv4OptionDefinition -OptionId $OptionID -VendorClass $VendorClass -ErrorAction SilentlyContinue
     
+    if ($DhcpServerOptionDefinition)
+    {
+        $FoundIDMessage = $($LocalizedData.FoundOptionDefinitionIDMessage) -f $OptionID, $VendorClass
+        Write-Verbose $FoundIDMessage
+    }
+
     #testing for Ensure = Present
     if ($Ensure -eq 'Present')
     {
-
         #Testing if $$DhcpServerOptionDefinition is not null       
         if ($DhcpServerOptionDefinition)
         {
+            $ComparingIDMessage = $($LocalizedData.ComparingOptionDefinitionIDMessage) -f $OptionID, $VendorClass
+            Write-Verbose $ComparingIDMessage
+            
             #Since $DhcpServerOptionDefinition is not null compare all the Values
-            if (($DhcpServerOptionDefinition.OptionID -eq $OptionID) -and ($DhcpServerOptionDefinition.Name -eq $Name) -and ($DhcpServerOptionDefinition.Description -eq $Description) -and ($DhcpServerOptionDefinition.VendorClass -eq $VendorClass) -and ($DhcpServerOptionDefinition.Type -eq $Type) -and ($DhcpServerOptionDefinition.Multivalued -eq $MultiValued) -and ($DhcpServerOptionDefinition.Defaultvalue -eq $DefaultValue))
+            if (($DhcpServerOptionDefinition.OptionID -eq $OptionID) -and ($DhcpServerOptionDefinition.Name -eq $Name) -and ($DhcpServerOptionDefinition.Description -eq $Description) -and ($DhcpServerOptionDefinition.VendorClass -eq $VendorClass) -and ($DhcpServerOptionDefinition.Type -eq $Type) -and ($DhcpServerOptionDefinition.Multivalued -eq $MultiValued))
             {
+                $ExactMatchIDMessage = $($LocalizedData.ExactMatchOptionDefinitionIDMessage) -f $OptionID, $VendorClass
+                Write-Verbose $ExactMatchIDMessage
+
                 $result = $true
             }
             else
             {
+                $NotMatchIDMessage = $($LocalizedData.NotMatchOptionDefinitionIDMessage) -f $OptionID, $VendorClass
+                Write-Verbose $NotMatchIDMessage
                 $result = $false            
             }
         }
