@@ -5,16 +5,16 @@ data LocalizedData
 {
     # culture="en-US"
     ConvertFrom-StringData @'
-GettingOptionDefinitionIDMessage     = Getting DHCP Server Option Definition {0} with Vendor Class "{1}"
-TestingOptionDefinitionIDMessage     = Begin testing DHCP Server Option Definition {0} with Vendor Class "{1}"
-RemovingOptionDefinitionIDMessage    = Removing DHCP Server Option Definition {0}
-RecreatingOptionDefinitionIDMessage  = Recreating {0}
-AddingOptionDefinitionIDMessage      = Adding DHCP server option definition {0}
-SettingOptionDefinitionIDMessage     = Setting DHCP server option definition {0} with Vendor Class "{1}"
-FoundOptionDefinitionIDMessage       = Found DHCP server option Definition {0} with Vendor Class "{1}"
-ComparingOptionDefinitionIDMessage   = Comparing Option Definition {0}, Vendor Class "{1}" with existing definition
-ExactMatchOptionDefinitionIDMessage  = Matched Option Definition {0} Vendor Class "{1}" with existing definition
-NotMatchOptionDefinitionIDMessage    = Not matched all parameters Option Definition {0} Vendor Class "{1}", should adjust
+GettingOptionDefinitionIDMessage     = Getting DHCP server option definition "{0}" with vendor class "{1}".
+TestingOptionDefinitionIDMessage     = Begin testing DHCP server option definition "{0}" with vendor class "{1}".
+RemovingOptionDefinitionIDMessage    = Removing DHCP server option definition "{0}" with vendor class "{1}".
+RecreatingOptionDefinitionIDMessage  = Recreating DHCP server option definition "{0}" with vendor class "{1}".
+AddingOptionDefinitionIDMessage      = Adding DHCP server option definition "{0}" with vendor class "{1}".
+SettingOptionDefinitionIDMessage     = Setting DHCP server option definition "{0}" with vendor class "{1}".
+FoundOptionDefinitionIDMessage       = Found DHCP server option Definition "{0}" with vendor class "{1}".
+ComparingOptionDefinitionIDMessage   = Comparing option definition "{0}", vendor class "{1}" with existing definition.
+ExactMatchOptionDefinitionIDMessage  = Matched option definition "{0}" with vendor class "{1}" with existing definition.
+NotMatchOptionDefinitionIDMessage    = Not matched all parameters in option definition "{0}" with vendor class "{1}", should adjust.
 '@
 }
 
@@ -38,11 +38,11 @@ function Get-TargetResource
         [AllowEmptyString()]
         [String] $Description = '',
 
-        [AllowEmptyString()]
+        [Parameter(mandatory)][AllowEmptyString()]
         [String] $VendorClass = '',
 
         [Parameter()]
-        [Bool] $MultiValued,
+        [Boolean] $MultiValued,
 
         [Parameter(mandatory)] [ValidateSet('IPv4')]
         [String] $AddressFamily
@@ -99,14 +99,14 @@ function Set-TargetResource
         [AllowEmptyString()]
         [String] $Description = '',
 
-        [AllowEmptyString()]
+        [Parameter(mandatory)][AllowEmptyString()]
         [String] $VendorClass = '',
 
         [Parameter(mandatory)][ValidateSet('Byte','Word','DWord','DWordDword','IPv4Address','String','BinaryData','EncapsulatedData')]
         [String] $Type,
 
         [Parameter()]
-        [Bool] $MultiValued,
+        [Boolean] $MultiValued,
 
         [Parameter(mandatory)] [ValidateSet('IPv4')]
         [String] $AddressFamily
@@ -176,14 +176,14 @@ function Test-TargetResource
         [AllowEmptyString()]
         [String] $Description = '',
 
-        [AllowEmptyString()]
+        [Parameter(mandatory)][AllowEmptyString()]
         [String] $VendorClass = '',
 
         [Parameter(mandatory)][ValidateSet('Byte','Word','DWord','DWordDword','IPv4Address','String','BinaryData','EncapsulatedData')]
         [String] $Type,
 
         [Parameter()]
-        [Bool] $MultiValued,
+        [Boolean] $MultiValued,
 
         [Parameter(mandatory)] [ValidateSet('IPv4')]
         [String] $AddressFamily

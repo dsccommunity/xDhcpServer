@@ -68,7 +68,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
  ### xDhcpServerOptionDefinition
  
  *  **OptionID**: Option ID, should be a number between 1 and 255.
- *  **VendorClass**: Vendor class.
+ *  **VendorClass**: Vendor class. Use an empty string for standard option class.
  *  **Name**: Option name.
  *  **Type**: Option type, should be one of: "Byte", "Word", "Dword", "DwordDword", "IPv4Address", "String", "BinaryData", "EncapsulatedData". 
  *  **Multivalued**: Whether option is multivalued or not.

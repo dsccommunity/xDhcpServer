@@ -60,4 +60,15 @@
         VendorClass = 'Cisco AP c1700'
         Description = 'Sample description'
     }
+
+    xDhcpServerOptionDefinition DHCPServerOptionDefinition
+    {
+        ensure = 'Present'
+        name = 'sample name'
+        OptionID = '200'
+        type = 'IPv4Address'
+        AddressFamily = 'ipv4'
+        VendorClass = ''  #default option class
+        Description = 'Sample description'
+    }
  } 
