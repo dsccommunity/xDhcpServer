@@ -26,11 +26,11 @@ try
     InModuleScope $Global:DSCResourceName {
         
         $OptionID = 22
-        $Name =  'Test Definition'
+        $Name =  'Test name'
         $AddressFamily = 'IPv4'
         $Description = 'Test Description'
         $Type = 'IPv4Address'
-        $VendorClass = ""
+        $VendorClass = ''
         $MultiValued = $false
         
         $testParams = @{
@@ -109,7 +109,7 @@ try
         Describe "$($Global:DSCResourceName)\Set-TargetResource" {
 
         Mock Assert-Module -ParameterFilter { $ModuleName -eq 'DHCPServer' } { }
-        Mock Get-DhcpServerv4OptionDefinition { return $fakeDhcpServerv4OptionDefinition }
+       # Mock Get-DhcpServerv4OptionDefinition { return $fakeDhcpServerv4OptionDefinition }
         Mock Set-DhcpServerv4OptionDefinition { }
         Mock Add-DhcpServerv4OptionDefinition { }
         Mock Remove-DhcpServerv4OptionDefinition { }
@@ -117,13 +117,21 @@ try
 
             It 'Calls "Add-DhcpServerv4OptionDefinition" when "Ensure" = "Present" and definition does not exist' {
                 
-                Set-TargetResource -OptionID 2 -Name "name test" -AddressFamily IPv4 -Type Byte -Ensure 'Present'
-            
+                Mock Get-DhcpServerv4OptionDefinition { return $null }
+
+                $TempParams = $testParams.Clone() 
+                $TempParams.OptionID = 2
+                Set-TargetResource @TempParams -Ensure 'Present'
+          
                 Assert-MockCalled Add-DhcpServerv4OptionDefinition -Scope It
             }
 
             It 'Calls "Remove-DhcpServerv4OptionDefinition" when "Ensure" = "Absent" and Definition does exist' {
 
+                Mock Get-DhcpServerv4OptionDefinition { return $fakeDhcpServerv4OptionDefinition }
+
+                #$TempParams = $testParams.Clone()
+                #Set-TargetResource @testParams -Ensure 'Absent'
                 Set-TargetResource @testParams -Ensure 'Absent'
             
                 Assert-MockCalled -CommandName Remove-DhcpServerv4OptionDefinition -Scope It
@@ -131,14 +139,18 @@ try
 
             it 'Calls Set-DhcpServerv4OptionDefinition when "Ensure" = "Present" and Name or Description has changed' {
                
+                Mock Get-DhcpServerv4OptionDefinition { return $fakeDhcpServerv4OptionDefinition }
+
                 $TempParams = $testParams.Clone() 
-                $testParams.Description = 'New Description'
-                Set-TargetResource @testParams -Ensure 'Present'
+                $TempParams.Description = 'New Description'
+                Set-TargetResource @TempParams -Ensure 'Present'
                 
                 Assert-MockCalled -CommandName Set-DhcpServerv4OptionDefinition -Scope It
             }
 
             it 'Calls "Remove-DhcpServerv4OptionDefinition" and then "Add-DhcpServerv4OptionDefinition" when "Ensure" = "Present" and Type, MultiValued, VendorClass has changed' {
+
+                Mock Get-DhcpServerv4OptionDefinition { return $fakeDhcpServerv4OptionDefinition }
 
                 $TempParams = $testParams.Clone()
                 $TempParams.Type = 'Byte'
@@ -151,6 +163,8 @@ try
 
             it 'Calls "Remove-DhcpServerv4OptionDefinition" and then "Add-DhcpServerv4OptionDefinition" when "Ensure" = "Present" and Type has changed' {
                 
+                Mock Get-DhcpServerv4OptionDefinition { return $fakeDhcpServerv4OptionDefinition }
+                
                 $TempParams = $testParams.Clone()
                 $TempParams.Type = 'Byte'
                 Set-TargetResource @tempParams -Ensure 'Present'
@@ -162,6 +176,8 @@ try
 
             it 'Calls "Remove-DhcpServerv4OptionDefinition" and then "Add-DhcpServerv4OptionDefinition" when "Ensure" = "Present" and MultiValued has changed' {
                 
+                Mock Get-DhcpServerv4OptionDefinition { return $fakeDhcpServerv4OptionDefinition }
+
                 $TempParams = $testParams.Clone()
                 $TempParams.MultiValued = $true
                 Set-TargetResource @TempParams -Ensure 'Present'
@@ -171,6 +187,8 @@ try
             }
 
             it 'Calls "Remove-DhcpServerv4OptionDefinition" and then "Add-DhcpServerv4OptionDefinition" when "Ensure" = "Present" and VendorClass has changed' {
+                
+                Mock Get-DhcpServerv4OptionDefinition { return $fakeDhcpServerv4OptionDefinition }                
                 
                 $TempParams = $testParams.Clone()
                 $TempParams.VendorClass = 'NewVendorClass'
@@ -183,6 +201,8 @@ try
             
             it 'Calls "Remove-DhcpServerv4OptionDefinition" and then "Add-DhcpServerv4OptionDefinition" when "Ensure" = "Present" and VendorClass and Description has changed' {
                 
+                Mock Get-DhcpServerv4OptionDefinition { return $fakeDhcpServerv4OptionDefinition }
+
                 $TempParams = $testParams.Clone()
                 $TempParams.VendorClass = 'NewVendorClass'
                 $TempParams.Description = 'New Description'
@@ -193,6 +213,8 @@ try
             }
 
             it 'Calls "Set-DhcpServerv4OptionDefinition" when "Ensure" = "Present" and Description has changed' {
+
+                Mock Get-DhcpServerv4OptionDefinition { return $fakeDhcpServerv4OptionDefinition }
 
                 $TempParams = $testParams.Clone()
                 $TempParams.Description = 'New Description'

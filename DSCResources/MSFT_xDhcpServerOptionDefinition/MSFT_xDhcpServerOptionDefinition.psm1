@@ -125,9 +125,9 @@ function Set-TargetResource
             if (($dhcpServerOptionDefinition.type -ne $Type) -or ($dhcpServerOptionDefinition.MultiValued -ne $MultiValued) -or ($dhcpServerOptionDefinition.VendorClass -ne $Vendorclass))
             {
                 
-                $scopeIDMessage = $($LocalizedData.RecreatingOptionDefinitionIDMessage) -f $OptionID
+                $scopeIDMessage = $($LocalizedData.RecreatingOptionDefinitionIDMessage) -f $OptionID, $VendorClass
                 Write-Verbose -Message $scopeIDMessage
-                Remove-DhcpServerv4OptionDefinition -OptionId $OptionID
+                Remove-DhcpServerv4OptionDefinition -OptionId $OptionID -VendorClass $VendorClass
                 Add-DhcpServerv4OptionDefinition -OptionId $OptionID -name $Name -Type $Type -Description $Description -MultiValued:$MultiValued -VendorClass $Vendorclass
             }
             else
@@ -142,7 +142,7 @@ function Set-TargetResource
         #if option does not exist we need to add it
         else
         {
-            $scopeIDMessage = $($LocalizedData.AddingOptionDefinitionIDMessage) -f $OptionID
+            $scopeIDMessage = $($LocalizedData.AddingOptionDefinitionIDMessage) -f $OptionID, $VendorClass
             Write-Verbose -Message $scopeIDMessage
             Add-DhcpServerv4OptionDefinition -OptionId $OptionID -name $Name -Type $Type -Description $Description -MultiValued:$MultiValued -VendorClass $Vendorclass
         }
@@ -153,9 +153,9 @@ function Set-TargetResource
     {
     if ($dhcpServerOptionDefinition)
         {
-            $scopeIDMessage = $($LocalizedData.RemovingOptionDefinitionIDMessage) -f $OptionID
+            $scopeIDMessage = $($LocalizedData.RemovingOptionDefinitionIDMessage) -f $OptionID,$VendorClass
             Write-Verbose -Message $scopeIDMessage            
-            Remove-DhcpServerv4OptionDefinition -OptionId $OptionID
+            Remove-DhcpServerv4OptionDefinition -OptionId $OptionID -VendorClass $VendorClass
         }
     
     }
