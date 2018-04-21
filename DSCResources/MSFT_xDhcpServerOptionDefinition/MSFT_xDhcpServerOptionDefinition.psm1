@@ -32,7 +32,7 @@ function Get-TargetResource
         [Parameter(mandatory)][ValidateNotNullOrEmpty()]
         [String] $Name,
 
-        [Parameter(mandatory)][ValidateSet('Byte','Word','DWord','DWordDword','IPv4Address','String','BinaryData','EncapsulatedData')]
+        [Parameter(mandatory)][ValidateSet('Byte','Word','Dword','DwordDword','IPv4Address','String','BinaryData','EncapsulatedData')]
         [String] $Type,
 
         [AllowEmptyString()]
@@ -102,7 +102,7 @@ function Set-TargetResource
         [Parameter(mandatory)][AllowEmptyString()]
         [String] $VendorClass = '',
 
-        [Parameter(mandatory)][ValidateSet('Byte','Word','Dword','DwordDword','IPv4Address','String','BinaryData','EncapsulatedData')]
+        [Parameter(mandatory)][ValidateSet('Byte','Word','Dord','DwordDword','IPv4Address','String','BinaryData','EncapsulatedData')]
         [String] $Type,
 
         [Parameter()]
