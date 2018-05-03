@@ -3,248 +3,380 @@ Import-Module $PSScriptRoot\..\Helper.psm1 -Verbose:$false
 # Localized messages
 data LocalizedData
 {
-    # culture="en-US"
+    # Culture="en-US"
     ConvertFrom-StringData @'
-GettingOptionDefinitionIDMessage     = Getting DHCP server option definition "{0}" with vendor class "{1}".
-TestingOptionDefinitionIDMessage     = Begin testing DHCP server option definition "{0}" with vendor class "{1}".
-RemovingOptionDefinitionIDMessage    = Removing DHCP server option definition "{0}" with vendor class "{1}".
-RecreatingOptionDefinitionIDMessage  = Recreating DHCP server option definition "{0}" with vendor class "{1}".
-AddingOptionDefinitionIDMessage      = Adding DHCP server option definition "{0}" with vendor class "{1}".
-SettingOptionDefinitionIDMessage     = Setting DHCP server option definition "{0}" with vendor class "{1}".
-FoundOptionDefinitionIDMessage       = Found DHCP server option Definition "{0}" with vendor class "{1}".
-ComparingOptionDefinitionIDMessage   = Comparing option definition "{0}", vendor class "{1}" with existing definition.
-ExactMatchOptionDefinitionIDMessage  = Matched option definition "{0}" with vendor class "{1}" with existing definition.
-NotMatchOptionDefinitionIDMessage    = Not matched all parameters in option definition "{0}" with vendor class "{1}", should adjust.
+    GettingOptionDefinitionIDMessage     = Getting DHCP server option definition "{0}" with vendor class "{1}".
+    TestingOptionDefinitionIDMessage     = Begin testing DHCP server option definition "{0}" with vendor class "{1}".
+    RemovingOptionDefinitionIDMessage    = Removing DHCP server option definition "{0}" with vendor class "{1}".
+    RecreatingOptionDefinitionIDMessage  = Recreating DHCP server option definition "{0}" with vendor class "{1}".
+    AddingOptionDefinitionIDMessage      = Adding DHCP server option definition "{0}" with vendor class "{1}".
+    SettingOptionDefinitionIDMessage     = Setting DHCP server option definition "{0}" with vendor class "{1}".
+    FoundOptionDefinitionIDMessage       = Found DHCP server option Definition "{0}" with vendor class "{1}".
+    ComparingOptionDefinitionIDMessage   = Comparing option definition "{0}", vendor class "{1}" with existing definition.
+    ExactMatchOptionDefinitionIDMessage  = Matched option definition "{0}" with vendor class "{1}" with existing definition.
+    NotMatchOptionDefinitionIDMessage    = Not matched all parameters in option definition "{0}" with vendor class "{1}", should adjust.
 '@
 }
+  
+   <#
+   
+   .SYNOPSIS
+    This function gets a DHCP option definition.
+    
+    .PARAMETER Ensure
+    When set to 'Present', the option definition will be created.
+    When set to 'Absent', the option definition will be removed.
 
+    .PARAMETER OptionID
+    The ID of the option definition.
+
+    .PARAMETER Name
+    The name of the option definition.
+        
+    .PARAMETER VendorClass
+    The vendor class of the option definition. Use an empty string for standard class.
+
+    .PARAMETER Type
+    The data type of the option definition.
+    
+    .PARAMETER AddressFamily
+    The option definition address family (IPv4 or IPv6). Currently only the IPv4 is supported.
+
+#>
 
 function Get-TargetResource
 {
+    [CmdletBinding()]
+    [OutputType([System.Collections.Hashtable])]
     param
     (
-        [Parameter(mandatory)][ValidateSet('Present','Absent')]
-        [String] $Ensure,
-
-        [Parameter(mandatory)][Validaterange(1,255)]
-        [UInt32] $OptionID,
-        
-        [Parameter(mandatory)][ValidateNotNullOrEmpty()]
-        [String] $Name,
-
-        [Parameter(mandatory)][ValidateSet('Byte','Word','Dword','DwordDword','IPv4Address','String','BinaryData','EncapsulatedData')]
-        [String] $Type,
-
-        [AllowEmptyString()]
-        [String] $Description = '',
-
-        [Parameter(mandatory)][AllowEmptyString()]
-        [String] $VendorClass = '',
-
         [Parameter()]
-        [Boolean] $MultiValued,
+        [ValidateSet('Present','Absent')]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $Ensure = 'Present',
 
-        [Parameter(mandatory)] [ValidateSet('IPv4')]
-        [String] $AddressFamily
+        [Parameter(mandatory = $true)]
+        [Validaterange(1,255)]
+        [UInt32]
+        $OptionID,
+
+        [Parameter(mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $Name,
+
+        [Parameter(mandatory=$true)]
+        [ValidateSet('Byte','Word','Dword','DwordDword','IPv4Address','String','BinaryData','EncapsulatedData')]
+        [String]
+        $Type,
+                
+        [Parameter(mandatory = $true)]
+        [AllowEmptyString()]
+        [String]
+        $VendorClass,
+
+        [Parameter(mandatory = $true)]
+        [ValidateSet('IPv4')]
+        [String]
+        $AddressFamily
     )
 
-    #region Input Validation
+    # Region Input Validation
 
-    #Check for DhcpServer module/role
+    # Check for DhcpServer module/role
     Assert-Module -moduleName DHCPServer
 
-    #endregion Input Validation
+    # Endregion Input Validation
      
-    $DhcpServerOptionDefinition = Get-DhcpServerv4OptionDefinition -OptionId $OptionID -VendorClass $VendorClass -ErrorAction SilentlyContinue
+    $dhcpServerOptionDefinition = Get-DhcpServerv4OptionDefinition -OptionId $OptionID -VendorClass $VendorClass -ErrorAction SilentlyContinue
   
-    if ($DhcpServerOptionDefinition)
+    if ($dhcpServerOptionDefinition)
     {
-        $HashTable= @{
-        OptionId = $DhcpServerOptionDefinition.OptionID
-        Name =  $DhcpServerOptionDefinition.Name
-        AddressFamily = 'IPv4'
-        Description = $DhcpServerOptionDefinition.Description
-        Type = $DhcpServerOptionDefinition.Type
-        VendorClass = $DhcpServerOptionDefinition.VendorClass
-        MultiValued = $DhcpServerOptionDefinition.MultiValued
+        $hashTable= @{
+            OptionId       = $dhcpServerOptionDefinition.OptionID
+            Name           = $dhcpServerOptionDefinition.Name
+            AddressFamily  = $AddressFamily
+            Description    = $dhcpServerOptionDefinition.Description
+            Type           = $dhcpServerOptionDefinition.Type
+            VendorClass    = $dhcpServerOptionDefinition.VendorClass
+            MultiValued    = $dhcpServerOptionDefinition.MultiValued
         }
     }
     else
     {
-        $HashTable= @{
-        OptionId = ''
-        Name =  ''
-        AddressFamily = ''
-        Description = ''
-        Type = ''
-        VendorClass = ''
-        MultiValued = ''
+        $hashTable= @{
+            OptionId      = $null
+            Name          = $null
+            AddressFamily = $null
+            Description   = $null
+            Type          = $null
+            VendorClass   = $null
+            MultiValued   = $null
         }
     }
-    $HashTable
+    $hashTable
 }
+
+<#
+    
+    .SYNOPSIS
+    This function sets the state of a DHCP option definition.
+    
+    .PARAMETER Ensure
+    When set to 'Present', the option definition will be created.
+    When set to 'Absent', the option definition will be removed.
+
+    .PARAMETER OptionID
+    The ID of the option definition.
+        
+    .PARAMETER Name
+    The name of the option definition.
+
+    .PARAMETER Description
+    Description of the option definition.
+
+    .PARAMETER VendorClass
+    The vendor class of the option definition. Use an empty string for standard class.
+
+    .PARAMETER Type
+    The data type of the option definition.
+
+    .PARAMETER Multivalued
+    Whether the option definition is multivalued or not.
+
+    .PARAMETER AddressFamily
+    The option definition address family (IPv4 or IPv6). Currently only the IPv4 is supported.
+
+#>
+
 function Set-TargetResource
 {
+    [CmdletBinding()]
     param
     (
-        [Parameter(mandatory)][ValidateSet('Present','Absent')]
-        [String] $Ensure,
+        [Parameter()]
+        [ValidateSet('Present','Absent')]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $Ensure = 'Present',
 
-        [Parameter(mandatory)][Validaterange(1,255)]
-        [UInt32] $OptionID,
+        [Parameter(mandatory=$true)]
+        [Validaterange(1,255)]
+        [UInt32]
+        $OptionID,
         
-        [Parameter(mandatory)][ValidateNotNullOrEmpty()]
-        [String] $Name,
-
+        [Parameter(mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $Name,
+        
+        [Parameter()]
         [AllowEmptyString()]
-        [String] $Description = '',
+        [String]
+        $Description,
 
-        [Parameter(mandatory)][AllowEmptyString()]
-        [String] $VendorClass = '',
+        [Parameter(mandatory=$true)]
+        [AllowEmptyString()]
+        [String]
+        $VendorClass,
 
-        [Parameter(mandatory)][ValidateSet('Byte','Word','Dword','DwordDword','IPv4Address','String','BinaryData','EncapsulatedData')]
-        [String] $Type,
+        [Parameter(mandatory=$true)]
+        [ValidateSet('Byte','Word','Dword','DwordDword','IPv4Address','String','BinaryData','EncapsulatedData')]
+        [String]
+        $Type,
 
         [Parameter()]
-        [Boolean] $MultiValued,
+        [Boolean]
+        $MultiValued,
 
-        [Parameter(mandatory)] [ValidateSet('IPv4')]
-        [String] $AddressFamily
+        [Parameter(mandatory=$true)]
+        [ValidateSet('IPv4')]
+        [String]
+        $AddressFamily
     )
         
-    #reading the dhcp option
+    # Reading the dhcp option
     $dhcpServerOptionDefinition = Get-DhcpServerv4OptionDefinition -OptionId $OptionID -VendorClass $VendorClass -ErrorAction SilentlyContinue
 
-    #testing for present
+    # Testing for present
     if ($Ensure -eq 'Present')
     {
-        #testing if exists
+        # Testing if exists
         if ($dhcpServerOptionDefinition)
         {
-            #if it exists and  any of multivalued, type or vendorclass is being changed remove then re-add the whole option definition
+            # If it exists and any of multivalued, type or vendorclass is being changed remove then re-add the whole option definition
             if (($dhcpServerOptionDefinition.type -ne $Type) -or ($dhcpServerOptionDefinition.MultiValued -ne $MultiValued) -or ($dhcpServerOptionDefinition.VendorClass -ne $Vendorclass))
             {
-                
-                $scopeIDMessage = $($LocalizedData.RecreatingOptionDefinitionIDMessage) -f $OptionID, $VendorClass
+                $scopeIDMessage = $($localizedData.RecreatingOptionDefinitionIDMessage) -f $OptionID, $VendorClass
                 Write-Verbose -Message $scopeIDMessage
                 Remove-DhcpServerv4OptionDefinition -OptionId $OptionID -VendorClass $VendorClass
                 Add-DhcpServerv4OptionDefinition -OptionId $OptionID -name $Name -Type $Type -Description $Description -MultiValued:$MultiValued -VendorClass $Vendorclass
             }
             else
             {
-                #if option exists we need only to adjust the parameters
-                $SettingIDMessage = $($LocalizedData.SettingOptionDefinitionIDMessage) -f $OptionID, $VendorClass
-                Write-Verbose -Message $SettingIDMessage
+                # If option exists we need only to adjust the parameters
+                $settingIDMessage = $($localizedData.SettingOptionDefinitionIDMessage) -f $OptionID, $VendorClass
+                Write-Verbose -Message $settingIDMessage
                 set-DhcpServerv4OptionDefinition -OptionId $OptionID -VendorClass $VendorClass -name $Name -Description $Description
             }
         }
 
-        #if option does not exist we need to add it
+        # If option does not exist we need to add it
         else
         {
-            $scopeIDMessage = $($LocalizedData.AddingOptionDefinitionIDMessage) -f $OptionID, $VendorClass
+            $scopeIDMessage = $($localizedData.AddingOptionDefinitionIDMessage) -f $OptionID, $VendorClass
             Write-Verbose -Message $scopeIDMessage
             Add-DhcpServerv4OptionDefinition -OptionId $OptionID -name $Name -Type $Type -Description $Description -MultiValued:$MultiValued -VendorClass $Vendorclass
         }
     }
     
-    #testing for 'absent'
+    # Testing for 'absent'
     else
     {
     if ($dhcpServerOptionDefinition)
         {
-            $scopeIDMessage = $($LocalizedData.RemovingOptionDefinitionIDMessage) -f $OptionID,$VendorClass
+            $scopeIDMessage = $($localizedData.RemovingOptionDefinitionIDMessage) -f $OptionID,$VendorClass
             Write-Verbose -Message $scopeIDMessage            
             Remove-DhcpServerv4OptionDefinition -OptionId $OptionID -VendorClass $VendorClass
         }
-    
     }
 }
+
+<#
+    
+    .SYNOPSIS
+    This function tests if the DHCP option definition is created.
+    
+    .PARAMETER Ensure
+    When set to 'Present', the option definition will be created.
+    When set to 'Absent', the option definition will be removed.
+
+    .PARAMETER OptionID
+    The ID of the option definition.
+        
+    .PARAMETER Name
+    The name of the option definition.
+
+    .PARAMETER Description
+    Description of the option definition.
+
+    .PARAMETER VendorClass
+    The vendor class of the option definition. Use an empty string for standard class.
+
+    .PARAMETER Type
+    The data type of the option definition.
+
+    .PARAMETER Multivalued
+    Whether the option definition is multivalued or not.
+
+    .PARAMETER AddressFamily
+    The option definition address family (IPv4 or IPv6). Currently only the IPv4 is supported.
+
+#>
+
 function Test-TargetResource
 {
+    [CmdletBinding()]
+    [OutputType([System.Boolean])]
     param
     (
-        [Parameter(Mandatory)][ValidateSet('Present','Absent')]
-        [System.String] $Ensure,
+        [Parameter()]
+        [ValidateSet('Present','Absent')]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $Ensure = 'Present',
         
-        [Parameter(mandatory)][Validaterange(1,255)]
+        [Parameter(mandatory=$true)]
+        [Validaterange(1,255)]
         [UInt32] $OptionID,
         
-        [Parameter(mandatory)][ValidateNotNullOrEmpty()]
-        [String] $Name,
-
-        [AllowEmptyString()]
-        [String] $Description = '',
-
-        [Parameter(mandatory)][AllowEmptyString()]
-        [String] $VendorClass = '',
-
-        [Parameter(mandatory)][ValidateSet('Byte','Word','Dword','DwordDword','IPv4Address','String','BinaryData','EncapsulatedData')]
-        [String] $Type,
+        [Parameter(mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $Name,
 
         [Parameter()]
-        [Boolean] $MultiValued,
+        [AllowEmptyString()]
+        [String]
+        $Description,
 
-        [Parameter(mandatory)] [ValidateSet('IPv4')]
-        [String] $AddressFamily
+        [Parameter(mandatory=$true)]
+        [AllowEmptyString()]
+        [String]
+        $VendorClass = '',
+
+        [Parameter(mandatory=$true)]
+        [ValidateSet('Byte','Word','Dword','DwordDword','IPv4Address','String','BinaryData','EncapsulatedData')]
+        [String]
+        $Type,
+
+        [Parameter()]
+        [Boolean]
+        $MultiValued,
+
+        [Parameter(mandatory=$true)]
+        [ValidateSet('IPv4')]
+        [String]
+        $AddressFamily
     )
     
-    #region Input Validation
+    # Region Input Validation
 
     # Check for DhcpServer module/role
     Assert-Module -moduleName DHCPServer
-    #endregion Input Validation
+    # Endregion Input Validation
 
-    $TestingIDMessage = $($LocalizedData.TestingOptionDefinitionIDMessage) -f $OptionID, $VendorClass
-    #geting the dhcp option definition
-    Write-Verbose -Message $TestingIDMessage
+    $testingIDMessage = $($localizedData.TestingOptionDefinitionIDMessage) -f $OptionID, $VendorClass
+    # Geting the dhcp option definition
+    Write-Verbose -Message $testingIDMessage
 
-    $GettingIDMessage = $($LocalizedData.GettingOptionDefinitionIDMessage) -f $OptionID, $VendorClass
-    Write-Verbose -Message $GettingIDMessage
-    $DhcpServerOptionDefinition = Get-DhcpServerv4OptionDefinition -OptionId $OptionID -VendorClass $VendorClass -ErrorAction SilentlyContinue
+    $gettingIDMessage = $($localizedData.GettingOptionDefinitionIDMessage) -f $OptionID, $VendorClass
+    Write-Verbose -Message $gettingIDMessage
+    $dhcpServerOptionDefinition = Get-DhcpServerv4OptionDefinition -OptionId $OptionID -VendorClass $VendorClass -ErrorAction SilentlyContinue
     
-    if ($DhcpServerOptionDefinition)
+    if ($dhcpServerOptionDefinition)
     {
-        $FoundIDMessage = $($LocalizedData.FoundOptionDefinitionIDMessage) -f $OptionID, $VendorClass
-        Write-Verbose $FoundIDMessage
+        $foundIDMessage = $($localizedData.FoundOptionDefinitionIDMessage) -f $OptionID, $VendorClass
+        Write-Verbose $foundIDMessage
     }
 
-    #testing for Ensure = Present
+    # Testing for Ensure = Present
     if ($Ensure -eq 'Present')
     {
-        #Testing if $$DhcpServerOptionDefinition is not null       
-        if ($DhcpServerOptionDefinition)
+        # Testing if $$dhcpServerOptionDefinition is not null       
+        if ($dhcpServerOptionDefinition)
         {
-            $ComparingIDMessage = $($LocalizedData.ComparingOptionDefinitionIDMessage) -f $OptionID, $VendorClass
-            Write-Verbose $ComparingIDMessage
+            $comparingIDMessage = $($localizedData.ComparingOptionDefinitionIDMessage) -f $OptionID, $VendorClass
+            Write-Verbose $comparingIDMessage
             
-            #Since $DhcpServerOptionDefinition is not null compare all the Values
-            if (($DhcpServerOptionDefinition.OptionID -eq $OptionID) -and ($DhcpServerOptionDefinition.Name -eq $Name) -and ($DhcpServerOptionDefinition.Description -eq $Description) -and ($DhcpServerOptionDefinition.VendorClass -eq $VendorClass) -and ($DhcpServerOptionDefinition.Type -eq $Type) -and ($DhcpServerOptionDefinition.Multivalued -eq $MultiValued))
+            # Since $dhcpServerOptionDefinition is not null compare all the Values
+            if (($dhcpServerOptionDefinition.OptionID -eq $OptionID) -and ($dhcpServerOptionDefinition.Name -eq $Name) -and ($dhcpServerOptionDefinition.Description -eq $Description) -and ($dhcpServerOptionDefinition.VendorClass -eq $VendorClass) -and ($dhcpServerOptionDefinition.Type -eq $Type) -and ($dhcpServerOptionDefinition.Multivalued -eq $MultiValued))
             {
-                $ExactMatchIDMessage = $($LocalizedData.ExactMatchOptionDefinitionIDMessage) -f $OptionID, $VendorClass
-                Write-Verbose $ExactMatchIDMessage
+                $exactMatchIDMessage = $($localizedData.ExactMatchOptionDefinitionIDMessage) -f $OptionID, $VendorClass
+                Write-Verbose $exactMatchIDMessage
 
                 $result = $true
             }
             else
             {
-                $NotMatchIDMessage = $($LocalizedData.NotMatchOptionDefinitionIDMessage) -f $OptionID, $VendorClass
-                Write-Verbose $NotMatchIDMessage
+                $notMatchIDMessage = $($localizedData.NotMatchOptionDefinitionIDMessage) -f $OptionID, $VendorClass
+                Write-Verbose $notMatchIDMessage
                 $result = $false            
             }
         }
         else
         {
-            #If $DhcpServerOptionDefinition is null return false
-            $Result = $false
+            # If $dhcpServerOptionDefinition is null return false
+            $result = $false
         }
     }
-    #If ensure = Absent
+    # If Ensure = Absent
     else
     {
-        if ($DhcpServerOptionDefinition)
+        if ($dhcpServerOptionDefinition)
         {
-            #testing if $DhcpServerOptionDefinition is not null, if it exists return false
+            # Testing if $dhcpServerOptionDefinition is not null, if it exists return false
             $result = $false
         }
         else

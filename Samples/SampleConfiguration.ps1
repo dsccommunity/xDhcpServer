@@ -52,22 +52,22 @@
  
     xDhcpServerOptionDefinition DHCPServerOptionDefinition
     {
-        ensure = 'Present'
-        name = 'Cisco AP c1700 Provisioning'
+        Ensure = 'Present'
+        Name = 'Cisco AP c1700 Provisioning'
         OptionID = '200'
-        type = 'IPv4Address'
-        AddressFamily = 'ipv4'
+        Type = 'IPv4Address'
+        AddressFamily = 'IPv4'
         VendorClass = 'Cisco AP c1700'
         Description = 'Sample description'
     }
 
     xDhcpServerOptionDefinition DHCPServerOptionDefinition
     {
-        ensure = 'Present'
-        name = 'sample name'
+        Ensure = 'Present'
+        Name = 'sample name'
         OptionID = '200'
-        type = 'IPv4Address'
-        AddressFamily = 'ipv4'
+        Type = 'IPv4Address'
+        AddressFamily = 'IPv4'
         VendorClass = ''  #default option class
         Description = 'Sample description'
     }

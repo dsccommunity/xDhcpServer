@@ -1,7 +1,7 @@
 $Global:DSCModuleName      = 'xDhcpServer'
 $Global:DSCResourceName    = 'MSFT_xDhcpServerOptionDefinition'
 
-#region HEADER
+# region HEADER
 [String] $moduleRoot = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $Script:MyInvocation.MyCommand.Path))
 if ( (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
      (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1'))) )
@@ -17,7 +17,7 @@ $TestEnvironment = Initialize-TestEnvironment `
     -DSCModuleName $Global:DSCModuleName `
     -DSCResourceName $Global:DSCResourceName `
     -TestType Unit
-#endregion
+# endregion
 
 # Begin Testing
 
@@ -34,28 +34,28 @@ try
         $MultiValued = $false
         
         $testParams = @{
-            OptionID = $OptionID
-            Name = $Name
+            OptionID      = $OptionID
+            Name          = $Name
             AddressFamily = $AddressFamily
-            Description = $Description
-            Type = $Type
-            VendorClass = $VendorClass
-            MultiValued = $MultiValued
+            Description   = $Description
+            Type          = $Type
+            VendorClass   = $VendorClass
+            MultiValued   = $MultiValued
         }
                 
         $fakeDhcpServerv4OptionDefinition = [PSCustomObject] @{
-            OptionID = $OptionID
-            Name = $Name
+            OptionID      = $OptionID
+            Name          = $Name
             AddressFamily = $AddressFamily
-            Description = $Description
-            Type = $Type
-            VendorClass = $VendorClass
-            MultiValued = $MultiValued
+            Description   = $Description
+            Type          = $Type
+            VendorClass   = $VendorClass
+            MultiValued   = $MultiValued
             }
 
-        #endregion Pester Test Initialization
+        # endregion Pester Test Initialization
 
-        #region Function Get-TargetResource
+        # region Function Get-TargetResource
         Describe "$($Global:DSCResourceName)\Get-TargetResource" {
 
             Mock Assert-Module -ParameterFilter { $ModuleName -eq 'DHCPServer' } { }
@@ -66,19 +66,19 @@ try
 
             It 'Calls "Assert-Module" to ensure "DHCPServer" module is available' {
      
-                $result = Get-TargetResource @testParams -Ensure Present;
+                $result = Get-TargetResource -OptionID $OptionID -Name $Name -Type $Type -VendorClass $VendorClass -AddressFamily IPv4 -Ensure Present;
             }
         
             It 'Returns a "System.Collections.Hashtable" object type' {
 
-                    $result = Get-TargetResource @testParams -Ensure Present;
+                    $result = Get-TargetResource -OptionID $OptionID -Name $Name -Type $Type -VendorClass $VendorClass -AddressFamily IPv4 -Ensure Present;
                     $result -is [System.Collections.Hashtable] | Should Be $true;
             }
         }
-        #endregion Function Get-TargetResource
+        # endregion Function Get-TargetResource
 
 
-        #region Function Test-TargetResource
+        # region Function Test-TargetResource
         Describe "$($Global:DSCResourceName)\Test-TargetResource" {
 
             Mock Assert-Module -ParameterFilter { $ModuleName -eq 'DHCPServer' } { }
@@ -102,9 +102,9 @@ try
             }
         
         }
-        #endregion Function Test-TargetResource 
+        # endregion Function Test-TargetResource 
 
-        #region Function Set-TargetResource
+        # region Function Set-TargetResource
 
         Describe "$($Global:DSCResourceName)\Set-TargetResource" {
 
@@ -130,8 +130,8 @@ try
 
                 Mock Get-DhcpServerv4OptionDefinition { return $fakeDhcpServerv4OptionDefinition }
 
-                #$TempParams = $testParams.Clone()
-                #Set-TargetResource @testParams -Ensure 'Absent'
+                # $TempParams = $testParams.Clone()
+                # Set-TargetResource @testParams -Ensure 'Absent'
                 Set-TargetResource @testParams -Ensure 'Absent'
             
                 Assert-MockCalled -CommandName Remove-DhcpServerv4OptionDefinition -Scope It
@@ -223,14 +223,14 @@ try
                 Assert-MockCalled -CommandName set-DhcpServerv4OptionDefinition -Scope It
             }
         }
-        #End region Function Set-TargetResource
+        # End region Function Set-TargetResource
     }
-    #endregion
+    # endregion
 
 }
 finally
 {
-     #region FOOTER
+     # region FOOTER
     Restore-TestEnvironment -TestEnvironment $TestEnvironment
-    #endregion
+    # endregion
 }

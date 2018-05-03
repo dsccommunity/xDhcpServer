@@ -70,17 +70,15 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
  *  **OptionID**: Option ID, should be a number between 1 and 255.
  *  **VendorClass**: Vendor class. Use an empty string for standard option class.
  *  **Name**: Option name.
- *  **Type**: Option type, should be one of: "Byte", "Word", "Dword", "DwordDword", "IPv4Address", "String", "BinaryData", "EncapsulatedData". 
+ *  **Type**: Option data type. { Byte | Word | Dword | DwordDword | IPv4Address | String | BinaryData | EncapsulatedData }
  *  **Multivalued**: Whether option is multivalued or not.
  *  **Description**: Option description.
- *  **AddressFamily**: Currently should be "IPv4".
- *  **Ensure**: Whether option should be set or removed.
+ *  **AddressFamily**: Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
+ *  **Ensure**: Whether option should be set or removed. { *Present* | Absent }
 
 ## Versions
 
 ### Unreleased
-
-### 1.7.0.0
 
 Added xDhcpServerOptionDefinition
 
