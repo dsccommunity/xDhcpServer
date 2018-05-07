@@ -80,7 +80,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 
 ### Unreleased
 
-Added xDhcpServerOptionDefinition
+* Added xDhcpServerOptionDefinition
 
 ### 1.6.0.0
 added xDhcpServerClass
