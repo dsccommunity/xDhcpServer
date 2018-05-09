@@ -1,7 +1,7 @@
 [ClassVersion("1.0.0.0"), FriendlyName("xDhcpServerOptionDefinition")]
 class MSFT_xDhcpServerOptionDefinition : OMI_BaseResource
 {
-    [Key, Description("Option ID, specify a number between 1 and 255.")] uint32 OptionID;
+    [Key, Description("Option ID, specify a number between 1 and 255.")] uint32 OptionId;
     [Key, Description("Vendor class. Use an empty string for standard option class.")] String VendorClass;
     [Required, Description("Option name.")] String Name;
     [Required, Description("Option data type."),ValueMap{"Byte","Word","Dword","DwordDword","IPv4Address","String","BinaryData","EncapsulatedData"},Values{"Byte","Word","Dword","DwordDword","IPv4Address","String","BinaryData","EncapsulatedData"}] string Type;
