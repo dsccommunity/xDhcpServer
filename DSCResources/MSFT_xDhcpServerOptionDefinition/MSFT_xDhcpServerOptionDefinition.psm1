@@ -212,7 +212,7 @@ function Set-TargetResource
         if ($dhcpServerOptionDefinition.Ensure -eq 'Present')
         {
             # If it exists and any of multivalued, type or vendorclass is being changed remove then re-add the whole option definition
-            if (($dhcpServerOptionDefinition.type -ne $Type) -or ($dhcpServerOptionDefinition.MultiValued -ne $MultiValued) -or ($dhcpServerOptionDefinition.VendorClass -ne $VendorClass))
+            if (($dhcpServerOptionDefinition.Type -ne $Type) -or ($dhcpServerOptionDefinition.MultiValued -ne $MultiValued) -or ($dhcpServerOptionDefinition.VendorClass -ne $VendorClass))
             {
                 $scopeIDMessage = $localizedData.RecreatingOptionDefinitionIDMessage -f $OptionId, $VendorClass
                 Write-Verbose -Message $scopeIDMessage
@@ -222,7 +222,7 @@ function Set-TargetResource
             # If option exists we need only to adjust the parameters
             else
             {
-                $settingIDMessage = $($localizedData.SettingOptionDefinitionIDMessage) -f $OptionId, $VendorClass
+                $settingIDMessage = $localizedData.SettingOptionDefinitionIDMessage -f $OptionId, $VendorClass
                 Write-Verbose -Message $settingIDMessage
                 Set-DhcpServerv4OptionDefinition -OptionId $OptionId -VendorClass $VendorClass -name $Name -Description $Description
             }
