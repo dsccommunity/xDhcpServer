@@ -1,0 +1,11 @@
+[ClassVersion("1.0.0.0"), FriendlyName("xDhcpPolicyOptionValue")]
+class MSFT_xDhcpPolicyOptionValue : OMI_BaseResource
+{
+    [Key,        Description("Scope ID. Use an empty string for use a policy on server scope.")] String ScopeId;
+    [Key,        Description("Option ID, specify an integer between 1 and 255.")] uint32 OptionId;
+    [Key,        Description("Policy Name")] String PolicyName;
+    [Write,      Description("Option data value.")] String OptionValue[];
+    [Key,        Description("Vendor class. Use an empty string for default vendor class.")] String VendorClass;
+    [Key,        Description("Class address family. Currently needs to be IPv4."), ValueMap{"IPv4"}, Values{"IPv4"}] String AddressFamily;
+    [Write,      Description("Whether the DHCP option should exist."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+};
