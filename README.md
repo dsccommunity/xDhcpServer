@@ -48,6 +48,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 * **DnsServerIPAddress**: IP address of DNS Servers
 * **DnsDomain**: Domain name of DNS Server
 * **AddressFamily**: Address family type
+* **Router**: The default gateway for clients
 * **Ensure**: Whether option should be set or removed
 
 ### xDhcpServerAuthorization
