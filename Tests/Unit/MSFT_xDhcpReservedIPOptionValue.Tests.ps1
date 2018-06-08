@@ -33,7 +33,7 @@ try
     InModuleScope 'MSFT_xDhcpReservedIPOptionValue' {
        
         $optionId      = 67
-        $reservedIP    = 1.1.1.1
+        $reservedIP    = '1.1.1.1'
         $value         = @('test Value')
         $vendorClass   = ''
         $userClass     = ''
