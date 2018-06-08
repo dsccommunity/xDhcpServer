@@ -4,17 +4,20 @@ $modulePathhelper            = (Join-Path -Path (Split-Path -Path $currentPath -
 $modulePathOptionValueHelper = (Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'OptionValueHelper.psm1')
 
 Import-Module -Name $modulePathhelper
-Import-Module -Name $modulePathOptionValueHelper -Force
+Import-Module -Name $modulePathOptionValueHelper
 
    <#
    .SYNOPSIS
-        This function gets a DHCP server option value.
+        This function gets a DHCP reserved IP option value.
 
+    .PARAMETER ReservedIP
+        The Reserved IP to get the option value from.
+    
     .PARAMETER OptionId
         The ID of the option.
 
     .PARAMETER Value
-        The data value option.
+        The data value.
         
     .PARAMETER VendorClass
         The vendor class of the option. Use an empty string for standard class.
@@ -36,6 +39,11 @@ function Get-TargetResource
     [OutputType([System.Collections.Hashtable])]
     param
     (
+        [parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]  
+        [System.Net.IPAddress]
+        $ReservedIP,
+
         [parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [UInt32]
@@ -62,20 +70,23 @@ function Get-TargetResource
         $Ensure = 'Present'
     )
   
-    $result = Get-TargetResourceHelper -ApplyTo 'Server' -OptionId $OptionId -VendorClass $VendorClass -UserClass $UserClass -AddressFamily $AddressFamily -Ensure $Ensure        
+    $result = Get-TargetResourceHelper -ApplyTo 'ReservedIP' -ReservedIP $ReservedIP -OptionId $OptionId -VendorClass $VendorClass -UserClass $UserClass -AddressFamily $AddressFamily -Ensure $Ensure        
     $result
 
  }
 
    <#
    .SYNOPSIS
-        This function sets a DHCP server option value.
+        This function sets a DHCP reserved IP option value.
+
+    .PARAMETER ReservedIP
+        The reserved IP.
 
     .PARAMETER OptionId
-        The ID of the option.
+        The Option ID.
 
     .PARAMETER Value
-        The data value option.
+        The option data value.
         
     .PARAMETER VendorClass
         The vendor class of the option. Use an empty string for standard class.
@@ -98,10 +109,15 @@ function Set-TargetResource
     param
     (
         [parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]  
+        [System.Net.IPAddress]
+        $ReservedIP,
+
+        [parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [UInt32]
         $OptionId,
-
+        
         [parameter(Mandatory = $true)]
         [String[]]
         $Value,
@@ -127,18 +143,21 @@ function Set-TargetResource
         $Ensure = 'Present'
     )
 
-    Set-TargetResourceHelper -ApplyTo 'Server' -OptionId $OptionId -Value $Value -VendorClass $VendorClass -UserClass $UserClass -AddressFamily $AddressFamily -Ensure $Ensure
+    Set-TargetResourceHelper -ApplyTo 'ReservedIP' -ReservedIP $ReservedIP -OptionId $OptionId -Value $Value -VendorClass $VendorClass -UserClass $UserClass -AddressFamily $AddressFamily -Ensure $Ensure
 }
 
    <#
    .SYNOPSIS
-        This function tests a DHCP server option value.
+        This function tests a DHCP reserved IP option value.
+
+    .PARAMETER ReservedIP
+        The reserved IP.
 
     .PARAMETER OptionId
-        The ID of the option.
+        The Option ID.
 
     .PARAMETER Value
-        The data value option.
+        The option data value.
         
     .PARAMETER VendorClass
         The vendor class of the option. Use an empty string for standard class.
@@ -160,6 +179,11 @@ function Test-TargetResource
     param
     (
         [parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]  
+        [System.Net.IPAddress]
+        $ReservedIP,
+        
+        [parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [UInt32]
         $OptionId,
@@ -189,7 +213,6 @@ function Test-TargetResource
         $Ensure = 'Present'
     )
 
-    
-    $result = Test-TargetResourceHelper -ApplyTo 'Server' -OptionId $OptionId -Value $Value -VendorClass $VendorClass -UserClass $UserClass -AddressFamily $AddressFamily -Ensure $Ensure
+    $result = Test-TargetResourceHelper -ApplyTo 'ReservedIP' -ReservedIP $ReservedIP -OptionId $OptionId -Value $Value -VendorClass $VendorClass -UserClass $UserClass -AddressFamily $AddressFamily -Ensure $Ensure
     $result
 }

@@ -3,9 +3,9 @@ class MSFT_xDhcpReservedIPOptionValue : OMI_BaseResource
 {
     [Key,        Description("Scope ID.")] String ScopeId;
     [Key,        Description("Option ID, specify an integer between 1 and 255.")] uint32 OptionId;
-    [Write,      Description("Option data value.")] String OptionValue[];
+    [Write,      Description("Option data value.")] String Value[];
     [Key,        Description("Vendor class. Use an empty string for default vendor class.")] String VendorClass;
     [Write,      Description("User class.")] String UserClass;
-    [Key,        Description("Class address family. Currently needs to be IPv4."), ValueMap{"IPv4"}, Values{"IPv4"}] String AddressFamily;
+    [Key,        Description("Address family. Currently needs to be IPv4."), ValueMap{"IPv4"}, Values{"IPv4"}] String AddressFamily;
     [Write,      Description("Whether the DHCP option should exist."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
 };

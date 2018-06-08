@@ -12,7 +12,7 @@ Import-Module -Name (Join-Path -Path $script:moduleRoot -ChildPath (Join-Path -P
 
 $TestEnvironment = Initialize-TestEnvironment `
     -DSCModuleName 'xDhcpServer' `
-    -DSCResourceName 'MSFT_xDhcpServerOptionValue' `
+    -DSCResourceName 'MSFT_xDhcpReservedIPOptionValue' `
     -TestType Unit
 
 #endregion HEADER
@@ -30,9 +30,10 @@ try
 {
     Invoke-TestSetup
 
-    InModuleScope 'MSFT_xDhcpServerOptionValue' {
+    InModuleScope 'MSFT_xDhcpReservedIPOptionValue' {
        
         $optionId      = 67
+        $reservedIP    = 1.1.1.1
         $value         = @('test Value')
         $vendorClass   = ''
         $userClass     = ''
@@ -41,12 +42,13 @@ try
 
         $testParams = @{
             OptionId      = $optionId
+            ReservedIP    = $reservedIP
             VendorClass   = $vendorClass
             UserClass     = $userClass
             AddressFamily = $addressFamily
         }
 
-        $getFakeDhcpServerv4OptionValue = {
+        $getFakeDhcpReservedIPv4OptionValue = {
             return @{
                 OptionId      = $optionId
                 Value         = $value
@@ -56,7 +58,7 @@ try
             }
         }
 
-        $getFakeDhcpServerv4OptionValueID168 = {
+        $getFakeDhcpReservedIPv4OptionValueID168 = {
             return @{
                 OptionId      = 168
                 Value         = $value
@@ -66,7 +68,7 @@ try
             }
         }
 
-        $getFakeDhcpServerv4OptionValueDifferentValue = {
+        $getFakeDhcpReservedIPv4OptionValueDifferentValue = {
             return @{
                 OptionId      = $optionId
                 Value         = @('DifferentValue')
@@ -79,7 +81,7 @@ try
         Describe 'xDhcpServer\Get-TargetResource' {
 
             Mock Assert-Module -ModuleName OptionValueHelper  -ParameterFilter { $ModuleName -eq 'DHCPServer' } { }
-            Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $GetFakeDhcpServerv4OptionValue
+            Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $GetFakeDhcpReservedIPv4OptionValue
        
             It 'Should call "Assert-Module" to ensure "DHCPServer" module is available' {
                  
@@ -101,7 +103,7 @@ try
 
             It 'Returns a "System.Boolean" object type' {
             
-                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $GetFakeDhcpServerv4OptionValue
+                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $GetFakeDhcpReservedIPv4OptionValue
 
                 $result = Test-TargetResource @testParams -Ensure 'Present' -Value $value
                 $result  | Should BeOfType [System.Boolean]
@@ -109,7 +111,7 @@ try
             
             It 'Returns $true when the option exists and Ensure = Present' {
                 
-                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $GetFakeDhcpServerv4OptionValue
+                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $GetFakeDhcpReservedIPv4OptionValue
                 
                 $result = Test-TargetResource @testParams -Ensure 'Present' -Value $value
                 $result | Should Be $true
@@ -125,7 +127,7 @@ try
 
             It 'Returns $false when the option exists and Ensure = Absent ' {
 
-                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $GetFakeDhcpServerv4OptionValue
+                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $GetFakeDhcpReservedIPv4OptionValue
 
                 $result = Test-TargetResource @testParams -Ensure 'Absent' -Value $value
                 $result | Should Be $false
@@ -149,7 +151,7 @@ try
 
             It 'Should call "Remove-DhcpServerv4OptionValue" when "Ensure" = "Absent" and Definition does exist' {
             
-                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $GetFakeDhcpServerv4OptionValue
+                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $GetFakeDhcpReservedIPv4OptionValue
                 
                 Set-TargetResource @testParams -Ensure 'Absent' -Value $value
                 Assert-MockCalled -CommandName Remove-DhcpServerv4OptionValue -ModuleName OptionValueHelper -Scope It
@@ -157,7 +159,7 @@ try
 
             It 'Should call "Set-DhcpServerv4OptionValue" when "Ensure" = "Present" and option value is different' {
             
-                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $getFakeDhcpServerv4OptionValueDifferentValue
+                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $getFakeDhcpReservedIPv4OptionValueDifferentValue
 
                 Set-TargetResource @testParams -Ensure 'Present' -Value $value
                 Assert-MockCalled -CommandName Set-DhcpServerv4OptionValue -ModuleName OptionValueHelper -Scope It

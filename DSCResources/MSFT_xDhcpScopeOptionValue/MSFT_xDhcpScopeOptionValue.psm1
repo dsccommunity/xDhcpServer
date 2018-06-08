@@ -4,12 +4,15 @@ $modulePathhelper            = (Join-Path -Path (Split-Path -Path $currentPath -
 $modulePathOptionValueHelper = (Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'OptionValueHelper.psm1')
 
 Import-Module -Name $modulePathhelper
-Import-Module -Name $modulePathOptionValueHelper -Force
+Import-Module -Name $modulePathOptionValueHelper
 
    <#
    .SYNOPSIS
-        This function gets a DHCP server option value.
+        This function gets a DHCP scope option value.
 
+    .PARAMETER ScopeId
+        The ID of the scope.
+    
     .PARAMETER OptionId
         The ID of the option.
 
@@ -37,6 +40,11 @@ function Get-TargetResource
     param
     (
         [parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]  
+        [System.Net.IPAddress]
+        $ScopeId,
+
+        [parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [UInt32]
         $OptionId,
@@ -62,14 +70,17 @@ function Get-TargetResource
         $Ensure = 'Present'
     )
   
-    $result = Get-TargetResourceHelper -ApplyTo 'Server' -OptionId $OptionId -VendorClass $VendorClass -UserClass $UserClass -AddressFamily $AddressFamily -Ensure $Ensure        
+    $result = Get-TargetResourceHelper -ApplyTo 'Scope' -ScopeId $ScopeId -OptionId $OptionId -VendorClass $VendorClass -UserClass $UserClass -AddressFamily $AddressFamily -Ensure $Ensure        
     $result
 
  }
 
    <#
    .SYNOPSIS
-        This function sets a DHCP server option value.
+        This function sets a DHCP scope option value.
+
+    .PARAMETER ScopeId
+        The ID of the scope.
 
     .PARAMETER OptionId
         The ID of the option.
@@ -98,10 +109,15 @@ function Set-TargetResource
     param
     (
         [parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]  
+        [System.Net.IPAddress]
+        $ScopeId,
+
+        [parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [UInt32]
         $OptionId,
-
+        
         [parameter(Mandatory = $true)]
         [String[]]
         $Value,
@@ -127,12 +143,15 @@ function Set-TargetResource
         $Ensure = 'Present'
     )
 
-    Set-TargetResourceHelper -ApplyTo 'Server' -OptionId $OptionId -Value $Value -VendorClass $VendorClass -UserClass $UserClass -AddressFamily $AddressFamily -Ensure $Ensure
+    Set-TargetResourceHelper -ApplyTo 'Scope' -ScopeId $ScopeId -OptionId $OptionId -Value $Value -VendorClass $VendorClass -UserClass $UserClass -AddressFamily $AddressFamily -Ensure $Ensure
 }
 
    <#
    .SYNOPSIS
-        This function tests a DHCP server option value.
+        This function tests a DHCP scope option value.
+
+    .PARAMETER ScopeId
+        The ID of the scope.
 
     .PARAMETER OptionId
         The ID of the option.
@@ -160,6 +179,11 @@ function Test-TargetResource
     param
     (
         [parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]  
+        [System.Net.IPAddress]
+        $ScopeId,
+        
+        [parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [UInt32]
         $OptionId,
@@ -189,7 +213,6 @@ function Test-TargetResource
         $Ensure = 'Present'
     )
 
-    
-    $result = Test-TargetResourceHelper -ApplyTo 'Server' -OptionId $OptionId -Value $Value -VendorClass $VendorClass -UserClass $UserClass -AddressFamily $AddressFamily -Ensure $Ensure
+    $result = Test-TargetResourceHelper -ApplyTo 'Scope' -ScopeId $ScopeId -OptionId $OptionId -Value $Value -VendorClass $VendorClass -UserClass $UserClass -AddressFamily $AddressFamily -Ensure $Ensure
     $result
 }
