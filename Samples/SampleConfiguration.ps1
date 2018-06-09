@@ -49,4 +49,26 @@
         AddressFamily = 'IPv4'
         Description = 'Vendor Class Description' 
      }
+ 
+    xDhcpServerOptionDefinition DHCPServerOptionDefinition
+    {
+        Ensure = 'Present'
+        Name = 'Cisco AP c1700 Provisioning'
+        OptionID = '200'
+        Type = 'IPv4Address'
+        AddressFamily = 'IPv4'
+        VendorClass = 'Cisco AP c1700'
+        Description = 'Sample description'
+    }
+
+    xDhcpServerOptionDefinition DHCPServerOptionDefinition
+    {
+        Ensure = 'Present'
+        Name = 'sample name'
+        OptionID = '200'
+        Type = 'IPv4Address'
+        AddressFamily = 'IPv4'
+        VendorClass = ''  #default option class
+        Description = 'Sample description'
+    }
  } 
