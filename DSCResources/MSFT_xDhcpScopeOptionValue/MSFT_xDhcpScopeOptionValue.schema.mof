@@ -1,7 +1,7 @@
 [ClassVersion("1.0.0.0"), FriendlyName("xDhcpScopeOptionValue")]
 class MSFT_xDhcpScopeOptionValue : OMI_BaseResource
 {
-    [Key,        Description("Scope ID.")] String ScopeId;
+    [Key,        Description("Scope ID to set the option.")] String ScopeId;
     [Key,        Description("Option ID, specify an integer between 1 and 255.")] uint32 OptionId;
     [Write,      Description("Option data value.")] String Value[];
     [Key,        Description("Vendor class. Use an empty string for default vendor class.")] String VendorClass;
