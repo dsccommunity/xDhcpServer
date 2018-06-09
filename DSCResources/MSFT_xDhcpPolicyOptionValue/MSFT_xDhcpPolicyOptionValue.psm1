@@ -103,7 +103,6 @@ function Get-TargetResource
 function Set-TargetResource
 {
     [CmdletBinding()]
-    [OutputType([System.Boolean])]
     param
     (
         [parameter(Mandatory = $true)]
