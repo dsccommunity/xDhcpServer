@@ -41,7 +41,7 @@ function Get-TargetResource
     (
         [parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]  
-        [System.Net.IPAddress]
+        [String]
         $ReservedIP,
 
         [parameter(Mandatory = $true)]
@@ -110,7 +110,7 @@ function Set-TargetResource
     (
         [parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]  
-        [System.Net.IPAddress]
+        [String]
         $ReservedIP,
 
         [parameter(Mandatory = $true)]
@@ -180,7 +180,7 @@ function Test-TargetResource
     (
         [parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]  
-        [System.Net.IPAddress]
+        [String]
         $ReservedIP,
         
         [parameter(Mandatory = $true)]

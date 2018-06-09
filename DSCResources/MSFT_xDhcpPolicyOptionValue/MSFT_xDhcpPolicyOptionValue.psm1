@@ -50,7 +50,7 @@ function Get-TargetResource
 
         [parameter(Mandatory = $false)]
         [AllowNull()]
-        [System.Net.IPAddress]
+        [String]
         $ScopeId,
 
         [parameter(Mandatory = $true)]
@@ -121,7 +121,7 @@ function Set-TargetResource
         $Value,
 
         [parameter(Mandatory = $false)]
-        [System.Net.IPAddress]
+        [String]
         $ScopeId,
 
         [parameter(Mandatory = $true)]
@@ -190,7 +190,7 @@ function Test-TargetResource
         $Value,
 
         [parameter(Mandatory = $false)]
-        [System.Net.IPAddress]
+        [String]
         $ScopeId,
 
         [parameter(Mandatory = $true)]

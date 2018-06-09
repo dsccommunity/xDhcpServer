@@ -103,7 +103,7 @@ function Get-TargetResourceHelper
 
         [parameter()]
         [AllowNull()]
-        [System.Net.IPAddress]
+        [String]
         $ScopeId,
 
         [parameter()]
@@ -283,7 +283,7 @@ function Test-TargetResourceHelper
 
         [parameter()]
         [AllowNull()]
-        [System.Net.IPAddress]
+        [String]
         $ScopeId,
 
         [parameter()]
@@ -555,7 +555,7 @@ function Set-TargetResourceHelper
 
         [parameter()]
         [AllowNull()]
-        [System.Net.IPAddress]
+        [String]
         $ScopeId,
 
         [parameter()]
