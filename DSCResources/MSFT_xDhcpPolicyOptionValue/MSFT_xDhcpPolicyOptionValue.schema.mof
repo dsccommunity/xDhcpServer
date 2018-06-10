@@ -3,7 +3,7 @@ class MSFT_xDhcpPolicyOptionValue : OMI_BaseResource
 {
     [Key,        Description("Option ID, specify an integer between 1 and 255.")] uint32 OptionId;
     [Key,        Description("Policy Name.")] String PolicyName;
-    [Key,        Description("Option data value. Could be an array of string for a multivalued option.")] String Value[];
+    [Write,      Description("Option data value. Could be an array of string for a multivalued option.")] String Value[];
     [Write,      Description("Scope ID to get policy values from. Do not use it to get an option from server level.")] String ScopeId;
     [Key,        Description("Vendor class. Use an empty string for default vendor class.")] String VendorClass;
     [Key,        Description("Address family. Currently needs to be IPv4."), ValueMap{"IPv4"}, Values{"IPv4"}] String AddressFamily;

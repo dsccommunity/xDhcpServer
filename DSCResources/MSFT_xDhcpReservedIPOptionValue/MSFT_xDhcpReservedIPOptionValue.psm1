@@ -117,7 +117,7 @@ function Set-TargetResource
         [UInt32]
         $OptionId,
         
-        [parameter(Mandatory = $true)]
+        [parameter()]
         [String[]]
         $Value,
 
@@ -187,7 +187,7 @@ function Test-TargetResource
         [UInt32]
         $OptionId,
 
-        [parameter(Mandatory = $true)]
+        [parameter()]
         [String[]]
         $Value,
 
