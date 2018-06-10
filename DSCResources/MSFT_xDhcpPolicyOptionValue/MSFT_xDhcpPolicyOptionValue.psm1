@@ -63,7 +63,7 @@ function Get-TargetResource
         [String]
         $AddressFamily,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter()]
         [ValidateSet('Present','Absent')]
         [String]
         $Ensure = 'Present'
@@ -133,7 +133,7 @@ function Set-TargetResource
         [String]
         $AddressFamily,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter()]
         [ValidateSet('Present','Absent')]
         [String]
         $Ensure = 'Present'
@@ -202,7 +202,7 @@ function Test-TargetResource
         [String]
         $AddressFamily,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter()]
         [ValidateSet('Present','Absent')]
         [String]
         $Ensure = 'Present'
