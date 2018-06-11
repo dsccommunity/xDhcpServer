@@ -12,7 +12,7 @@ Author = 'Microsoft Corporation'
 CompanyName = 'Microsoft Corporation'
 
 # Copyright statement for this module
-Copyright = '(c) 2014 Microsoft Corporation. All rights reserved.'
+Copyright = '(c) 2018 Microsoft Corporation. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Module with DSC Resources for DHCP Server area'
