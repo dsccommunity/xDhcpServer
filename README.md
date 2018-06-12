@@ -1,5 +1,3 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/uan12tf7tfxhg7m5/branch/master?svg=true)](https://ci.appveyor.com/project/PowerShell/xdhcpserver/branch/master)
-
 # xDhcpServer
 
 The **xDhcpServer** DSC resources are used for configuring and managing a DHCP server. They include **xDhcpServerScope**, **xDhcpServerReservation**, **xDhcpServerOptions** and **xDhcpServerAuthorization**.
@@ -7,9 +5,29 @@ The **xDhcpServer** DSC resources are used for configuring and managing a DHCP s
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
-## Contributing
-Please check out common DSC Resources [contributing guidelines](https://github.com/PowerShell/DscResource.Kit/blob/master/CONTRIBUTING.md).
+## Branches
 
+### master
+
+[![Build status](https://ci.appveyor.com/api/projects/status/uan12tf7tfxhg7m5/branch/master?svg=true)](https://ci.appveyor.com/project/PowerShell/xDhcpServer/branch/master)
+[![codecov](https://codecov.io/gh/PowerShell/xDhcpServer/branch/master/graph/badge.svg)](https://codecov.io/gh/PowerShell/xDhcpServer/branch/master)
+
+This is the branch containing the latest release -
+no contributions should be made directly to this branch.
+
+### dev
+
+[![Build status](https://ci.appveyor.com/api/projects/status/uan12tf7tfxhg7m5/branch/dev?svg=true)](https://ci.appveyor.com/project/PowerShell/xDhcpServer/branch/dev)
+[![codecov](https://codecov.io/gh/PowerShell/xDhcpServer/branch/dev/graph/badge.svg)](https://codecov.io/gh/PowerShell/xDhcpServer/branch/dev)
+
+This is the development branch
+to which contributions should be proposed by contributors as pull requests.
+This development branch will periodically be merged to the master branch,
+and be released to [PowerShell Gallery](https://www.powershellgallery.com/).
+
+## Contributing
+
+Please check out common DSC Resources [contributing guidelines](https://github.com/PowerShell/DscResource.Kit/blob/master/CONTRIBUTING.md).
 
 ## Resources
 
@@ -58,16 +76,16 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 * **IPAddress**: IP v4 address of the server to authorized. If not specified, it default to the first IPv4 address of the enacting node.
 
 ### xDhcpServerClass
-        
+
  * **Name**: DHCP Class Name.
  * **Type**: Class type, should be Vendor or User.
  * **AsciiData**: Class Data in a ascii formated string.
  * **AddressFamily**: Currently should be "IPv4".
  * **Description**: Class Description.
  * **Ensure**: Whether class should be set or removed.
- 
+
  ### xDhcpServerOptionDefinition
- 
+
  *  **OptionID**: Option ID, should be a number between 1 and 255.
  *  **VendorClass**: Vendor class. Use an empty string for standard option class.
  *  **Name**: Option name.
@@ -81,6 +99,11 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 
 ### Unreleased
 
+* Changes to xDhcpServer
+  * Updated year in LICENSE file.
+  * Updated year in module manifest.
+  * Added Codecov and status badges to README.md.
+  * Update appveyor.yml to use the default template.
 * Added xDhcpServerOptionDefinition
 
 ### 1.6.0.0
@@ -215,7 +238,7 @@ configuration Sample_DHCPServerClass
         Type = 'Vendor'
         AsciiData = 'sampledata'
         AddressFamily = 'IPv4'
-        Description = 'Vendor Class Description' 
+        Description = 'Vendor Class Description'
     }
 }
 ```
