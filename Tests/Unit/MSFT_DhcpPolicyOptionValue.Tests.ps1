@@ -12,11 +12,10 @@ Import-Module -Name (Join-Path -Path $script:moduleRoot -ChildPath (Join-Path -P
 
 $TestEnvironment = Initialize-TestEnvironment `
     -DSCModuleName 'xDhcpServer' `
-    -DSCResourceName 'MSFT_xDhcpReservedIPOptionValue' `
+    -DSCResourceName 'MSFT_DhcpPolicyOptionValue' `
     -TestType Unit
 
 #endregion HEADER
-
 
 function Invoke-TestSetup {
 }
@@ -30,70 +29,94 @@ try
 {
     Invoke-TestSetup
 
-    InModuleScope 'MSFT_xDhcpReservedIPOptionValue' {
+    InModuleScope 'MSFT_DhcpPolicyOptionValue' {
        
+        $policyName    = 'Test Policy'
         $optionId      = 67
-        $reservedIP    = '1.1.1.1'
         $value         = @('test Value')
+        $scopeId       = '10.1.1.0'
         $vendorClass   = ''
-        $userClass     = ''
         $addressFamily = 'IPv4'
         $ensure        = 'Present'
 
         $testParams = @{
+            PolicyName    = $policyName
             OptionId      = $optionId
-            ReservedIP    = $reservedIP
+            ScopeId       = $scopeId
             VendorClass   = $vendorClass
-            UserClass     = $userClass
             AddressFamily = $addressFamily
         }
 
-        $getFakeDhcpReservedIPv4OptionValue = {
+        $getFakeDhcpPolicyv4OptionValue = {
             return @{
+                PolicyName    = $policyName
                 OptionId      = $optionId
                 Value         = $value
+                ScopeId       = $scopeId
                 VendorClass   = $vendorClass
-                UserClass     = $userClass
                 AddressFamily = $addressFamily
             }
         }
 
-        $getFakeDhcpReservedIPv4OptionValueID168 = {
+        $getFakeDhcpPolicyv4OptionValueID168 = {
             return @{
+                PolicyName    = $policyName
                 OptionId      = 168
                 Value         = $value
+                ScopeId       = $scopeId
                 VendorClass   = $vendorClass
-                UserClass     = $userClass
                 AddressFamily = $addressFamily
             }
         }
 
-        $getFakeDhcpReservedIPv4OptionValueDifferentValue = {
+        $getFakeDhcpPolicyv4OptionValueDifferentValue = {
             return @{
+                PolicyName    = $policyName
                 OptionId      = $optionId
                 Value         = @('DifferentValue')
+                ScopeId       = $scopeId
                 VendorClass   = $vendorClass
-                UserClass     = $userClass
                 AddressFamily = $addressFamily
             }
         }
 
         Describe 'xDhcpServer\Get-TargetResource' {
 
-            Mock Assert-Module -ModuleName OptionValueHelper  -ParameterFilter { $ModuleName -eq 'DHCPServer' } { }
-            Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $GetFakeDhcpReservedIPv4OptionValue
+            Mock Assert-Module -ModuleName OptionValueHelper -ParameterFilter { $ModuleName -eq 'DHCPServer' } { }
+            Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $GetFakeDhcpPolicyv4OptionValue
        
             It 'Should call "Assert-Module" to ensure "DHCPServer" module is available' {
                  
-                $result = Get-TargetResource @testParams -Ensure 'Present'
+                $result = Get-TargetResource @testParams
 
                 Assert-MockCalled -CommandName Assert-Module -Scope It -ModuleName OptionValueHelper
             }
 
             It 'Returns a "System.Collections.Hashtable" object type' {
 
-                $result = Get-TargetResource @testParams -Ensure 'Present'
-                $result -is [System.Collections.Hashtable] | Should Be $true;
+                $result = Get-TargetResource @testParams
+                $result | Should BeOfType [System.Collections.Hashtable]
+            }
+
+            It 'Returns "Absent" when the option value does not exist' {
+            
+                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper {return $null}
+                           
+                $result = Get-TargetResource @testParams
+                $result.Ensure | Should -Be 'Absent'
+            }
+
+            It 'Returns all correct values'{
+                
+                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $getFakeDhcpPolicyv4OptionValueDifferentValue
+            
+                $result = Get-TargetResource @testParams
+                $result.Ensure        | Should Be $ensure
+                $result.OptionId      | Should Be $optionId
+                $result.Value         | Should Be @('DifferentValue')
+                $result.VendorClass   | Should Be $vendorClass
+                $result.UserClass     | Should Be $userClass
+                $result.AddressFamily | Should Be $addressFamily
             }
         }
         
@@ -103,15 +126,15 @@ try
 
             It 'Returns a "System.Boolean" object type' {
             
-                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $GetFakeDhcpReservedIPv4OptionValue
+                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $GetFakeDhcpPolicyv4OptionValue
 
                 $result = Test-TargetResource @testParams -Ensure 'Present' -Value $value
-                $result  | Should BeOfType [System.Boolean]
+                $result | Should BeOfType [System.Boolean]
             }
             
             It 'Returns $true when the option exists and Ensure = Present' {
                 
-                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $GetFakeDhcpReservedIPv4OptionValue
+                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $GetFakeDhcpPolicyv4OptionValue
                 
                 $result = Test-TargetResource @testParams -Ensure 'Present' -Value $value
                 $result | Should Be $true
@@ -127,7 +150,7 @@ try
 
             It 'Returns $false when the option exists and Ensure = Absent ' {
 
-                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $GetFakeDhcpReservedIPv4OptionValue
+                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $GetFakeDhcpPolicyv4OptionValue
 
                 $result = Test-TargetResource @testParams -Ensure 'Absent' -Value $value
                 $result | Should Be $false
@@ -151,7 +174,7 @@ try
 
             It 'Should call "Remove-DhcpServerv4OptionValue" when "Ensure" = "Absent" and Definition does exist' {
             
-                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $GetFakeDhcpReservedIPv4OptionValue
+                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $GetFakeDhcpPolicyv4OptionValue
                 
                 Set-TargetResource @testParams -Ensure 'Absent' -Value $value
                 Assert-MockCalled -CommandName Remove-DhcpServerv4OptionValue -ModuleName OptionValueHelper -Scope It
@@ -159,7 +182,7 @@ try
 
             It 'Should call "Set-DhcpServerv4OptionValue" when "Ensure" = "Present" and option value is different' {
             
-                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $getFakeDhcpReservedIPv4OptionValueDifferentValue
+                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $getFakeDhcpPolicyv4OptionValueDifferentValue
 
                 Set-TargetResource @testParams -Ensure 'Present' -Value $value
                 Assert-MockCalled -CommandName Set-DhcpServerv4OptionValue -ModuleName OptionValueHelper -Scope It

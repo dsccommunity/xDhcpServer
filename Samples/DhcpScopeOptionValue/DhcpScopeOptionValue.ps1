@@ -1,14 +1,19 @@
-configuration Sample_xDhcpsServerScope_NewScope
+<#
+    .SYNOPSiS
+        This example shows how to substitute the xDhcpServerOption resource, setting the gateway (option 3), DNS Servers (option 6) and domain name (Option 15).
+#>
+configuration Example
 {
-    Import-DscResource -module xDHCpServer
+    Import-DscResource -ModuleName PSDscResources
+    Import-DscResource -moduleName xdhcpServer
     WindowsFeature DHCP
     {
        Name = 'DHCP'
        Ensure = 'Present'
     }
 
-    #set scope gateway
-    xDhcpScopeOptionValue scopeOptionGateway
+    # Setting scope gateway
+    DhcpScopeOptionValue scopeOptionGateway
     {
         OptionId = 3
         Value = 1.1.1.1
@@ -18,8 +23,8 @@ configuration Sample_xDhcpsServerScope_NewScope
         AddressFamily = 'IPv4'
     }
 
-    #set scope DNS servers
-    xDhcpScopeOptionValue scopeOptionDNS
+    # Setting scope DNS servers
+    DhcpScopeOptionValue scopeOptionDNS
     {
         OptionId = 6
         Value = 1.1.1.1,2.2.2.2
@@ -29,8 +34,8 @@ configuration Sample_xDhcpsServerScope_NewScope
         AddressFamily = 'IPv4'
     }
 
-    #set scope DNS domain name
-    xDhcpScopeOptionValue scopeOptionDNSDomainName
+    # Setting scope DNS domain name
+    DhcpScopeOptionValue scopeOptionDNSDomainName
     {
         OptionId = 15
         Value = 'Contoso.com'

@@ -1,36 +1,30 @@
 $currentPath = Split-Path -Path $MyInvocation.MyCommand.Path -Parent
 
 $modulePathhelper            = (Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Helper.psm1')
-$modulePathOptionValueHelper = (Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'OptionValueHelper.psm1')
+$modulePathOptionValueHelper = (Join-Path -Path (Join-Path -Path (Join-Path -Path (Split-Path -Path (Split-Path -Path $currentPath -Parent) -Parent) `
+                                -ChildPath 'modules') -ChildPath 'DhcpServerDsc.OptionValueHelper') -ChildPath 'OptionValueHelper.psm1')
 
 Import-Module -Name $modulePathhelper
 Import-Module -Name $modulePathOptionValueHelper
 
-   <#
-   .SYNOPSIS
-        This function gets a DHCP policy option value.
+<#
+    .SYNOPSIS
+        This function gets a DHCP reserved IP option value.
 
-    .PARAMETER PolicyName
-        The Policy name.
+    .PARAMETER ReservedIP
+        The Reserved IP to get the option value from.
     
     .PARAMETER OptionId
         The ID of the option.
 
-    .PARAMETER Value
-        The data value option.
-        
-    .PARAMETER ScopeId
-        The scope ID to get the value. If not used server level values are retrieved.
-
     .PARAMETER VendorClass
         The vendor class of the option. Use an empty string for standard class.
 
+    .PARAMETER UserClass
+        The user class of the option.
+    
     .PARAMETER AddressFamily
         The option definition address family (IPv4 or IPv6). Currently only the IPv4 is supported.
-
-    .PARAMETER Ensure
-        When set to 'Present', the option will be created.
-        When set to 'Absent', the option will be removed.
 #>
 function Get-TargetResource
 {
@@ -38,60 +32,57 @@ function Get-TargetResource
     [OutputType([System.Collections.Hashtable])]
     param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]  
         [String]
-        $PolicyName,
+        $ReservedIP,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [UInt32]
         $OptionId,
 
-        [parameter(Mandatory = $false)]
-        [AllowNull()]
-        [String]
-        $ScopeId,
-
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [AllowEmptyString()]
         [String]
         $VendorClass,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyString()]
+        [String]
+        $UserClass,
+
+        [Parameter(Mandatory = $true)]
         [ValidateSet('IPv4')]
         [String]
-        $AddressFamily,
-
-        [Parameter()]
-        [ValidateSet('Present','Absent')]
-        [String]
-        $Ensure = 'Present'
+        $AddressFamily
     )
   
-    $result = Get-TargetResourceHelper -ApplyTo 'Policy' -PolicyName $PolicyName -OptionId $OptionId -ScopeId $ScopeId -VendorClass $VendorClass -UserClass '' -AddressFamily $AddressFamily -Ensure $Ensure        
+    $Params = @{} + $PSBoundParameters
+    $Params.Remove('Ensure')
+    $result = Get-TargetResourceHelper -ApplyTo 'ReservedIP' @Params
     $result
 
  }
 
-   <#
-   .SYNOPSIS
-        This function sets a DHCP policy option value.
+<#
+    .SYNOPSIS
+        This function sets a DHCP reserved IP option value.
 
-    .PARAMETER PolicyName
-        The policy name.
+    .PARAMETER ReservedIP
+        The reserved IP.
 
     .PARAMETER OptionId
-        The ID of the option.
+        The Option ID.
 
     .PARAMETER Value
-        The data value option.
-
-    .PARAMETER ScopeId
-        The scope ID to set the value. If not used server level values are used.
+        The option data value.
         
     .PARAMETER VendorClass
         The vendor class of the option. Use an empty string for standard class.
+
+    .PARAMETER UserClass
+        The user class of the option.
 
     .PARAMETER AddressFamily
         The option definition address family (IPv4 or IPv6). Currently only the IPv4 is supported.
@@ -105,30 +96,31 @@ function Set-TargetResource
     [CmdletBinding()]
     param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]  
         [String]
-        $PolicyName,
+        $ReservedIP,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [UInt32]
         $OptionId,
         
-        [parameter()]
+        [Parameter()]
         [String[]]
         $Value,
 
-        [parameter(Mandatory = $false)]
-        [String]
-        $ScopeId,
-
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [AllowEmptyString()]
         [String]
         $VendorClass,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyString()]
+        [String]
+        $UserClass,
+
+        [Parameter(Mandatory = $true)]
         [ValidateSet('IPv4')]
         [String]
         $AddressFamily,
@@ -139,28 +131,28 @@ function Set-TargetResource
         $Ensure = 'Present'
     )
 
-    Set-TargetResourceHelper -ApplyTo 'Policy' -PolicyName $PolicyName -OptionId $OptionId -Value $Value -ScopeId $ScopeId -VendorClass $VendorClass -UserClass '' -AddressFamily $AddressFamily -Ensure $Ensure
+    Set-TargetResourceHelper -ApplyTo 'ReservedIP' @PSBoundParameters
 }
 
-   <#
-   .SYNOPSIS
-        This function tests a DHCP policy option value.
+<#
+    .SYNOPSIS
+        This function tests a DHCP reserved IP option value.
 
-    .PARAMETER PolicyName
-        The policy name.
+    .PARAMETER ReservedIP
+        The reserved IP.
 
     .PARAMETER OptionId
-        The ID of the option.
+        The Option ID.
 
     .PARAMETER Value
-        The data value option.
-
-    .PARAMETER ScopeId
-        The scope ID to test the value. If not used server level values are tested.
+        The option data value.
         
     .PARAMETER VendorClass
         The vendor class of the option. Use an empty string for standard class.
 
+    .PARAMETER UserClass
+        The user class of the option.
+    
     .PARAMETER AddressFamily
         The option definition address family (IPv4 or IPv6). Currently only the IPv4 is supported.
 
@@ -174,30 +166,31 @@ function Test-TargetResource
     [OutputType([System.Boolean])]
     param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]  
         [String]
-        $PolicyName,
+        $ReservedIP,
         
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [UInt32]
         $OptionId,
 
-        [parameter()]
+        [Parameter()]
         [String[]]
         $Value,
 
-        [parameter(Mandatory = $false)]
-        [String]
-        $ScopeId,
-
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [AllowEmptyString()]
         [String]
         $VendorClass,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyString()]
+        [String]
+        $UserClass,
+
+        [Parameter(Mandatory = $true)]
         [ValidateSet('IPv4')]
         [String]
         $AddressFamily,
@@ -208,6 +201,6 @@ function Test-TargetResource
         $Ensure = 'Present'
     )
 
-    $result = Test-TargetResourceHelper -ApplyTo 'Policy' -PolicyName $PolicyName -OptionId $OptionId -Value $Value -ScopeId $ScopeId -VendorClass $VendorClass -UserClass '' -AddressFamily $AddressFamily -Ensure $Ensure
+    $result = Test-TargetResourceHelper -ApplyTo 'ReservedIP' @PSBoundParameters
     $result
 }
