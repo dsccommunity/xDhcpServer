@@ -99,6 +99,8 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 
 ### Unreleased
 
+### 1.7.0.0
+
 * Changes to xDhcpServer
   * Updated year in LICENSE file.
   * Updated year in module manifest.
