@@ -106,7 +106,7 @@ try
             It 'Returns all correct values'{
                 
                 Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper -MockWith $getFakeDhcpReservedIPv4OptionValueDifferentValue
-                $teste = $GetFakeDhcpReservedIPv4OptionValue
+
                 $result = Get-TargetResource @testParams
                 $result.Ensure        | Should Be $ensure
                 $result.OptionId      | Should Be $optionId
@@ -115,7 +115,22 @@ try
                 $result.UserClass     | Should Be $userClass
                 $result.AddressFamily | Should Be $addressFamily
             }
+
+            It 'Returns the properties as $null when the option does not exist' {
+                
+                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper {return $null}
+            
+                $result = Get-TargetResource @testParams
+                $result.Ensure        | Should Be 'Absent'
+                $result.OptionId      | Should Be $null
+                $result.ReservedIP    | Should Be $null
+                $result.Value         | Should Be $null
+                $result.VendorClass   | Should Be $null
+                $result.UserClass     | Should Be $null
+                $result.AddressFamily | Should Be $null
+            }
         }
+
         
         Describe 'xDhcpServer\Test-TargetResource' {
 

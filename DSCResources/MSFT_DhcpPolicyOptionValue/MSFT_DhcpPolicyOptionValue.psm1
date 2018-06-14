@@ -5,7 +5,7 @@ $modulePathOptionValueHelper = (Join-Path -Path (Join-Path -Path (Join-Path -Pat
                                 -ChildPath 'modules') -ChildPath 'DhcpServerDsc.OptionValueHelper') -ChildPath 'OptionValueHelper.psm1')
 
 Import-Module -Name $modulePathhelper
-Import-Module -Name $modulePathOptionValueHelper
+Import-Module -Name $modulePathOptionValueHelper -force
 
 <#
     .SYNOPSIS
@@ -25,7 +25,7 @@ Import-Module -Name $modulePathOptionValueHelper
 
     .PARAMETER AddressFamily
         The option definition address family (IPv4 or IPv6). Currently only the IPv4 is supported.
-
+    
     .PARAMETER Ensure
         When set to 'Present', the option will be created.
         When set to 'Absent', the option will be removed.
@@ -62,12 +62,15 @@ function Get-TargetResource
         $AddressFamily
     )
   
-    $Params = @{} + $PSBoundParameters
-    $Params.Remove('Ensure')
-    $result = Get-TargetResourceHelper -ApplyTo 'Policy' -UserClass '' @Params
-    $result
-
- }
+    $hashTable = Get-TargetResourceHelper -ApplyTo 'Policy' -UserClass '' @PSBoundParameters
+    
+    # Removing properties that are not in the schema.mof before returning the hash table
+    $hashTable.Remove('ApplyTo')
+    $hashTable.Remove('ReservedIP')
+    $hashTable.Remove('UserClass')
+    
+    $hashTable
+}
 
 <#
     .SYNOPSIS
@@ -90,7 +93,10 @@ function Get-TargetResource
 
     .PARAMETER AddressFamily
         The option definition address family (IPv4 or IPv6). Currently only the IPv4 is supported.
-
+        
+    .PARAMETER Ensure
+        When set to 'Present', the option will be created.
+        When set to 'Absent', the option will be removed.
 #>
 function Set-TargetResource
 {

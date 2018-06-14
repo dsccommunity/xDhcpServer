@@ -80,6 +80,7 @@ try
             }
         }
 
+
         Describe 'xDhcpServer\Get-TargetResource' {
 
             Mock Assert-Module -ModuleName OptionValueHelper -ParameterFilter { $ModuleName -eq 'DHCPServer' } { }
@@ -113,12 +114,26 @@ try
                 $result = Get-TargetResource @testParams
                 $result.Ensure        | Should Be $ensure
                 $result.OptionId      | Should Be $optionId
+                $result.PolicyName    | Should Be $policyName
                 $result.Value         | Should Be @('DifferentValue')
                 $result.VendorClass   | Should Be $vendorClass
-                $result.UserClass     | Should Be $userClass
                 $result.AddressFamily | Should Be $addressFamily
             }
+
+            It 'Returns the properties as $null when the option does not exist' {
+                
+                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper {return $null}
+            
+                $result = Get-TargetResource @testParams
+                $result.Ensure        | Should Be 'Absent'
+                $result.OptionId      | Should Be $null
+                $result.PolicyName    | Should Be $null
+                $result.Value         | Should Be $null
+                $result.VendorClass   | Should Be $null
+                $result.AddressFamily | Should Be $null
+            }
         }
+
         
         Describe 'xDhcpServer\Test-TargetResource' {
 

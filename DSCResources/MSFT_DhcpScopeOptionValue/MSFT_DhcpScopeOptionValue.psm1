@@ -58,12 +58,15 @@ function Get-TargetResource
         $AddressFamily
     )
 
-    $Params = @{} + $PSBoundParameters
-    $Params.Remove('Ensure')
-    $result = Get-TargetResourceHelper -ApplyTo 'Scope' @Params
-    $result
-
- }
+    $hashTable = Get-TargetResourceHelper -ApplyTo 'Scope' @PSBoundParameters
+    
+    # Removing properties that are not in the schema.mof before returning the hash table
+    $hashTable.Remove('ApplyTo')
+    $hashTable.Remove('PolicyName')
+    $hashTable.Remove('ReservedIP')
+    
+    $hashTable
+}
 
 <#
     .SYNOPSIS

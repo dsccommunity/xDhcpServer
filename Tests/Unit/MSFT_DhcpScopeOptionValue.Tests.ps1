@@ -113,10 +113,25 @@ try
                 $result = Get-TargetResource @testParams
                 $result.Ensure        | Should Be $ensure
                 $result.OptionId      | Should Be $optionId
+                $result.ScopeId       | Should Be $scopeId
                 $result.Value         | Should Be @('DifferentValue')
                 $result.VendorClass   | Should Be $vendorClass
                 $result.UserClass     | Should Be $userClass
                 $result.AddressFamily | Should Be $addressFamily
+            }
+
+            It 'Returns the properties as $null when the option does not exist' {
+                
+                Mock Get-DhcpServerv4OptionValue -ModuleName OptionValueHelper {return $null}
+            
+                $result = Get-TargetResource @testParams
+                $result.Ensure        | Should Be 'Absent'
+                $result.OptionId      | Should Be $null
+                $result.ScopeId       | Should Be $null
+                $result.Value         | Should Be $null
+                $result.VendorClass   | Should Be $null
+                $result.UserClass     | Should Be $null
+                $result.AddressFamily | Should Be $null
             }
         }
         

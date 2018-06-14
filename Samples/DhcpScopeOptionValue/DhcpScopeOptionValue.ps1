@@ -5,7 +5,7 @@
 configuration Example
 {
     Import-DscResource -ModuleName PSDscResources
-    Import-DscResource -moduleName xdhcpServer
+    Import-DscResource -moduleName xDhcpServer
     WindowsFeature DHCP
     {
        Name = 'DHCP'
