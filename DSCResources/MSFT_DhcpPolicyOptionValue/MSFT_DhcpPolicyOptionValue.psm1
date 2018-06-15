@@ -5,7 +5,7 @@ $modulePathOptionValueHelper = (Join-Path -Path (Join-Path -Path (Join-Path -Pat
                                 -ChildPath 'modules') -ChildPath 'DhcpServerDsc.OptionValueHelper') -ChildPath 'OptionValueHelper.psm1')
 
 Import-Module -Name $modulePathhelper
-Import-Module -Name $modulePathOptionValueHelper -force
+Import-Module -Name $modulePathOptionValueHelper
 
 <#
     .SYNOPSIS
@@ -25,10 +25,6 @@ Import-Module -Name $modulePathOptionValueHelper -force
 
     .PARAMETER AddressFamily
         The option definition address family (IPv4 or IPv6). Currently only the IPv4 is supported.
-    
-    .PARAMETER Ensure
-        When set to 'Present', the option will be created.
-        When set to 'Absent', the option will be removed.
 #>
 function Get-TargetResource
 {

@@ -20,10 +20,10 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 * **xDhcpServerAuthorization** authorizes a DHCP in Active Directory.
  * *This resource must run on an Active Directory domain controller.*
 * **xDhcpServerOptionDefinition** manages DHCP option definitions.
-* **xDhcpServerOptionValue** manages an option value on server level.
-* **xDhcpScopeOptionValue** manages an option value on scope level.
-* **xDhcpReservedIPOptionValue** manages an option value on reserved IP level.
-* **xDhcpPolicyOptionValue** manages an option value on Policy level.
+* **DhcpServerOptionValue** manages an option value on server level.
+* **DhcpScopeOptionValue** manages an option value on scope level.
+* **DhcpReservedIPOptionValue** manages an option value on reserved IP level.
+* **DhcpPolicyOptionValue** manages an option value on Policy level.
 
 ### xDhcpServerScope
 
@@ -81,7 +81,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
  *  **AddressFamily**: Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
  *  **Ensure**: Whether option should be set or removed. { *Present* | Absent }
 
- ### xDhcpScopeOptionValue
+ ### DhcpScopeOptionValue
  
  * **ScopeId**: Scope ID where to set the option value.
  * **OptionId**: Option ID, specify an integer between 1 and 255.
@@ -91,7 +91,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
  * **AddressFamily**:  Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
  * **Ensure**: Whether option should be set or removed. { *Present* | Absent }
  
-### xDhcpServerOptionValue
+### DhcpServerOptionValue
  
  * **OptionId**: Option ID, specify an integer between 1 and 255.
  * **Value**: Option data value. Could be an array of string for a multivalued option.
@@ -100,7 +100,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
  * **AddressFamily**:  Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
  * **Ensure**: Whether option should be set or removed. { *Present* | Absent }
 
- ### xDhcpReservedIPOptionValue
+ ### DhcpReservedIPOptionValue
  
  * **ReservedIP**: Reserved IP to set the option value.
  * **OptionId**: Option ID, specify an integer between 1 and 255.
@@ -110,7 +110,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
  * **AddressFamily**:  Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
  * **Ensure**: Whether option should be set or removed. { *Present* | Absent }
  
- ### xDhcpPolicyOptionValue
+ ### DhcpPolicyOptionValue
  
  * **PolicyName**: Dhcp Policy Name.
  * **OptionId**: Option ID, specify an integer between 1 and 255.
