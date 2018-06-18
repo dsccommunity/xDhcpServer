@@ -126,10 +126,10 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 ### Unreleased
 
 * Added xDhcpServerOptionDefinition
-* Added xDhcpScopeOptionValue
-* Added xDhcpServerOptionValue
-* Added xDhcpReservedIPOptionValue
-* Added xDhcpPolicyOptionValue
+* Added DhcpScopeOptionValue
+* Added DhcpServerOptionValue
+* Added DhcpReservedIPOptionValue
+* Added DhcpPolicyOptionValue
 
 ### 1.6.0.0
 added xDhcpServerClass
