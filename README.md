@@ -34,9 +34,14 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 * **xDhcpServerClass** manages DHCP Classes (Vendor or User).
 * **xDhcpServerScope** sets a scope for consecutive range of possible IP addresses that the DHCP server can lease to clients on a subnet.
 * **xDhcpServerReservation** sets lease assignments used to ensure that a specified client on a subnet can always use the same IP address.
-* **xDhcpServerOptions** currently supports setting DNS domain and DNS Server IP Address options at a DHCP server scope level.
+* **xDhcpServerOptions** (DEPRECATED) currently supports setting DNS domain and DNS Server IP Address options at a DHCP server scope level.
 * **xDhcpServerAuthorization** authorizes a DHCP in Active Directory.
  * *This resource must run on an Active Directory domain controller.*
+* **xDhcpServerOptionDefinition** manages DHCP option definitions.
+* **DhcpServerOptionValue** manages an option value on server level.
+* **DhcpScopeOptionValue** manages an option value on scope level.
+* **DhcpReservedIPOptionValue** manages an option value on reserved IP level.
+* **DhcpPolicyOptionValue** manages an option value on Policy level.
 
 ### xDhcpServerScope
 
@@ -60,7 +65,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 * **AddressFamily**: Address family type. Note: at this time, only IPv4 is supported.
 * **Ensure**: Whether option should be set or removed
 
-### xDhcpServerOption
+### xDhcpServerOption (DEPRECATED)
 
 * **ScopeID**: ScopeID for which options are set
 * **DnsServerIPAddress**: IP address of DNS Servers
@@ -95,6 +100,46 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
  *  **AddressFamily**: Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
  *  **Ensure**: Whether option should be set or removed. { *Present* | Absent }
 
+ ### DhcpScopeOptionValue
+ 
+ * **ScopeId**: Scope ID where to set the option value.
+ * **OptionId**: Option ID, specify an integer between 1 and 255.
+ * **Value**: Option data value. Could be an array of string for a multivalued option.
+ * **VendorClass**: Vendor class. Use an empty string for default vendor class.
+ * **UserClass**: User class. Use an empty string for default user class.
+ * **AddressFamily**:  Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
+ * **Ensure**: Whether option should be set or removed. { *Present* | Absent }
+ 
+### DhcpServerOptionValue
+ 
+ * **OptionId**: Option ID, specify an integer between 1 and 255.
+ * **Value**: Option data value. Could be an array of string for a multivalued option.
+ * **VendorClass**: Vendor class. Use an empty string for default vendor class.
+ * **UserClass**: User class. Use an empty string for default user class.
+ * **AddressFamily**:  Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
+ * **Ensure**: Whether option should be set or removed. { *Present* | Absent }
+
+ ### DhcpReservedIPOptionValue
+ 
+ * **ReservedIP**: Reserved IP to set the option value.
+ * **OptionId**: Option ID, specify an integer between 1 and 255.
+ * **Value**: Option data value. Could be an array of string for a multivalued option.
+ * **VendorClass**: Vendor class. Use an empty string for default vendor class.
+ * **UserClass**: User class. Use an empty string for default user class.
+ * **AddressFamily**:  Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
+ * **Ensure**: Whether option should be set or removed. { *Present* | Absent }
+ 
+ ### DhcpPolicyOptionValue
+ 
+ * **PolicyName**: Dhcp Policy Name.
+ * **OptionId**: Option ID, specify an integer between 1 and 255.
+ * **Value**: Option data value. Could be an array of string for a multivalued option.
+ * **ScopeId**: Scope ID to get policy values from. Do not use it to get an option from server level.
+ * **VendorClass**: Vendor class. Use an empty string for default vendor class.
+ * **AddressFamily**:  Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
+ * **Ensure**: Whether option should be set or removed. { *Present* | Absent }
+ 
+ 
 ## Versions
 
 ### Unreleased
@@ -107,6 +152,10 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
   * Added Codecov and status badges to README.md.
   * Update appveyor.yml to use the default template.
 * Added xDhcpServerOptionDefinition
+* Added DhcpScopeOptionValue
+* Added DhcpServerOptionValue
+* Added DhcpReservedIPOptionValue
+* Added DhcpPolicyOptionValue
 
 ### 1.6.0.0
 added xDhcpServerClass
