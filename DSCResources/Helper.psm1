@@ -7,6 +7,7 @@ RoleNotFound            = Please ensure that the PowerShell module for role {0} 
 InvalidIPAddressFormat  = Value of {0} property is not in a valid IP address format. Specify a valid IP address format and try again.
 InvalidIPAddressFamily = The IP address {0} is not a valid {1} address. Specify a valid IP addess in {1} format and try again.
 InvalidTimeSpanFormat  = Value of {0} property is not in a valid timespan format. Specify the timespan in days.hrs:mins:secs format and try again.
+InvalidScopeIdSubnetMask = Value of SubnetMask ({0}) or {1} ({2}) are invalid. Binary and of both should result in ScopeId ({3}).
 '@
 }
 
@@ -35,6 +36,7 @@ function New-TerminatingError
 function Get-ValidIPAddress
 {
     [CmdletBinding()]
+    [OutputType([ipaddress])]
     param
     (
         [Parameter(Mandatory)]
@@ -89,6 +91,20 @@ function Assert-Module
         $errorMsg = $($LocalizedData.RoleNotFound) -f $moduleName
         New-TerminatingError -errorId 'ModuleNotFound' -errorMessage $errorMsg -errorCategory ObjectNotFound
     }
+}
+
+# Internal function to assert if values of ScopeId/SubnetMask/IPStartRange/IPEndRange make sense. Implementation for IPv4.
+
+function Assert-ScopeParameter
+{
+    [CmdletBinding()]
+    param
+    (
+        [ipaddress]$ScopeId,
+        [ipaddress]$SubnetMask,
+        [string]$Name,
+        [ipaddress]$Value
+    )
 }
 
 # Internal function to write verbose messages for collection of properties

@@ -5,12 +5,12 @@ data LocalizedData
 {
     # culture="en-US"
     ConvertFrom-StringData @'
-AddingScopeMessage        = Adding DHCP server scope with the given IP address range ...
-CheckScopeMessage         = Checking DHCP server scope with the given IP address range ...
+AddingScopeMessage        = Adding DHCP server scope with the given ScopeId ...
+CheckScopeMessage         = Checking DHCP server scope with the given ScopeId ...
 SetScopeMessage           = DHCP server scope with name '{0}' is now present.
-RemovingScopeMessage      = Removing DHCP server scope with the given IP address range ...
-DeleteScopeMessage        = DHCP server scope with the given IP address range is now absent.
-TestScopeMessage          = DHCP server scope with the given IP address range is '{0}' and it should be '{1}'.                           
+RemovingScopeMessage      = Removing DHCP server scope with the given ScopeId ...
+DeleteScopeMessage        = DHCP server scope with the ScopeId is now absent.
+TestScopeMessage          = DHCP server scope with the ScopeId is '{0}' and it should be '{1}'.
                           
 CheckPropertyMessage      = Checking DHCP server scope '{0}' ...
 NotDesiredPropertyMessage = DHCP server scope '{0}' is not correct; expected '{1}', actual '{2}'.
@@ -25,6 +25,9 @@ function Get-TargetResource
     [OutputType([System.Collections.Hashtable])]
     param
     (
+        [parameter(Mandatory)]
+        [String]$ScopeId,
+
         [parameter(Mandatory)]
         [String]$Name,
 
@@ -47,7 +50,8 @@ function Get-TargetResource
     Assert-Module -moduleName DHCPServer
 
     # Convert the Start Range to be a valid IPAddress
-    $IPStartRange = (Get-ValidIpAddress -ipString $IPStartRange -AddressFamily $AddressFamily -parameterName 'IPStartRange').ToString()
+    $startRange = Get-ValidIpAddress -ipString $IPStartRange -AddressFamily $AddressFamily -parameterName 'IPStartRange'
+    $IPStartRange = $startRange.IPAddress
 
     # Convert the End Range to be a valid IPAddress
     $IPEndRange = (Get-ValidIpAddress -ipString $IPEndRange -AddressFamily $AddressFamily -parameterName 'IPEndRange').ToString()
@@ -64,7 +68,7 @@ function Get-TargetResource
     
 #endregion Input Validation
 
-    $dhcpScope = Get-DhcpServerv4Scope | Where-Object {($_.StartRange -eq $IPStartRange) -and ($_.EndRange -eq $IPEndRange)}
+    $dhcpScope = Get-DhcpServerv4Scope -ScopeId $ScopeId -ErrorAction SilentlyContinue
     if($dhcpScope)
     {
         $ensure = 'Present'
@@ -77,9 +81,10 @@ function Get-TargetResource
     return @{
         ScopeID       = $dhcpScope.ScopeId
         Name          = $dhcpScope.Name
-        IPStartRange  = $dhcpScope.StartRane
+        IPStartRange  = $dhcpScope.StartRange
         IPEndRange    = $dhcpScope.EndRange
         SubnetMask    = $dhcpScope.SubnetMask
+        Description   = $dhcpScope.Description
         LeaseDuration = $dhcpScope.LeaseDuration.ToString()
         State         = $dhcpScope.State
         AddressFamily = 'IPv4'
@@ -93,6 +98,9 @@ function Set-TargetResource
     param
     (
         [parameter(Mandatory)]
+        [String]$ScopeId,
+
+        [parameter(Mandatory)]
         [String]$Name,
 
         [parameter(Mandatory)]
@@ -103,6 +111,8 @@ function Set-TargetResource
 
         [parameter(Mandatory)]
         [String]$SubnetMask,
+
+        [String]$Description,
 
         [Parameter()] [ValidateNotNullOrEmpty()]
         [String]$LeaseDuration,
@@ -132,6 +142,9 @@ function Test-TargetResource
     param
     (
         [parameter(Mandatory)]
+        [String]$ScopeId,
+
+        [parameter(Mandatory)]
         [String]$Name,
 
         [parameter(Mandatory)]
@@ -142,6 +155,8 @@ function Test-TargetResource
 
         [parameter(Mandatory)]
         [String]$SubnetMask,
+
+        [String]$Description,
 
         [Parameter()] [ValidateNotNullOrEmpty()]
         [String]$LeaseDuration,
@@ -162,13 +177,16 @@ function Test-TargetResource
     Assert-Module -moduleName DHCPServer
 
     # Convert the Start Range to be a valid IPAddress
-    $IPStartRange = (Get-ValidIpAddress -ipString $IPStartRange -AddressFamily $AddressFamily -parameterName 'IPStartRange').ToString()
+    $IPStartRange = Get-ValidIpAddress -ipString $IPStartRange -AddressFamily $AddressFamily -parameterName 'IPStartRange'
 
     # Convert the End Range to be a valid IPAddress
-    $IPEndRange = (Get-ValidIpAddress -ipString $IPEndRange -AddressFamily $AddressFamily -parameterName 'IPEndRange').ToString()
+    $IPEndRange = Get-ValidIpAddress -ipString $IPEndRange -AddressFamily $AddressFamily -parameterName 'IPEndRange'
 
     # Convert the Subnet Mask to be a valid IPAddress
-    $SubnetMask = (Get-ValidIpAddress -ipString $SubnetMask -AddressFamily $AddressFamily -parameterName 'SubnetMask').ToString()
+    $SubnetMask = Get-ValidIpAddress -ipString $SubnetMask -AddressFamily $AddressFamily -parameterName 'SubnetMask'
+
+    # Convert the ScopeID to be a valid IPAddress
+    $ScopeId = Get-ValidIpAddress -ipString $ScopeId -AddressFamily $AddressFamily -parameterName 'ScopeId'
 
     # Check to ensure startRange is smaller than endRange
     if($IPEndRange.Address -lt $IPStartRange.Address)
@@ -192,6 +210,9 @@ function Validate-ResourceProperties
     param
     (
         [parameter(Mandatory)]
+        [String]$ScopeId,
+
+        [parameter(Mandatory)]
         [String]$Name,
 
         [parameter(Mandatory)]
@@ -202,6 +223,8 @@ function Validate-ResourceProperties
 
         [parameter(Mandatory)]
         [String]$SubnetMask,
+
+        [String]$Description,
 
         [Parameter()] [ValidateNotNullOrEmpty()]
         [String]$LeaseDuration,
@@ -224,7 +247,7 @@ function Validate-ResourceProperties
     $checkScopeMessage = $LocalizedData.CheckScopeMessage
     Write-Verbose -Message $checkScopeMessage
 
-    $dhcpScope = Get-DhcpServerv4Scope | Where-Object {($_.StartRange -eq $IPStartRange) -and ($_.EndRange -eq $IPEndRange)}
+    $dhcpScope = Get-DhcpServerv4Scope -ScopeId $ScopeId -ErrorAction SilentlyContinue
     # Initialize the parameter collection
     if($Apply)
     { 
@@ -264,6 +287,52 @@ function Validate-ResourceProperties
                 Write-Verbose -Message $desiredPropertyMsg
             }
             #endregion scope name
+
+            #region Test the IPStartRange and IPEndRange
+            if($dhcpScope.StartRange -ne $IPStartRange -or $dhcpScope.EndRange -ne $IPEndRange)
+            {
+                $notDesiredPropertyMsg = $($LocalizedData.NotDesiredPropertyMessage) -f 'Start/EndRange',"$IPStartRange/$IPEndRange","$($dhcpScope.StartRange)/$($dhcpScope.EndRange)"
+                Write-Verbose -Message $notDesiredPropertyMsg
+
+                if($Apply)
+                {
+                    $parameters['StartRange'] = $IPStartRange
+                    $parameters['EndRange'] = $IPEndRange
+                }
+                else
+                {
+                    return $false
+                }
+            }
+            #endregion IPStartRange and IPEndRange
+
+            #region Test the Scope Description
+            if($PSBoundParameters.ContainsKey('Description'))
+            {
+                $checkPropertyMsg = $($LocalizedData.CheckPropertyMessage) -f 'description'
+                Write-Verbose -Message $checkPropertyMsg
+
+                if($dhcpScope.Description -ne $Description) 
+                {
+                    $notDesiredPropertyMsg = $($LocalizedData.NotDesiredPropertyMessage) -f 'description',$Description,$($dhcpScope.Description)
+                    Write-Verbose -Message $notDesiredPropertyMsg
+ 
+                    if($Apply)
+                    {
+                        $parameters['Description'] = $Description
+                    }
+                    else
+                    {
+                        return $false
+                    }
+                }
+                else
+                {
+                    $desiredPropertyMsg = $($LocalizedData.DesiredPropertyMessage) -f 'description'
+                    Write-Verbose -Message $desiredPropertyMsg
+                }
+            }
+            #endregion scope description
 
             #region Test the Lease duration
             if($PSBoundParameters.ContainsKey('LeaseDuration'))
@@ -335,7 +404,7 @@ function Validate-ResourceProperties
                     try
                     {
                         # To set the subnet mask scope, the only ways is to remove the old scope and add a new scope
-                        Remove-DhcpServerv4Scope -ScopeId $dhcpScope.ScopeId
+                        Remove-DhcpServerv4Scope -ScopeId $ScopeId
                         ## We can't splat two hashtables and $parameters may be empty, so just clone the existing one
                         $addDhcpServerv4ScopeParams = $parameters.Clone();
                         $addDhcpServerv4ScopeParams['Type'] = 'Dhcp';
@@ -390,7 +459,7 @@ function Validate-ResourceProperties
                 Write-Verbose -Message $removingScopeMsg
 
                 # Remove the scope
-                Remove-DhcpServerv4Scope -ScopeId $dhcpScope.ScopeId
+                Remove-DhcpServerv4Scope -ScopeId $ScopeId
 
                 $deleteScopeMsg = $LocalizedData.deleteScopeMessage
                 Write-Verbose -Message $deleteScopeMsg
