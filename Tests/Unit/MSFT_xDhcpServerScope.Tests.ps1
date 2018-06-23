@@ -39,6 +39,7 @@ try
         $testSubnetMask = '255.255.255.0';
         $testState = 'Active';
         $testLeaseDuration = New-TimeSpan -Days 8;
+        $testDescription = 'Scope description'
         
         $testParams = @{
             ScopeId = $testScopeID
@@ -53,6 +54,7 @@ try
             Name = $testScopeName;
             StartRange = $testIPStartRange;
             EndRange = $testIPEndRange;
+            Description = $testDescription
             SubnetMask = $testSubnetMask;
             LeaseDuration = $testLeaseDuration;
             State = $testState;
@@ -71,6 +73,43 @@ try
                 
                 Assert-MockCalled Assert-Module -ParameterFilter { $ModuleName -eq 'DHCPServer' } -Scope It;
             }
+
+            It 'Throws an exception with information about incorrect <Parameter> (<Value>)' {
+                param (
+                    [String]$Parameter,
+                    [String]$Value,
+                    [String]$ErrorPattern
+                )
+                $brokenTestParams = $testParams.Clone()
+                $brokenTestParams[$Parameter] = $Value
+                try {
+                    Get-TargetResource @brokenTestParams
+                } catch {
+                    $exception = $_.Exception
+                }
+                $exception.Message | Should BeLike $ErrorPattern
+            } -TestCases @(
+                @{
+                    Parameter = 'ScopeId'
+                    Value = '192.168.1.42'
+                    ErrorPattern = 'Value of byte 4 in ScopeId (42) is not valid.*'
+                }
+                @{
+                    Parameter = 'IPStartRange'
+                    Value = '192.168.0.1'
+                    ErrorPattern = 'Value of byte 3 in IPStartRange (0) is not valid.*'
+                }
+                @{
+                    Parameter = 'IPEndRange'
+                    Value = '192.167.1.100'
+                    ErrorPattern = 'Value of byte 2 in IPEndRange (167) is not valid.*'
+                }
+                @{
+                    Parameter = 'IPEndRange'
+                    Value = '192.168.1.2'
+                    ErrorPattern = 'Value * are not valid. Start should be lower than end.'
+                }
+            )
             
             It 'Returns a "System.Collections.Hashtable" object type' {
                 Mock Get-DhcpServerv4Scope { return $fakeDhcpServerv4Scope; }
@@ -101,22 +140,32 @@ try
                 
                 $result | Should Be $true;
             }
-            
-            It 'Passes when optional "LeaseDuration" parameter is correct' {
-                Mock Get-DhcpServerv4Scope { return $fakeDhcpServerv4Scope; }
-                
-                $result = Test-TargetResource @testParams -LeaseDuration $testLeaseDuration.ToString();
-                
-                $result | Should Be $true;
-            }
-            
-            It 'Passes when optional "State" parameter is correct' {
-                Mock Get-DhcpServerv4Scope { return $fakeDhcpServerv4Scope; }
-                
-                $result = Test-TargetResource @testParams -State 'Active';
-                
-                $result | Should Be $true;
-            }
+
+            It 'Passes when optional <Parameter> parameter is correct' {
+                param (
+                    $Parameter,
+                    $Value
+                )
+                Mock Get-DhcpServerv4Scope { return $fakeDhcpServerv4Scope }
+                $optionalParameters = @{
+                    $Parameter = $Value
+                }
+                $result = Test-TargetResource @testParams @optionalParameters
+                $result | Should Be $true
+            } -TestCases @(
+                @{
+                    Parameter = 'Description'
+                    Value = $testDescription
+                }
+                @{
+                    Parameter = 'LeaseDuration'
+                    Value = $testLeaseDuration.ToString()
+                }
+                @{
+                    Parameter = 'State'
+                    Value = $testState
+                }
+            )
             
             It 'Passes when "Ensure" = "Absent" and scope does not exist' {
                 Mock Get-DhcpServerv4Scope { }
@@ -126,70 +175,50 @@ try
                 $result | Should Be $true;
             }
             
-            It 'Fails when "Name" parameter is incorrect' {
+            It 'Fails when <parameter> parameter is incorrect' {
+                param (
+                    $Parameter,
+                    $Value
+                )
                 Mock Get-DhcpServerv4Scope { return $fakeDhcpServerv4Scope; }
-                $testNameParams = $testParams.Clone();
-                $testNameParams['Name'] = 'IncorrectName';
-                
-                $result = Test-TargetResource @testNameParams;
-                
-                $result | Should Be $false;
-            }
-            
-            It 'Fails when "IPStartRange" parameter is incorrect' {
-                Mock Get-DhcpServerv4Scope { return $fakeDhcpServerv4Scope; }
-                $testIPStartRangeParams = $testParams.Clone();
-                $testIPStartRangeParams['IPStartRange'] = '192.168.1.1';
-                
-                $result = Test-TargetResource @testIPStartRangeParams;
-                
-                $result | Should Be $false;
-            }
-            
-            It 'Fails when "IPEndRange" parameter is incorrect' {
-                Mock Get-DhcpServerv4Scope { return $fakeDhcpServerv4Scope; }
-                $testIPEndRangeParams = $testParams.Clone();
-                $testIPEndRangeParams['IPEndRange'] = '192.168.1.254';
-                
-                $result = Test-TargetResource @testIPEndRangeParams;
-                
-                $result | Should Be $false;
-            }
-            
-            It 'Fails when "SubnetMask" parameter is incorrect' {
-                Mock Get-DhcpServerv4Scope { return $fakeDhcpServerv4Scope; }
-                $testSubnetMaskParams = $testParams.Clone();
-                $testSubnetMaskParams['SubnetMask'] = '255.255.255.128';
-                
-                $result = Test-TargetResource @testSubnetMaskParams;
-                
-                $result | Should Be $false;
-            }
-            
-            It 'Fails when optional "LeaseDuration" parameter is incorrect' {
-                Mock Get-DhcpServerv4Scope { return $fakeDhcpServerv4Scope; }
-                
-                $result = Test-TargetResource @testParams -LeaseDuration '08:00:00';
-                
-                $result | Should Be $false;
-            }
-            
-            It 'Fails when optional "State" parameter is incorrect' {
-                Mock Get-DhcpServerv4Scope { return $fakeDhcpServerv4Scope; }
-                
-                $result = Test-TargetResource @testParams -State 'Inactive';
-                
-                $result | Should Be $false;
-            }
-            
-            It 'Fails when "Ensure" = "Absent" and scope does exist' {
-                Mock Get-DhcpServerv4Scope { return $fakeDhcpServerv4Scope; }
-                
-                $result = Test-TargetResource @testParams -Ensure 'Absent';
-                
-                $result | Should Be $false;
-            }
-                       
+                $testNameParams = $testParams.Clone()
+                $testNameParams[$Parameter] = $Value
+                $result = Test-TargetResource @testNameParams
+                $result | Should Be $false
+            } -TestCases @(
+                @{
+                    Parameter = 'Name'
+                    Value = 'IncorrectName'
+                }
+                @{
+                    Parameter = 'IPStartRange'
+                    Value = '192.168.1.1'
+                }
+                @{
+                    Parameter = 'IPEndRange'
+                    Value = '192.168.1.254'
+                }
+                @{
+                    Parameter = 'SubnetMask'
+                    Value = '255.255.255.128'
+                }
+                @{
+                    Parameter = 'Description'
+                    Value = 'Wrong description'
+                }
+                @{
+                    Parameter = 'LeaseDuration'
+                    Value = '08:00:00'
+                }
+                @{
+                    Parameter = 'State'
+                    Value = 'Inactive'
+                }
+                @{
+                    Parameter = 'Ensure'
+                    Value = 'Absent'
+                }
+            )
         }
         #endregion
 

@@ -49,31 +49,15 @@ function Get-TargetResource
     # Check for DhcpServer module/role
     Assert-Module -moduleName DHCPServer
 
-    # Convert the Subnet Mask to be a valid IPAddress
-    $netMask = Get-ValidIpAddress -ipString $SubnetMask -AddressFamily $AddressFamily -parameterName SubnetMask
-    $SubnetMask = $netMask.IPAddressToString
-
-    # Convert the ScopeID to be a valid IPAddress
-    $scope = Get-ValidIPAddress -ipString $ScopeId -AddressFamily $AddressFamily -parameterName ScopeId
-    Assert-ScopeParameter -ScopeId $scope -SubnetMask $netMask -Name ScopeId -Value $scope
-    $ScopeId = $scope.IPAddressToString
-
-    # Convert the Start Range to be a valid IPAddress
-    $startRange = Get-ValidIpAddress -ipString $IPStartRange -AddressFamily $AddressFamily -parameterName IPStartRange
-    Assert-ScopeParameter -ScopeId $scope -SubnetMask $netMask -Name IPStartRange -Value $startRange
-    $IPStartRange = $startRange.IPAddressToString
-
-    # Convert the End Range to be a valid IPAddress
-    $endRange = Get-ValidIpAddress -ipString $IPEndRange -AddressFamily $AddressFamily -parameterName IPEndRange
-    Assert-ScopeParameter -ScopeId $scope -SubnetMask $netMask -Name IPEndRange -Value $endRange
-    $IPEndRange = $endRange.IPAddressToString
-
-    # Check to ensure startRange is smaller than endRange
-    if($endRange.Address -lt $startRange.Address)
-    {
-        $errorMsg = $LocalizedData.InvalidStartAndEndRangeMessage
-        New-TerminatingError -errorId RangeNotCorrect -errorMessage $errorMsg -errorCategory InvalidArgument
+    # Check values of IP Addresses used to define the scope
+    $ipAddressesAssertionParameters = @{
+        ScopeId       = $ScopeId
+        IPStartRange  = $IPStartRange
+        IPEndRange    = $IPEndRange
+        SubnetMask    = $SubnetMask
+        AddressFamily = $AddressFamily
     }
+    Assert-ScopeParameter @ipAddressesAssertionParameters
     
 #endregion Input Validation
 
@@ -81,23 +65,25 @@ function Get-TargetResource
     if($dhcpScope)
     {
         $ensure = 'Present'
+        $leaseDuration = $dhcpScope.LeaseDuration.ToString()
     }
     else
     {
         $ensure = 'Absent'
+        $leaseDuration = ''
     }
 
     return @{
-        ScopeID       = $dhcpScope.ScopeId
+        ScopeID       = $ScopeId
         Name          = $dhcpScope.Name
         IPStartRange  = $dhcpScope.StartRange
         IPEndRange    = $dhcpScope.EndRange
         SubnetMask    = $dhcpScope.SubnetMask
         Description   = $dhcpScope.Description
-        LeaseDuration = $dhcpScope.LeaseDuration.ToString()
+        LeaseDuration = $leaseDuration
         State         = $dhcpScope.State
-        AddressFamily = 'IPv4'
-        Ensure        = $Ensure
+        AddressFamily = $AddressFamily
+        Ensure        = $ensure
     }
 }
 
@@ -141,31 +127,15 @@ function Set-TargetResource
     # Check for DhcpServer module/role
     Assert-Module -moduleName DHCPServer
 
-    # Convert the Subnet Mask to be a valid IPAddress
-    $netMask = Get-ValidIpAddress -ipString $SubnetMask -AddressFamily $AddressFamily -parameterName SubnetMask
-    $SubnetMask = $netMask.IPAddressToString
-
-    # Convert the ScopeID to be a valid IPAddress
-    $scope = Get-ValidIPAddress -ipString $ScopeId -AddressFamily $AddressFamily -parameterName ScopeId
-    Assert-ScopeParameter -ScopeId $scope -SubnetMask $netMask -Name ScopeId -Value $scope
-    $ScopeId = $scope.IPAddressToString
-
-    # Convert the Start Range to be a valid IPAddress
-    $startRange = Get-ValidIpAddress -ipString $IPStartRange -AddressFamily $AddressFamily -parameterName IPStartRange
-    Assert-ScopeParameter -ScopeId $scope -SubnetMask $netMask -Name IPStartRange -Value $startRange
-    $IPStartRange = $startRange.IPAddressToString
-
-    # Convert the End Range to be a valid IPAddress
-    $endRange = Get-ValidIpAddress -ipString $IPEndRange -AddressFamily $AddressFamily -parameterName IPEndRange
-    Assert-ScopeParameter -ScopeId $scope -SubnetMask $netMask -Name IPEndRange -Value $endRange
-    $IPEndRange = $endRange.IPAddressToString
-
-    # Check to ensure startRange is smaller than endRange
-    if($endRange.Address -lt $startRange.Address)
-    {
-        $errorMsg = $LocalizedData.InvalidStartAndEndRangeMessage
-        New-TerminatingError -errorId RangeNotCorrect -errorMessage $errorMsg -errorCategory InvalidArgument
+    # Check values of IP Addresses used to define the scope
+    $ipAddressesAssertionParameters = @{
+        ScopeId       = $ScopeId
+        IPStartRange  = $IPStartRange
+        IPEndRange    = $IPEndRange
+        SubnetMask    = $SubnetMask
+        AddressFamily = $AddressFamily
     }
+    Assert-ScopeParameter @ipAddressesAssertionParameters
     
 #endregion Input Validation
 
@@ -219,31 +189,15 @@ function Test-TargetResource
     # Check for DhcpServer module/role
     Assert-Module -moduleName DHCPServer
 
-    # Convert the Subnet Mask to be a valid IPAddress
-    $netMask = Get-ValidIpAddress -ipString $SubnetMask -AddressFamily $AddressFamily -parameterName SubnetMask
-    $SubnetMask = $netMask.IPAddressToString
-
-    # Convert the ScopeID to be a valid IPAddress
-    $scope = Get-ValidIPAddress -ipString $ScopeId -AddressFamily $AddressFamily -parameterName ScopeId
-    Assert-ScopeParameter -ScopeId $scope -SubnetMask $netMask -Name ScopeId -Value $scope
-    $ScopeId = $scope.IPAddressToString
-
-    # Convert the Start Range to be a valid IPAddress
-    $startRange = Get-ValidIpAddress -ipString $IPStartRange -AddressFamily $AddressFamily -parameterName IPStartRange
-    Assert-ScopeParameter -ScopeId $scope -SubnetMask $netMask -Name IPStartRange -Value $startRange
-    $IPStartRange = $startRange.IPAddressToString
-
-    # Convert the End Range to be a valid IPAddress
-    $endRange = Get-ValidIpAddress -ipString $IPEndRange -AddressFamily $AddressFamily -parameterName IPEndRange
-    Assert-ScopeParameter -ScopeId $scope -SubnetMask $netMask -Name IPEndRange -Value $endRange
-    $IPEndRange = $endRange.IPAddressToString
-
-    # Check to ensure startRange is smaller than endRange
-    if($endRange.Address -lt $startRange.Address)
-    {
-        $errorMsg = $LocalizedData.InvalidStartAndEndRangeMessage
-        New-TerminatingError -errorId RangeNotCorrect -errorMessage $errorMsg -errorCategory InvalidArgument
+    # Check values of IP Addresses used to define the scope
+    $ipAddressesAssertionParameters = @{
+        ScopeId       = $ScopeId
+        IPStartRange  = $IPStartRange
+        IPEndRange    = $IPEndRange
+        SubnetMask    = $SubnetMask
+        AddressFamily = $AddressFamily
     }
+    Assert-ScopeParameter @ipAddressesAssertionParameters
     
 #endregion Input Validation
 
