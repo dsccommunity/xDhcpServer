@@ -183,21 +183,22 @@ function Test-TargetResource
     [OutputType([System.Boolean])]
     param
     (
-        [parameter(Mandatory)]
+        [Parameter(Mandatory)]
         [String]$ScopeId,
 
-        [parameter(Mandatory)]
+        [Parameter(Mandatory)]
         [String]$Name,
 
-        [parameter(Mandatory)]
+        [Parameter(Mandatory)]
         [String]$IPStartRange,
 
-        [parameter(Mandatory)]
+        [Parameter(Mandatory)]
         [String]$IPEndRange,
 
-        [parameter(Mandatory)]
+        [Parameter(Mandatory)]
         [String]$SubnetMask,
 
+        [Parameter()]
         [String]$Description,
 
         [Parameter()] [ValidateNotNullOrEmpty()]
@@ -258,21 +259,22 @@ function Validate-ResourceProperties
     [CmdletBinding()]
     param
     (
-        [parameter(Mandatory)]
+        [Parameter(Mandatory)]
         [String]$ScopeId,
 
-        [parameter(Mandatory)]
+        [Parameter(Mandatory)]
         [String]$Name,
 
-        [parameter(Mandatory)]
+        [Parameter(Mandatory)]
         [String]$IPStartRange,
 
-        [parameter(Mandatory)]
+        [Parameter(Mandatory)]
         [String]$IPEndRange,
 
-        [parameter(Mandatory)]
+        [Parameter(Mandatory)]
         [String]$SubnetMask,
 
+        [Parameter()]
         [String]$Description,
 
         [Parameter()] [ValidateNotNullOrEmpty()]

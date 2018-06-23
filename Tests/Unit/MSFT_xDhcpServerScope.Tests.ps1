@@ -29,7 +29,7 @@ try
     InModuleScope $Global:DSCResourceName {
 
         #region Pester Test Initialization
-        # TODO: Optopnal Load Mock for use in Pester tests here...
+        # TODO: Optional Load Mock for use in Pester tests here...
         #endregion
 
         $testScopeName = 'Test Scope';
@@ -41,6 +41,7 @@ try
         $testLeaseDuration = New-TimeSpan -Days 8;
         
         $testParams = @{
+            ScopeId = $testScopeID
             Name = $testScopeName;
             IPStartRange = $testIPStartRange;
             IPEndRange = $testIPEndRange;
@@ -158,7 +159,7 @@ try
             It 'Fails when "SubnetMask" parameter is incorrect' {
                 Mock Get-DhcpServerv4Scope { return $fakeDhcpServerv4Scope; }
                 $testSubnetMaskParams = $testParams.Clone();
-                $testSubnetMaskParams['SubnetMask'] = '255.255.240.0';
+                $testSubnetMaskParams['SubnetMask'] = '255.255.255.128';
                 
                 $result = Test-TargetResource @testSubnetMaskParams;
                 
@@ -229,7 +230,7 @@ try
                 Mock Remove-DhcpServerv4Scope { }
                 Mock Set-DhcpServerv4Scope { }
                 $testSubnetMaskParams = $testParams.Clone();
-                $testSubnetMaskParams['SubnetMask'] = '255.255.240.0';
+                $testSubnetMaskParams['SubnetMask'] = '255.255.255.128';
                 
                 Set-TargetResource @testSubnetMaskParams;
                 

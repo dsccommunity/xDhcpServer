@@ -52,7 +52,7 @@ function Get-ValidIPAddress
 
     $ipAddressFamily = ''
     if($AddressFamily -eq 'IPv4')
-    { 
+    {
         $ipAddressFamily = 'InterNetwork'
     }
     else
