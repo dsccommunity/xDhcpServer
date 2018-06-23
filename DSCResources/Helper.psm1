@@ -7,7 +7,7 @@ RoleNotFound            = Please ensure that the PowerShell module for role {0} 
 InvalidIPAddressFormat  = Value of {0} property is not in a valid IP address format. Specify a valid IP address format and try again.
 InvalidIPAddressFamily = The IP address {0} is not a valid {1} address. Specify a valid IP addess in {1} format and try again.
 InvalidTimeSpanFormat  = Value of {0} property is not in a valid timespan format. Specify the timespan in days.hrs:mins:secs format and try again.
-InvalidScopeIdSubnetMask = Value of SubnetMask ({0}) or {1} ({2}) are invalid. Binary and of both should result in ScopeId ({3}).
+InvalidScopeIdSubnetMask = Value of SubnetMask ({0}) or {1} ({2}) are invalid. Binary AND of both should result in ScopeId ({3}).
 '@
 }
 
@@ -105,6 +105,19 @@ function Assert-ScopeParameter
         [string]$Name,
         [ipaddress]$Value
     )
+
+    $scopeIdBytes = $ScopeId.GetAddressBytes()
+    $subnetMaskBytes = $SubnetMask.GetAddressBytes()
+    $parameterBytes = $Value.GetAddressBytes()
+
+    foreach ($ipTokenIndex in 0..3)
+    {
+        if(($parameterBytes[$ipTokenIndex] -band $subnetMaskBytes[$ipTokenIndex]) -ne $scopeIdBytes[$ipTokenIndex])
+        {
+            $errorMsg = $($LocalizedData.InvalidScopeIdSubnetMask) -f $SubnetMask, $Name, $Value, $ScopeId
+            New-TerminatingError -errorId 'ScopeIdOrMaskIncorrect' -errorMessage $errorMsg -errorCategory InvalidArgument
+        }
+    }
 }
 
 # Internal function to write verbose messages for collection of properties

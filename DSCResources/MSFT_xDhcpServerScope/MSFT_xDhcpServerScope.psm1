@@ -49,18 +49,27 @@ function Get-TargetResource
     # Check for DhcpServer module/role
     Assert-Module -moduleName DHCPServer
 
+    # Convert the Subnet Mask to be a valid IPAddress
+    $netMask = Get-ValidIpAddress -ipString $SubnetMask -AddressFamily $AddressFamily -parameterName SubnetMask
+    $SubnetMask = $netMask.IPAddressToString
+
+    # Convert the ScopeID to be a valid IPAddress
+    $scope = Get-ValidIPAddress -ipString $ScopeId -AddressFamily $AddressFamily -parameterName ScopeId
+    Assert-ScopeParameter -ScopeId $scope -SubnetMask $netMask -Name ScopeId -Value $scope
+    $ScopeId = $scope.IPAddressToString
+
     # Convert the Start Range to be a valid IPAddress
-    $startRange = Get-ValidIpAddress -ipString $IPStartRange -AddressFamily $AddressFamily -parameterName 'IPStartRange'
-    $IPStartRange = $startRange.IPAddress
+    $startRange = Get-ValidIpAddress -ipString $IPStartRange -AddressFamily $AddressFamily -parameterName IPStartRange
+    Assert-ScopeParameter -ScopeId $scope -SubnetMask $netMask -Name IPStartRange -Value $startRange
+    $IPStartRange = $startRange.IPAddressToString
 
     # Convert the End Range to be a valid IPAddress
-    $IPEndRange = (Get-ValidIpAddress -ipString $IPEndRange -AddressFamily $AddressFamily -parameterName 'IPEndRange').ToString()
-
-    # Convert the Subnet Mask to be a valid IPAddress
-    $SubnetMask = (Get-ValidIpAddress -ipString $SubnetMask -AddressFamily $AddressFamily -parameterName 'SubnetMask').ToString()
+    $endRange = Get-ValidIpAddress -ipString $IPEndRange -AddressFamily $AddressFamily -parameterName IPEndRange
+    Assert-ScopeParameter -ScopeId $scope -SubnetMask $netMask -Name IPEndRange -Value $endRange
+    $IPEndRange = $endRange.IPAddressToString
 
     # Check to ensure startRange is smaller than endRange
-    if($IPEndRange.Address -lt $IPStartRange.Address)
+    if($endRange.Address -lt $startRange.Address)
     {
         $errorMsg = $LocalizedData.InvalidStartAndEndRangeMessage
         New-TerminatingError -errorId RangeNotCorrect -errorMessage $errorMsg -errorCategory InvalidArgument
@@ -127,6 +136,39 @@ function Set-TargetResource
         [String]$Ensure = 'Present'
     )
 
+#region Input Validation
+
+    # Check for DhcpServer module/role
+    Assert-Module -moduleName DHCPServer
+
+    # Convert the Subnet Mask to be a valid IPAddress
+    $netMask = Get-ValidIpAddress -ipString $SubnetMask -AddressFamily $AddressFamily -parameterName SubnetMask
+    $SubnetMask = $netMask.IPAddressToString
+
+    # Convert the ScopeID to be a valid IPAddress
+    $scope = Get-ValidIPAddress -ipString $ScopeId -AddressFamily $AddressFamily -parameterName ScopeId
+    Assert-ScopeParameter -ScopeId $scope -SubnetMask $netMask -Name ScopeId -Value $scope
+    $ScopeId = $scope.IPAddressToString
+
+    # Convert the Start Range to be a valid IPAddress
+    $startRange = Get-ValidIpAddress -ipString $IPStartRange -AddressFamily $AddressFamily -parameterName IPStartRange
+    Assert-ScopeParameter -ScopeId $scope -SubnetMask $netMask -Name IPStartRange -Value $startRange
+    $IPStartRange = $startRange.IPAddressToString
+
+    # Convert the End Range to be a valid IPAddress
+    $endRange = Get-ValidIpAddress -ipString $IPEndRange -AddressFamily $AddressFamily -parameterName IPEndRange
+    Assert-ScopeParameter -ScopeId $scope -SubnetMask $netMask -Name IPEndRange -Value $endRange
+    $IPEndRange = $endRange.IPAddressToString
+
+    # Check to ensure startRange is smaller than endRange
+    if($endRange.Address -lt $startRange.Address)
+    {
+        $errorMsg = $LocalizedData.InvalidStartAndEndRangeMessage
+        New-TerminatingError -errorId RangeNotCorrect -errorMessage $errorMsg -errorCategory InvalidArgument
+    }
+    
+#endregion Input Validation
+
     
     if($PSBoundParameters.ContainsKey('Debug')){ $null = $PSBoundParameters.Remove('Debug')}
     if($PSBoundParameters.ContainsKey('AddressFamily')) {$null = $PSBoundParameters.Remove('AddressFamily')}
@@ -176,20 +218,27 @@ function Test-TargetResource
     # Check for DhcpServer module/role
     Assert-Module -moduleName DHCPServer
 
-    # Convert the Start Range to be a valid IPAddress
-    $IPStartRange = Get-ValidIpAddress -ipString $IPStartRange -AddressFamily $AddressFamily -parameterName 'IPStartRange'
-
-    # Convert the End Range to be a valid IPAddress
-    $IPEndRange = Get-ValidIpAddress -ipString $IPEndRange -AddressFamily $AddressFamily -parameterName 'IPEndRange'
-
     # Convert the Subnet Mask to be a valid IPAddress
-    $SubnetMask = Get-ValidIpAddress -ipString $SubnetMask -AddressFamily $AddressFamily -parameterName 'SubnetMask'
+    $netMask = Get-ValidIpAddress -ipString $SubnetMask -AddressFamily $AddressFamily -parameterName SubnetMask
+    $SubnetMask = $netMask.IPAddressToString
 
     # Convert the ScopeID to be a valid IPAddress
-    $ScopeId = Get-ValidIpAddress -ipString $ScopeId -AddressFamily $AddressFamily -parameterName 'ScopeId'
+    $scope = Get-ValidIPAddress -ipString $ScopeId -AddressFamily $AddressFamily -parameterName ScopeId
+    Assert-ScopeParameter -ScopeId $scope -SubnetMask $netMask -Name ScopeId -Value $scope
+    $ScopeId = $scope.IPAddressToString
+
+    # Convert the Start Range to be a valid IPAddress
+    $startRange = Get-ValidIpAddress -ipString $IPStartRange -AddressFamily $AddressFamily -parameterName IPStartRange
+    Assert-ScopeParameter -ScopeId $scope -SubnetMask $netMask -Name IPStartRange -Value $startRange
+    $IPStartRange = $startRange.IPAddressToString
+
+    # Convert the End Range to be a valid IPAddress
+    $endRange = Get-ValidIpAddress -ipString $IPEndRange -AddressFamily $AddressFamily -parameterName IPEndRange
+    Assert-ScopeParameter -ScopeId $scope -SubnetMask $netMask -Name IPEndRange -Value $endRange
+    $IPEndRange = $endRange.IPAddressToString
 
     # Check to ensure startRange is smaller than endRange
-    if($IPEndRange.Address -lt $IPStartRange.Address)
+    if($endRange.Address -lt $startRange.Address)
     {
         $errorMsg = $LocalizedData.InvalidStartAndEndRangeMessage
         New-TerminatingError -errorId RangeNotCorrect -errorMessage $errorMsg -errorCategory InvalidArgument
