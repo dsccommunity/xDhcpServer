@@ -5,12 +5,12 @@ data LocalizedData
 {
     # culture="en-US"
     ConvertFrom-StringData @'
-AddingScopeMessage        = Adding DHCP server scope with the given ScopeId ...
-CheckScopeMessage         = Checking DHCP server scope with the given ScopeId ...
+AddingScopeMessage        = Adding DHCP server scope with the given ScopeId ({0})...
+CheckScopeMessage         = Checking DHCP server scope with the given ScopeId ({0})...
 SetScopeMessage           = DHCP server scope with name '{0}' is now present.
-RemovingScopeMessage      = Removing DHCP server scope with the given ScopeId ...
-DeleteScopeMessage        = DHCP server scope with the ScopeId is now absent.
-TestScopeMessage          = DHCP server scope with the ScopeId is '{0}' and it should be '{1}'.
+RemovingScopeMessage      = Removing DHCP server scope with the given ScopeId ({0})...
+DeleteScopeMessage        = DHCP server scope with the given ScopeId ({0}) is now absent.
+TestScopeMessage          = DHCP server scope with the given ScopeId ({0}) is '{1}' and it should be '{2}'.
                           
 CheckPropertyMessage      = Checking DHCP server scope '{0}' ...
 NotDesiredPropertyMessage = DHCP server scope '{0}' is not correct; expected '{1}', actual '{2}'.
@@ -249,7 +249,7 @@ function Validate-ResourceProperties
         $LeaseDuration = (Get-ValidTimeSpan -tsString $LeaseDuration -parameterName 'Leaseduration').ToString()
     }
 
-    $checkScopeMessage = $LocalizedData.CheckScopeMessage
+    $checkScopeMessage = $LocalizedData.CheckScopeMessage -f $ScopeId
     Write-Verbose -Message $checkScopeMessage
 
     $dhcpScope = Get-DhcpServerv4Scope -ScopeId $ScopeId -ErrorAction SilentlyContinue
@@ -262,7 +262,7 @@ function Validate-ResourceProperties
     # dhcpScope is set
     if($dhcpScope)
     {
-        $TestScopeMessage = $($LocalizedData.TestScopeMessage) -f 'present', $Ensure
+        $TestScopeMessage = $($LocalizedData.TestScopeMessage) -f $ScopeId, 'present', $Ensure
         Write-Verbose -Message $TestScopeMessage
 
         # if it should be present, test individual properties to match parameter values
@@ -460,13 +460,13 @@ function Validate-ResourceProperties
         {
             if($Apply)
             {
-                $removingScopeMsg = $LocalizedData.RemovingScopeMessage
+                $removingScopeMsg = $LocalizedData.RemovingScopeMessage -f $ScopeId
                 Write-Verbose -Message $removingScopeMsg
 
                 # Remove the scope
                 Remove-DhcpServerv4Scope -ScopeId $ScopeId
 
-                $deleteScopeMsg = $LocalizedData.deleteScopeMessage
+                $deleteScopeMsg = $LocalizedData.deleteScopeMessage -f $ScopeId
                 Write-Verbose -Message $deleteScopeMsg
             }
             else
@@ -479,7 +479,7 @@ function Validate-ResourceProperties
     #If dhcpScope is not set, create it if needed
     else
     {
-        $TestScopeMessage = $($LocalizedData.TestScopeMessage) -f 'absent', $Ensure
+        $TestScopeMessage = $($LocalizedData.TestScopeMessage) -f $ScopeId, 'absent', $Ensure
         Write-Verbose -Message $TestScopeMessage
 
         if($Ensure -eq 'Present')
@@ -504,7 +504,7 @@ function Validate-ResourceProperties
                         $parameters['State'] = $State
                 }
 
-                $addingScopeMessage = $LocalizedData.AddingScopeMessage
+                $addingScopeMessage = $LocalizedData.AddingScopeMessage -f $ScopeId
                 Write-Verbose -Message $addingScopeMessage
 
                 try
