@@ -40,6 +40,7 @@ try
         $testState = 'Active';
         $testLeaseDuration = New-TimeSpan -Days 8;
         $testDescription = 'Scope description'
+        $testAddressFamily = 'IPv4'
         
         $testParams = @{
             ScopeId = $testScopeID
@@ -58,13 +59,20 @@ try
             SubnetMask = $testSubnetMask;
             LeaseDuration = $testLeaseDuration;
             State = $testState;
-            AddressFamily = 'IPv4';
+            AddressFamily = $testAddressFamily;
         }
 
         #region Function Get-TargetResource
         Describe "$($Global:DSCResourceName)\Get-TargetResource" {
 
             Mock Assert-Module -ParameterFilter { $ModuleName -eq 'DHCPServer' } { }
+            Mock Assert-ScopeParameter -ParameterFilter {
+                $ScopeId -eq $testScopeID -and
+                $SubnetMask -eq $testSubnetMask -and
+                $IPStartRange -eq $testIPStartRange -and
+                $IPEndRange -eq $testIPEndRange -and
+                $AddressFamily -eq $testAddressFamily
+            }
 
             It 'Calls "Assert-Module" to ensure "DHCPServer" module is available' {
                 Mock Get-DhcpServerv4Scope { return $fakeDhcpServerv4Scope; }
@@ -74,43 +82,12 @@ try
                 Assert-MockCalled Assert-Module -ParameterFilter { $ModuleName -eq 'DHCPServer' } -Scope It;
             }
 
-            It 'Throws an exception with information about incorrect <Parameter> (<Value>)' {
-                param (
-                    [String]$Parameter,
-                    [String]$Value,
-                    [String]$ErrorPattern
-                )
-                $brokenTestParams = $testParams.Clone()
-                $brokenTestParams[$Parameter] = $Value
-                try {
-                    Get-TargetResource @brokenTestParams
-                } catch {
-                    $exception = $_.Exception
-                }
-                $exception.Message | Should BeLike $ErrorPattern
-            } -TestCases @(
-                @{
-                    Parameter = 'ScopeId'
-                    Value = '192.168.1.42'
-                    ErrorPattern = 'Value of byte 4 in ScopeId (42) is not valid.*'
-                }
-                @{
-                    Parameter = 'IPStartRange'
-                    Value = '192.168.0.1'
-                    ErrorPattern = 'Value of byte 3 in IPStartRange (0) is not valid.*'
-                }
-                @{
-                    Parameter = 'IPEndRange'
-                    Value = '192.167.1.100'
-                    ErrorPattern = 'Value of byte 2 in IPEndRange (167) is not valid.*'
-                }
-                @{
-                    Parameter = 'IPEndRange'
-                    Value = '192.168.1.2'
-                    ErrorPattern = 'Value * are not valid. Start should be lower than end.'
-                }
-            )
-            
+            It 'Calls "Assert-ScopeParameter" to ensure parameters passed are correct' {
+                Mock Get-DhcpServerv4Scope { return $fakeDhcpServerv4Scope }
+                $result = Get-TargetResource @testParams
+                Assert-MockCalled Assert-Module -Scope It
+            }
+
             It 'Returns a "System.Collections.Hashtable" object type' {
                 Mock Get-DhcpServerv4Scope { return $fakeDhcpServerv4Scope; }
                 $result = Get-TargetResource @testParams;
