@@ -25,26 +25,27 @@ function Get-TargetResource
     [OutputType([System.Collections.Hashtable])]
     param
     (
-        [parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [String]$ScopeId,
 
-        [parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [String]$Name,
 
-        [parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [String]$IPStartRange,
 
-        [parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [String]$IPEndRange,
 
-        [parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [String]$SubnetMask,
         
+        [Parameter()]
         [ValidateSet('IPv4')]
         [String]$AddressFamily = 'IPv4'
 
     )
-#region Input Validation
+    #region Input Validation
 
     # Check for DhcpServer module/role
     Assert-Module -moduleName DHCPServer
@@ -59,7 +60,7 @@ function Get-TargetResource
     }
     Assert-ScopeParameter @ipAddressesAssertionParameters
     
-#endregion Input Validation
+    #endregion Input Validation
 
     $dhcpScope = Get-DhcpServerv4Scope -ScopeId $ScopeId -ErrorAction SilentlyContinue
     if($dhcpScope)
@@ -92,37 +93,42 @@ function Set-TargetResource
     [CmdletBinding()]
     param
     (
-        [parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [String]$ScopeId,
 
-        [parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [String]$Name,
 
-        [parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [String]$IPStartRange,
 
-        [parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [String]$IPEndRange,
 
-        [parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [String]$SubnetMask,
 
+        [Parameter()]
         [String]$Description,
 
-        [Parameter()] [ValidateNotNullOrEmpty()]
+        [Parameter()]
+        [ValidateNotNullOrEmpty()]
         [String]$LeaseDuration,
 
+        [Parameter()]
         [ValidateSet('IPv4')]
         [String]$AddressFamily = 'IPv4',
 
+        [Parameter()]
         [ValidateSet('Active','Inactive')]
         [String]$State = 'Active',
 
+        [Parameter()]
         [ValidateSet('Present','Absent')]
         [String]$Ensure = 'Present'
     )
 
-#region Input Validation
+    #region Input Validation
 
     # Check for DhcpServer module/role
     Assert-Module -moduleName DHCPServer
@@ -137,7 +143,7 @@ function Set-TargetResource
     }
     Assert-ScopeParameter @ipAddressesAssertionParameters
     
-#endregion Input Validation
+    #endregion Input Validation
 
     
     if($PSBoundParameters.ContainsKey('Debug')){ $null = $PSBoundParameters.Remove('Debug')}
@@ -153,33 +159,37 @@ function Test-TargetResource
     [OutputType([System.Boolean])]
     param
     (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [String]$ScopeId,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [String]$Name,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [String]$IPStartRange,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [String]$IPEndRange,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [String]$SubnetMask,
 
         [Parameter()]
         [String]$Description,
 
-        [Parameter()] [ValidateNotNullOrEmpty()]
+        [Parameter()]
+        [ValidateNotNullOrEmpty()]
         [String]$LeaseDuration,
 
+        [Parameter()]
         [ValidateSet('IPv4')]
         [String]$AddressFamily = 'IPv4',
 
+        [Parameter()]
         [ValidateSet('Active','Inactive')]
         [String]$State = 'Active',
 
+        [Parameter()]
         [ValidateSet('Present','Absent')]
         [String]$Ensure = 'Present'
     )
@@ -213,33 +223,37 @@ function Validate-ResourceProperties
     [CmdletBinding()]
     param
     (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [String]$ScopeId,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [String]$Name,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [String]$IPStartRange,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [String]$IPEndRange,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [String]$SubnetMask,
 
         [Parameter()]
         [String]$Description,
 
-        [Parameter()] [ValidateNotNullOrEmpty()]
+        [Parameter()]
+        [ValidateNotNullOrEmpty()]
         [String]$LeaseDuration,
 
+        [Parameter()]
         [ValidateSet('Active','Inactive')]
         [String]$State = 'Active',
 
+        [Parameter()]
         [ValidateSet('Present','Absent')]
         [String]$Ensure = 'Present',
 
+        [Parameter()]
         [Switch]$Apply
     )
     

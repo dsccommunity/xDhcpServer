@@ -193,7 +193,7 @@ function Assert-ScopeParameter
             if(($parameterByte -band $subnetMaskByte) -ne $scopeIdByte)
             {
                 $errorMsg = $($LocalizedData.InvalidScopeIdSubnetMask) -f ($ipTokenIndex + 1), $parameter, $parameterByte, $subnetMaskByte, $scopeIdByte
-                New-TerminatingError -ErrorId 'ScopeIdOrMaskIncorrect' -ErrorMessage $errorMsg -ErrorCategory InvalidArgument
+                New-TerminatingError -ErrorId ScopeIdOrMaskIncorrect -ErrorMessage $errorMsg -ErrorCategory InvalidArgument
             }
         }
     }
