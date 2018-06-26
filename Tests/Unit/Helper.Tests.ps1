@@ -28,7 +28,7 @@ InModuleScope $script:ModuleName {
     }
 
     #region Function Assert-ScopeParameter
-    Describe "$($script:ModuleName)\Assert-ScopeParameter" {
+    Describe 'Helper\Assert-ScopeParameter' {
         It 'Should not throw when parameters are correct' {
             { Assert-ScopeParameter @testParams } | Should -Not -Throw
         }

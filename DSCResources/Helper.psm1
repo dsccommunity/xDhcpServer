@@ -19,13 +19,16 @@ function New-TerminatingError
     param
     (
         [Parameter(Mandatory = $true)]
-        [String]$ErrorId,
+        [String]
+        $ErrorId,
         
         [Parameter(Mandatory = $true)]
-        [String]$ErrorMessage,
+        [String]
+        $ErrorMessage,
 
         [Parameter(Mandatory = $true)]
-        [System.Management.Automation.ErrorCategory]$ErrorCategory
+        [System.Management.Automation.ErrorCategory]
+        $ErrorCategory
     )
     
     $exception = New-Object -TypeName System.InvalidOperationException -ArgumentList $ErrorMessage
@@ -41,14 +44,17 @@ function Get-ValidIPAddress
     param
     (
         [Parameter(Mandatory = $true)]
-        [string]$IpString,
+        [string]
+        $IpString,
 
         [Parameter(Mandatory = $true)]
         [ValidateSet('IPv4')]
-        [String]$AddressFamily,
+        [String]
+        $AddressFamily,
 
         [Parameter(Mandatory = $true)]
-        [string]$ParameterName
+        [string]
+        $ParameterName
     )
 
     $ipAddressFamily = ''
@@ -84,12 +90,14 @@ function Assert-Module
     [CmdletBinding()]
     param
     (
-        [string]$moduleName = 'DHCPServer'
+        [Parameter()]
+        [String]
+        $ModuleName = 'DHCPServer'
     )
 
-    if(! (Get-Module -Name $moduleName -ListAvailable))
+    if(! (Get-Module -Name $ModuleName -ListAvailable))
     {
-        $errorMsg = $($LocalizedData.RoleNotFound) -f $moduleName
+        $errorMsg = $($LocalizedData.RoleNotFound) -f $ModuleName
         New-TerminatingError -ErrorId 'ModuleNotFound' -ErrorMessage $errorMsg -ErrorCategory ObjectNotFound
     }
 }
@@ -142,19 +150,24 @@ function Assert-ScopeParameter
     param
     (
         [Parameter(Mandatory = $true)]
-        [String]$ScopeId,
+        [String]
+        $ScopeId,
 
         [Parameter(Mandatory = $true)]
-        [String]$SubnetMask,
+        [String]
+        $SubnetMask,
 
         [Parameter(Mandatory = $true)]
-        [String]$IPStartRange,
+        [String]
+        $IPStartRange,
 
         [Parameter(Mandatory = $true)]
-        [String]$IPEndRange,
+        [String]
+        $IPEndRange,
 
         [Parameter(Mandatory = $true)]
-        [String]$AddressFamily
+        [String]
+        $AddressFamily
     )
 
     # Convert the Subnet Mask to be a valid IPAddress
@@ -205,13 +218,16 @@ function Write-PropertyMessage
     param
     (
         [Parameter(Mandatory = $true)]
-        [Hashtable]$Parameters,
+        [Hashtable]
+        $Parameters,
 
         [Parameter(Mandatory = $true)]
-        [String[]]$KeysToSkip,
+        [String[]]
+        $KeysToSkip,
 
         [Parameter(Mandatory = $true)]
-        [String]$MessageTemplate
+        [String]
+        $MessageTemplate
     )
 
     foreach($key in $parameters.keys)
@@ -231,17 +247,19 @@ function Get-ValidTimeSpan
     param
     (
         [Parameter(Mandatory = $true)]
-        [string]$tsString,
+        [string]
+        $TsString,
 
         [Parameter(Mandatory = $true)]
-        [string]$parameterName
+        [string]
+        $ParameterName
     )
 
     [System.TimeSpan]$timeSpan = New-TimeSpan
-    $result = [System.TimeSpan]::TryParse($tsString, [ref]$timeSpan)
+    $result = [System.TimeSpan]::TryParse($TsString, [ref]$timeSpan)
     if(-not $result)
     {
-        $errorMsg = $($LocalizedData.InvalidTimeSpanFormat) -f $parameterName
+        $errorMsg = $($LocalizedData.InvalidTimeSpanFormat) -f $ParameterName
         New-TerminatingError -ErrorId 'NotValidTimeSpan' -ErrorMessage $errorMsg -ErrorCategory InvalidType
     }
 
