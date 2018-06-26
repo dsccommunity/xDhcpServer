@@ -144,7 +144,8 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 ## Versions
 
 ### Unreleased
-* Switch to ScopeId as a key property for xDhcpServerScope ([issue #43](https://github.com/PowerShell/xDhcpServer/issues/48). [Bartek Bielawski (@bielawb)](https://github.com/bielawb)
+* BREAKING CHANGE: Switch to ScopeId as a key property for xDhcpServerScope ([issue #43](https://github.com/PowerShell/xDhcpServer/issues/48). [Bartek Bielawski (@bielawb)](https://github.com/bielawb)
+
 ### 1.7.0.0
 
 * Changes to xDhcpServer
