@@ -45,6 +45,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 
 ### xDhcpServerScope
 
+* **ScopeId**: ScopeId of the DHCP scope
 * **IPStartRange**: Starting address to set for this scope
 * **IPEndRange**: Ending address to set for this scope
 * **Name**: Name of this DHCP Scope
@@ -143,6 +144,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 ## Versions
 
 ### Unreleased
+* BREAKING CHANGE: Switch to ScopeId as a key property for xDhcpServerScope ([issue #43](https://github.com/PowerShell/xDhcpServer/issues/48). [Bartek Bielawski (@bielawb)](https://github.com/bielawb)
 
 ### 1.7.0.0
 
@@ -200,8 +202,30 @@ configuration Sample_xDhcpsServerScope_NewScope
     Import-DscResource -module xDHCpServer
     xDhcpServerScope Scope
     {
+        ScopeId = '192.168.1.0'
         Ensure = 'Present'
         IPEndRange = '192.168.1.254'
+        IPStartRange = '192.168.1.1'
+        Name = 'PowerShellScope'
+        SubnetMask = '255.255.255.0'
+        LeaseDuration = ((New-TimeSpan -Hours 8 ).ToString())
+        State = 'Active'
+        AddressFamily = 'IPv4'
+    }
+}
+```
+
+### Resizing existing scope with different values for EndRange
+
+```powershell
+configuration Sample_xDhcpsServerScope_ResizeScope
+{
+    Import-DscResource -module xDHCpServer
+    xDhcpServerScope SmallerScope
+    {
+        ScopeId = '192.168.1.0'
+        Ensure = 'Present'
+        IPEndRange = '192.168.1.100'
         IPStartRange = '192.168.1.1'
         Name = 'PowerShellScope'
         SubnetMask = '255.255.255.0'
