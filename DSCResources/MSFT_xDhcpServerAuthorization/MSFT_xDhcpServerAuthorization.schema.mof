@@ -3,5 +3,6 @@ class MSFT_xDhcpServerAuthorization : OMI_BaseResource
 {
     [Write, Description("DHCP Server FQDN")] String DnsName;
     [Write, Description("DHCP Server IP Address")] String IPAddress;
+    [Write, Description("Includes the ADSecurityGroups required for DHCP in the configuration"), ValueMap{"Present","Absent"}, Values{"Present", "Absent"}] String EnsureDhcpServerSecurityGroup;
     [Key, Description("Whether the DHCP server should be authorised within Active Directory"), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
 };
