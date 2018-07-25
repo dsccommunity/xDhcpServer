@@ -1,6 +1,6 @@
 @{
 # Version number of this module.
-moduleVersion = '1.7.0.0'
+moduleVersion = '2.0.0.0'
 
 # ID used to uniquely identify this module
 GUID = '286890c9-a6c3-4605-9cd5-03c8413c8325'
@@ -47,12 +47,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = '* Changes to xDhcpServer
-  * Updated year in LICENSE file.
-  * Updated year in module manifest.
-  * Added Codecov and status badges to README.md.
-  * Update appveyor.yml to use the default template.
-* Added xDhcpServerOptionDefinition
+        ReleaseNotes = '* BREAKING CHANGE: Switch to ScopeId as a key property for xDhcpServerScope ([issue 43](https://github.com/PowerShell/xDhcpServer/issues/48). [Bartek Bielawski (@bielawb)](https://github.com/bielawb)
 
 '
 
@@ -60,6 +55,7 @@ PrivateData = @{
 
 } # End of PrivateData hashtable
 }
+
 
 
 
