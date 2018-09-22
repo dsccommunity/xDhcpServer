@@ -102,7 +102,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
  *  **Ensure**: Whether option should be set or removed. { *Present* | Absent }
 
  ### DhcpScopeOptionValue
- 
+
  * **ScopeId**: Scope ID where to set the option value.
  * **OptionId**: Option ID, specify an integer between 1 and 255.
  * **Value**: Option data value. Could be an array of string for a multivalued option.
@@ -110,9 +110,9 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
  * **UserClass**: User class. Use an empty string for default user class.
  * **AddressFamily**:  Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
  * **Ensure**: Whether option should be set or removed. { *Present* | Absent }
- 
+
 ### DhcpServerOptionValue
- 
+
  * **OptionId**: Option ID, specify an integer between 1 and 255.
  * **Value**: Option data value. Could be an array of string for a multivalued option.
  * **VendorClass**: Vendor class. Use an empty string for default vendor class.
@@ -121,7 +121,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
  * **Ensure**: Whether option should be set or removed. { *Present* | Absent }
 
  ### DhcpReservedIPOptionValue
- 
+
  * **ReservedIP**: Reserved IP to set the option value.
  * **OptionId**: Option ID, specify an integer between 1 and 255.
  * **Value**: Option data value. Could be an array of string for a multivalued option.
@@ -129,9 +129,9 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
  * **UserClass**: User class. Use an empty string for default user class.
  * **AddressFamily**:  Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
  * **Ensure**: Whether option should be set or removed. { *Present* | Absent }
- 
+
  ### DhcpPolicyOptionValue
- 
+
  * **PolicyName**: Dhcp Policy Name.
  * **OptionId**: Option ID, specify an integer between 1 and 255.
  * **Value**: Option data value. Could be an array of string for a multivalued option.
@@ -139,11 +139,14 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
  * **VendorClass**: Vendor class. Use an empty string for default vendor class.
  * **AddressFamily**:  Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
  * **Ensure**: Whether option should be set or removed. { *Present* | Absent }
- 
- 
+
+
 ## Versions
 
 ### Unreleased
+
+* Update appveyor.yml to use the default template.
+* Added default template files .codecov.yml, .gitattributes, and .gitignore, and .vscode folder.
 
 ### 2.0.0.0
 * BREAKING CHANGE: Switch to ScopeId as a key property for xDhcpServerScope ([issue #43](https://github.com/PowerShell/xDhcpServer/issues/48). [Bartek Bielawski (@bielawb)](https://github.com/bielawb)
