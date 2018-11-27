@@ -41,6 +41,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **DhcpScopeOptionValue** manages an option value on scope level.
 - **DhcpReservedIPOptionValue** manages an option value on reserved IP level.
 - **DhcpPolicyOptionValue** manages an option value on Policy level.
+- **DhcpServerExclusionRange** manages exclusion ranges on server level.
 
 ### xDhcpServerScope
 
@@ -149,4 +150,12 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **VendorClass**: Vendor class. Use an empty string for default vendor class.
 - **AddressFamily**:  Sets the address family for the option definition.
   Currently only IPv4 is supported. { IPv4 }
+- **Ensure**: Whether option should be set or removed. { *Present* | Absent }
+
+### DhcpServerExclusionRange
+
+- **ScopeID**: Scope ID for which exclusions are set
+- **IPStartRange**: Starting IP address of the exclusion range
+- **IPEndRange**: Ending IP address of the exclusion range
+- **AddressFamily**: Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
 - **Ensure**: Whether option should be set or removed. { *Present* | Absent }
