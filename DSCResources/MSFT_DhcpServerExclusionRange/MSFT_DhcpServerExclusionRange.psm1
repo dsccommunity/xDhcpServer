@@ -18,6 +18,22 @@ ExclusionNotFound       = Exclusion with StartRange "{0}" and EndRange "{1}" not
 '@
 }
 
+<#
+    .SYNOPSIS
+        This function gets a DHCP server exclusion range.
+
+    .PARAMETER ScopeId
+        The Scope ID of the exclusion range.
+    
+    .PARAMETER IPStartRange
+        The starting IP Address of the exclusion range.
+
+    .PARAMETER IPEndRange
+        The ending IP Address of the exclusion range.
+
+    .PARAMETER AddressFamily
+        The option definition address family (IPv4 or IPv6). Currently only the IPv4 is supported.
+#>
 function Get-TargetResource
 {
     [CmdletBinding()]
@@ -81,6 +97,26 @@ function Get-TargetResource
     }
 }
 
+<#
+    .SYNOPSIS
+        This function sets a DHCP server exclusion range.
+
+    .PARAMETER ScopeId
+        The Scope ID of the exclusion range.
+    
+    .PARAMETER IPStartRange
+        The starting IP Address of the exclusion range.
+
+    .PARAMETER IPEndRange
+        The ending IP Address of the exclusion range.
+
+    .PARAMETER AddressFamily
+        The option definition address family (IPv4 or IPv6). Currently only the IPv4 is supported.
+
+    .PARAMETER Ensure
+        When set to 'Present', the option will be created.
+        When set to 'Absent', the option will be removed.
+#>
 function Set-TargetResource
 {
     [CmdletBinding()]
@@ -126,6 +162,26 @@ function Set-TargetResource
     }
 }
 
+<#
+    .SYNOPSIS
+        This function tests a DHCP server exclusion range.
+
+    .PARAMETER ScopeId
+        The Scope ID of the exclusion range.
+    
+    .PARAMETER IPStartRange
+        The starting IP Address of the exclusion range.
+
+    .PARAMETER IPEndRange
+        The ending IP Address of the exclusion range.
+
+    .PARAMETER AddressFamily
+        The option definition address family (IPv4 or IPv6). Currently only the IPv4 is supported.
+
+    .PARAMETER Ensure
+        When set to 'Present', the option will be created.
+        When set to 'Absent', the option will be removed.
+#>
 function Test-TargetResource
 {
     [CmdletBinding()]
