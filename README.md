@@ -42,6 +42,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 * **DhcpScopeOptionValue** manages an option value on scope level.
 * **DhcpReservedIPOptionValue** manages an option value on reserved IP level.
 * **DhcpPolicyOptionValue** manages an option value on Policy level.
+* **DhcpServerExclusionRange** manages exclusion ranges on server level.
 
 ### xDhcpServerScope
 
@@ -140,6 +141,13 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
  * **AddressFamily**:  Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
  * **Ensure**: Whether option should be set or removed. { *Present* | Absent }
 
+### DhcpServerExclusionRange
+
+* **ScopeID**: Scope ID for which exclusions are set
+* **IPStartRange**: Starting IP address of the exclusion range
+* **IPEndRange**: Ending IP address of the exclusion range
+* **AddressFamily**: Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
+* **Ensure**: Whether option should be set or removed. { *Present* | Absent }
 
 ## Versions
 
@@ -147,6 +155,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 
 * Update appveyor.yml to use the default template.
 * Added default template files .codecov.yml, .gitattributes, and .gitignore, and .vscode folder.
+* Added DhcpServerExclusionRange resource
 
 ### 2.0.0.0
 * BREAKING CHANGE: Switch to ScopeId as a key property for xDhcpServerScope ([issue #43](https://github.com/PowerShell/xDhcpServer/issues/48). [Bartek Bielawski (@bielawb)](https://github.com/bielawb)
