@@ -1,4 +1,4 @@
-﻿$currentPath = Split-Path -Path $MyInvocation.MyCommand.Path -Parent
+$currentPath = Split-Path -Path $MyInvocation.MyCommand.Path -Parent
 
 Import-Module -Name (Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Helper.psm1')
 
