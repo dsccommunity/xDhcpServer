@@ -7,18 +7,20 @@ $script:ensureLookup = @{
         Absent  = $false
 }
 
+<#
+    .SYNOPSIS
+        This function gets a DHCP server binding.
+
+    .PARAMETER InterfaceAlias
+        The alias of the network adapter to get binding status for
+#>
 function Get-TargetResource
 {
     [CmdletBinding()]
     [OutputType([System.Collections.Hashtable])]
     param
     (
-        [parameter(Mandatory = $true)]
-        [ValidateSet('Present','Absent')]
-        [System.String]
-        $Ensure,
-
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [System.String]
         $InterfaceAlias
     )
@@ -41,17 +43,27 @@ function Get-TargetResource
     }
 }
 
+<#
+    .SYNOPSIS
+        This function sets a DHCP server binding.
+
+    .PARAMETER Ensure
+        Toggles the binding on or off
+
+    .PARAMETER InterfaceAlias
+        The alias of the network adapter to set binding status for
+#>
 function Set-TargetResource
 {
     [CmdletBinding()]
     param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateSet('Present','Absent')]
         [System.String]
         $Ensure,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [System.String]
         $InterfaceAlias
     )
@@ -68,18 +80,28 @@ function Set-TargetResource
     Set-DhcpServerv4Binding @parameters
 }
 
+<#
+    .SYNOPSIS
+        This function tests a DHCP server binding.
+
+    .PARAMETER Ensure
+        Toggles the binding on or off
+
+    .PARAMETER InterfaceAlias
+        The alias of the network adapter to get binding status for
+#>
 function Test-TargetResource
 {
     [CmdletBinding()]
     [OutputType([System.Boolean])]
     param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateSet('Present','Absent')]
         [System.String]
         $Ensure,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [System.String]
         $InterfaceAlias
     )
