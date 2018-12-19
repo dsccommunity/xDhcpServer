@@ -11,7 +11,7 @@ if ( (-not (Test-Path -Path (Join-Path -Path $script:moduleRoot -ChildPath 'DSCR
 Import-Module -Name (Join-Path -Path $script:moduleRoot -ChildPath (Join-Path -Path 'DSCResource.Tests' -ChildPath 'TestHelper.psm1')) -Force
 
 $TestEnvironment = Initialize-TestEnvironment `
-    -DSCModuleName 'RPS_xDhcpServer' `
+    -DSCModuleName 'xDhcpServer' `
     -DSCResourceName 'MSFT_DhcpServerBinding' `
     -TestType Unit
 
@@ -30,7 +30,7 @@ try
     Invoke-TestSetup
 
     InModuleScope 'MSFT_DhcpServerBinding' {
-       
+
         $interfaceAlias = 'Ethernet'
         $ensure         = 'Present'
         $ipAddress      = '10.0.0.1'
@@ -49,7 +49,7 @@ try
             InterfaceAlias = 'fake'
             Ensure         = $ensure
         }
-        
+
         $setParamsAbsent = @{
             BindingState   = $false
             InterfaceAlias = $interfaceAlias
@@ -58,7 +58,7 @@ try
         $bindingNotPreset = ,@(
             [pscustomobject]@{
                 InterfaceAlias = $interfaceAlias
-                IPAddress      = [IPAddress]$ipAddress   
+                IPAddress      = [IPAddress]$ipAddress
                 BindingState   = $false
             }
         )
@@ -66,18 +66,18 @@ try
         $bindingPresent = ,@(
             [pscustomobject]@{
                 InterfaceAlias = $interfaceAlias
-                IPAddress      = [IPAddress]$ipAddress   
+                IPAddress      = [IPAddress]$ipAddress
                 BindingState   = $true
             }
         )
-       
+
         Describe 'xDhcpServer\Get-TargetResource' {
 
             Mock Get-DhcpServerv4Binding -MockWith {return $bindingPresent}
             Mock Assert-Module -ParameterFilter { $ModuleName -eq 'DHCPServer' } { }
 
             It 'Should call "Assert-Module" to ensure "DHCPServer" module is available' {
-                 
+
                 $result = Get-TargetResource @testParamsPresent
 
                 Assert-MockCalled -CommandName Assert-Module
@@ -90,18 +90,18 @@ try
             }
 
             It 'Returns all correct values when binding is present'{
-                
+
                 Mock Get-DhcpServerv4Binding -MockWith {return $bindingPresent}
-            
+
                 $result = Get-TargetResource @testParamsPresent
                 $result.Ensure         | Should Be $ensure
                 $result.InterfaceAlias | Should Be $interfaceAlias
             }
 
             It 'Returns all correct values when binding is NOT present'{
-                
+
                 Mock Get-DhcpServerv4Binding -MockWith {return $bindingNotPreset}
-            
+
                 $result = Get-TargetResource @testParamsPresent
                 $result.Ensure         | Should Be 'Absent'
                 $result.InterfaceAlias | Should Be $interfaceAlias
@@ -113,54 +113,54 @@ try
             }
         }
 
-        
+
         Describe 'xDhcpServer\Test-TargetResource' {
 
             Mock Assert-Module -ParameterFilter { $ModuleName -eq 'DHCPServer' } { }
 
             It 'Returns a "System.Boolean" object type' {
-            
+
                 Mock Get-DhcpServerv4Binding -MockWith {return  $bindingPresent}
 
                 $result = Test-TargetResource @testParamsPresent
                 $result | Should BeOfType [System.Boolean]
             }
-            
+
             It 'Returns $true when the binding exists and Ensure = Present' {
-                
+
                 Mock Get-DhcpServerv4Binding -MockWith {return $bindingPresent}
-                
+
                 $result = Test-TargetResource @testParamsPresent
                 $result | Should Be $true
             }
 
             It 'Returns $false when the binding exists and Ensure = Absent' {
-                
+
                 Mock Get-DhcpServerv4Binding -MockWith {return $bindingPresent}
-                
+
                 $result = Test-TargetResource @testParamsAbsent
                 $result | Should Be $false
             }
 
             It 'Returns $true when the binding does not exist and Ensure = Absent' {
-                
+
                 Mock Get-DhcpServerv4Binding -MockWith {return $bindingNotPreset}
-                
+
                 $result = Test-TargetResource @testParamsAbsent
                 $result | Should Be $true
             }
 
             It 'Returns $false when the binding does not exist and Ensure = Present' {
-                
+
                 Mock Get-DhcpServerv4Binding -MockWith {return $bindingNotPreset}
-                
+
                 $result = Test-TargetResource @testParamsPresent
                 $result | Should Be $false
             }
         }
 
         Describe 'xDhcpServer\Set-TargetResource' {
-        
+
             Mock Assert-Module -ParameterFilter { $ModuleName -eq 'DHCPServer' } { }
             Mock Set-DhcpServerv4Binding -MockWith {return $bindingNotPreset}
 
