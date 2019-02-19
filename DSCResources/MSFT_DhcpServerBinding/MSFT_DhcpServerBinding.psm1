@@ -22,7 +22,12 @@ function Get-TargetResource
     (
         [Parameter(Mandatory = $true)]
         [System.String]
-        $InterfaceAlias
+        $InterfaceAlias,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateSet('Present', 'Absent')]
+        [System.String]
+        $Ensure
     )
 
     # Check for DhcpServer module/role
@@ -36,8 +41,9 @@ function Get-TargetResource
     else
     {
         $targetBinding = $bindings.Where({$_.InterfaceAlias -eq $InterfaceAlias})
+        $Ensure = $script:ensureLookup.GetEnumerator().Where({$_.Value -eq $targetBinding.BindingState}).Name
         return @{
-            Ensure         = $script:ensureLookup.GetEnumerator().Where({$_.Value -eq $targetBinding.BindingState}).Name
+            Ensure         = $Ensure
             InterfaceAlias = $InterfaceAlias
         }
     }
