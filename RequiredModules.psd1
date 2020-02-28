@@ -1,10 +1,9 @@
 @{
-    # Set up a mini virtual environment...
     PSDependOptions             = @{
         AddToPath  = $true
         Target     = 'output\RequiredModules'
         Parameters = @{
-           Repository = ''
+            Repository = ''
         }
     }
 
@@ -21,11 +20,9 @@
     xDscResourceDesigner        = 'latest'
     'DscResource.DocGenerator'  = 'latest'
 
+    # Prerequisites modules needed for examples and integration tests of
+    # the xDhcpServer module.
 
-    # PSPKI                       = 'latest'
-    # 'DscResource.Common' = @{
-    #     Target     = 'Source/Modules'
-    #     Version    = 'latest'
-    # }
+    PSDscResources              = '2.12.0.0'
 }
 

@@ -1,33 +1,28 @@
 # xDhcpServer
 
-The **xDhcpServer** DSC resources are used for configuring and managing a DHCP server. They include **xDhcpServerScope**, **xDhcpServerReservation**, **xDhcpServerOptions** and **xDhcpServerAuthorization**.
+This module contains DSC resources for configuring and managing a Microsoft
+DHCP Server.
 
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+[![Build Status](https://dev.azure.com/dsccommunity/xDhcpServer/_apis/build/status/dsccommunity.xDhcpServer?branchName=master)](https://dev.azure.com/dsccommunity/xDhcpServer/_build/latest?definitionId={definitionId}&branchName=master)
+![Azure DevOps coverage (branch)](https://img.shields.io/azure-devops/coverage/dsccommunity/xDhcpServer/{definitionId}/master)
+[![Azure DevOps tests](https://img.shields.io/azure-devops/tests/dsccommunity/xDhcpServer/{definitionId}/master)](https://dsccommunity.visualstudio.com/xDhcpServer/_test/analytics?definitionId={definitionId}&contextType=build)
+[![PowerShell Gallery (with prereleases)](https://img.shields.io/powershellgallery/vpre/xDhcpServer?label=xDhcpServer%20Preview)](https://www.powershellgallery.com/packages/xDhcpServer/)
+[![PowerShell Gallery](https://img.shields.io/powershellgallery/v/xDhcpServer?label=xDhcpServer)](https://www.powershellgallery.com/packages/xDhcpServer/)
 
-## Branches
+## Code of Conduct
 
-### master
+This project has adopted this [Code of Conduct](CODE_OF_CONDUCT.md).
 
-[![Build status](https://ci.appveyor.com/api/projects/status/uan12tf7tfxhg7m5/branch/master?svg=true)](https://ci.appveyor.com/project/PowerShell/xDhcpServer/branch/master)
-[![codecov](https://codecov.io/gh/PowerShell/xDhcpServer/branch/master/graph/badge.svg)](https://codecov.io/gh/PowerShell/xDhcpServer/branch/master)
+## Releases
 
-This is the branch containing the latest release -
-no contributions should be made directly to this branch.
-
-### dev
-
-[![Build status](https://ci.appveyor.com/api/projects/status/uan12tf7tfxhg7m5/branch/dev?svg=true)](https://ci.appveyor.com/project/PowerShell/xDhcpServer/branch/dev)
-[![codecov](https://codecov.io/gh/PowerShell/xDhcpServer/branch/dev/graph/badge.svg)](https://codecov.io/gh/PowerShell/xDhcpServer/branch/dev)
-
-This is the development branch
-to which contributions should be proposed by contributors as pull requests.
-This development branch will periodically be merged to the master branch,
-and be released to [PowerShell Gallery](https://www.powershellgallery.com/).
+For each merge to the branch `master` a preview release will be
+deployed to [PowerShell Gallery](https://www.powershellgallery.com/).
+Periodically a release version tag will be pushed which will deploy a
+full release to [PowerShell Gallery](https://www.powershellgallery.com/).
 
 ## Contributing
 
-Please check out common DSC Resources [contributing guidelines](https://github.com/PowerShell/DscResource.Kit/blob/master/CONTRIBUTING.md).
+Please check out common DSC Community [contributing guidelines](https://dsccommunity.org/guidelines/contributing).
 
 ## Resources
 
@@ -139,66 +134,6 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 - **VendorClass**: Vendor class. Use an empty string for default vendor class.
 - **AddressFamily**:  Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
 - **Ensure**: Whether option should be set or removed. { *Present* | Absent }
-
-## Versions
-
-### Unreleased
-
-- Update appveyor.yml to use the default template.
-- Added default template files .codecov.yml, .gitattributes, and .gitignore, and .vscode folder.
-- Remove the deprecated resource xDhcpServerOption ([issue #46](https://github.com/PowerShell/xDhcpServer/issues/46).
-
-### 2.0.0.0
-
-- BREAKING CHANGE: Switch to ScopeId as a key property for xDhcpServerScope ([issue #48](https://github.com/PowerShell/xDhcpServer/issues/48). [Bartek Bielawski (@bielawb)](https://github.com/bielawb)
-
-### 1.7.0.0
-
-- Changes to xDhcpServer
-  - Updated year in LICENSE file.
-  - Updated year in module manifest.
-  - Added Codecov and status badges to README.md.
-  - Update appveyor.yml to use the default template.
-- Added xDhcpServerOptionDefinition
-- Added DhcpScopeOptionValue
-- Added DhcpServerOptionValue
-- Added DhcpReservedIPOptionValue
-- Added DhcpPolicyOptionValue
-
-### 1.6.0.0
-
-- Added xDhcpServerClass
-
-### 1.5.0.0
-
-- Converted AppVeyor.yml to pull Pester from PSGallery instead of Chocolatey
-- Bug Fix fixes xDhcpServerOption\Get-TargetResource not returning Router property
-
-### 1.4.0.0
-
-- Bug Fix fixes localization bug in xDhcpServerScope option enumeration
-
-### 1.3.0.0
-
-- Added **xDhcpServerAuthorization** resource.
-- Bug Fix LeaseDuration is no longer mandatory for xDhcpServerScope resource.
-- Bug Fix DnsServerIPAddress is no longer mandatory for xDhcpServerOption resource.
-- Bug Fix corrects verbose display output in xDhcpServerOption resource.
-
-### 1.2.0.0
-
-- Fix "Cannot set default gateway on xDhcpServerOption".
-
-### 1.1.0.0
-
-- Bug fix, enables creating more than 1 DHCP server scope.
-
-### 1.0.0.0
-
-- Initial release with the following resources
-  - **xDhcpServerScope**
-  - **xDhcpServerReservation**
-  - **xDhcpServerOptions**
 
 ## Examples
 
