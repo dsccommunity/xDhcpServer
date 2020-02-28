@@ -31,115 +31,114 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 
 ## Resources
 
-* **xDhcpServerClass** manages DHCP Classes (Vendor or User).
-* **xDhcpServerScope** sets a scope for consecutive range of possible IP addresses that the DHCP server can lease to clients on a subnet.
-* **xDhcpServerReservation** sets lease assignments used to ensure that a specified client on a subnet can always use the same IP address.
-* **xDhcpServerOptions** (DEPRECATED) currently supports setting DNS domain and DNS Server IP Address options at a DHCP server scope level.
-* **xDhcpServerAuthorization** authorizes a DHCP in Active Directory.
- * *This resource must run on an Active Directory domain controller.*
-* **xDhcpServerOptionDefinition** manages DHCP option definitions.
-* **DhcpServerOptionValue** manages an option value on server level.
-* **DhcpScopeOptionValue** manages an option value on scope level.
-* **DhcpReservedIPOptionValue** manages an option value on reserved IP level.
-* **DhcpPolicyOptionValue** manages an option value on Policy level.
+- **xDhcpServerClass** manages DHCP Classes (Vendor or User).
+- **xDhcpServerScope** sets a scope for consecutive range of possible IP addresses that the DHCP server can lease to clients on a subnet.
+- **xDhcpServerReservation** sets lease assignments used to ensure that a specified client on a subnet can always use the same IP address.
+- **xDhcpServerOptions** (DEPRECATED) currently supports setting DNS domain and DNS Server IP Address options at a DHCP server scope level.
+- **xDhcpServerAuthorization** authorizes a DHCP in Active Directory.
+  - *This resource must run on an Active Directory domain controller.*
+- **xDhcpServerOptionDefinition** manages DHCP option definitions.
+- **DhcpServerOptionValue** manages an option value on server level.
+- **DhcpScopeOptionValue** manages an option value on scope level.
+- **DhcpReservedIPOptionValue** manages an option value on reserved IP level.
+- **DhcpPolicyOptionValue** manages an option value on Policy level.
 
 ### xDhcpServerScope
 
-* **ScopeId**: ScopeId of the DHCP scope
-* **IPStartRange**: Starting address to set for this scope
-* **IPEndRange**: Ending address to set for this scope
-* **Name**: Name of this DHCP Scope
-* **SubnetMask**: Subnet mask for the scope specified in IP address format
-* **LeaseDuration**: Time interval for which an IP address should be leased
- * This should be specified in the following format: `Days.Hours:Minutes:Seconds`
- * For example, '`02.00:00:00`' is 2 days and '`08:00:00`' is 8 hours.
-* **State**: Whether scope should be active or inactive.
-* **Ensure**: Whether DHCP scope should be present or removed
-* **ScopeID**: Scope Identifier. This is a read-only property for this resource.
+- **ScopeId**: ScopeId of the DHCP scope
+- **IPStartRange**: Starting address to set for this scope
+- **IPEndRange**: Ending address to set for this scope
+- **Name**: Name of this DHCP Scope
+- **SubnetMask**: Subnet mask for the scope specified in IP address format
+- **LeaseDuration**: Time interval for which an IP address should be leased
+  - This should be specified in the following format: `Days.Hours:Minutes:Seconds`
+  - For example, '`02.00:00:00`' is 2 days and '`08:00:00`' is 8 hours.
+- **State**: Whether scope should be active or inactive.
+- **Ensure**: Whether DHCP scope should be present or removed
+- **ScopeID**: Scope Identifier. This is a read-only property for this resource.
 
 ### xDhcpServerReservation
 
-* **ScopeID**: ScopeId for which reservations are set
-* **IPAddress**: IP address of the reservation for which the properties are modified
-* **ClientMACAddress**: Client MAC Address to set on the reservation
-* **Name**: Reservation name
-* **AddressFamily**: Address family type. Note: at this time, only IPv4 is supported.
-* **Ensure**: Whether option should be set or removed
+- **ScopeID**: ScopeId for which reservations are set
+- **IPAddress**: IP address of the reservation for which the properties are modified
+- **ClientMACAddress**: Client MAC Address to set on the reservation
+- **Name**: Reservation name
+- **AddressFamily**: Address family type. Note: at this time, only IPv4 is supported.
+- **Ensure**: Whether option should be set or removed
 
 ### xDhcpServerOption (DEPRECATED)
 
-* **ScopeID**: ScopeID for which options are set
-* **DnsServerIPAddress**: IP address of DNS Servers
-* **DnsDomain**: Domain name of DNS Server
-* **AddressFamily**: Address family type
-* **Router**: The default gateway for clients
-* **Ensure**: Whether option should be set or removed
+- **ScopeID**: ScopeID for which options are set
+- **DnsServerIPAddress**: IP address of DNS Servers
+- **DnsDomain**: Domain name of DNS Server
+- **AddressFamily**: Address family type
+- **Router**: The default gateway for clients
+- **Ensure**: Whether option should be set or removed
 
 ### xDhcpServerAuthorization
 
-* **Ensure**: Whether the DHCP server should be authorized.
-* **DnsName**: FQDN of the server to authorize. If not specified, it defaults to the local hostname of the enacting node.
-* **IPAddress**: IP v4 address of the server to authorized. If not specified, it default to the first IPv4 address of the enacting node.
+- **Ensure**: Whether the DHCP server should be authorized.
+- **DnsName**: FQDN of the server to authorize. If not specified, it defaults to the local hostname of the enacting node.
+- **IPAddress**: IP v4 address of the server to authorized. If not specified, it default to the first IPv4 address of the enacting node.
 
 ### xDhcpServerClass
 
- * **Name**: DHCP Class Name.
- * **Type**: Class type, should be Vendor or User.
- * **AsciiData**: Class Data in a ascii formated string.
- * **AddressFamily**: Currently should be "IPv4".
- * **Description**: Class Description.
- * **Ensure**: Whether class should be set or removed.
+- **Name**: DHCP Class Name.
+- **Type**: Class type, should be Vendor or User.
+- **AsciiData**: Class Data in a ascii formated string.
+- **AddressFamily**: Currently should be "IPv4".
+- **Description**: Class Description.
+- **Ensure**: Whether class should be set or removed.
 
- ### xDhcpServerOptionDefinition
+### xDhcpServerOptionDefinition
 
- *  **OptionID**: Option ID, should be a number between 1 and 255.
- *  **VendorClass**: Vendor class. Use an empty string for standard option class.
- *  **Name**: Option name.
- *  **Type**: Option data type. { Byte | Word | Dword | DwordDword | IPv4Address | String | BinaryData | EncapsulatedData }
- *  **Multivalued**: Whether option is multivalued or not.
- *  **Description**: Option description.
- *  **AddressFamily**: Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
- *  **Ensure**: Whether option should be set or removed. { *Present* | Absent }
+- **OptionID**: Option ID, should be a number between 1 and 255.
+- **VendorClass**: Vendor class. Use an empty string for standard option class.
+- **Name**: Option name.
+- **Type**: Option data type. { Byte | Word | Dword | DwordDword | IPv4Address | String | BinaryData | EncapsulatedData }
+- **Multivalued**: Whether option is multivalued or not.
+- **Description**: Option description.
+- **AddressFamily**: Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
+- **Ensure**: Whether option should be set or removed. { *Present* | Absent }
 
- ### DhcpScopeOptionValue
+### DhcpScopeOptionValue
 
- * **ScopeId**: Scope ID where to set the option value.
- * **OptionId**: Option ID, specify an integer between 1 and 255.
- * **Value**: Option data value. Could be an array of string for a multivalued option.
- * **VendorClass**: Vendor class. Use an empty string for default vendor class.
- * **UserClass**: User class. Use an empty string for default user class.
- * **AddressFamily**:  Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
- * **Ensure**: Whether option should be set or removed. { *Present* | Absent }
+- **ScopeId**: Scope ID where to set the option value.
+- **OptionId**: Option ID, specify an integer between 1 and 255.
+- **Value**: Option data value. Could be an array of string for a multivalued option.
+- **VendorClass**: Vendor class. Use an empty string for default vendor class.
+- **UserClass**: User class. Use an empty string for default user class.
+- **AddressFamily**:  Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
+- **Ensure**: Whether option should be set or removed. { *Present* | Absent }
 
 ### DhcpServerOptionValue
 
- * **OptionId**: Option ID, specify an integer between 1 and 255.
- * **Value**: Option data value. Could be an array of string for a multivalued option.
- * **VendorClass**: Vendor class. Use an empty string for default vendor class.
- * **UserClass**: User class. Use an empty string for default user class.
- * **AddressFamily**:  Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
- * **Ensure**: Whether option should be set or removed. { *Present* | Absent }
+- **OptionId**: Option ID, specify an integer between 1 and 255.
+- **Value**: Option data value. Could be an array of string for a multivalued option.
+- **VendorClass**: Vendor class. Use an empty string for default vendor class.
+- **UserClass**: User class. Use an empty string for default user class.
+- **AddressFamily**:  Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
+- **Ensure**: Whether option should be set or removed. { *Present* | Absent }
 
- ### DhcpReservedIPOptionValue
+### DhcpReservedIPOptionValue
 
- * **ReservedIP**: Reserved IP to set the option value.
- * **OptionId**: Option ID, specify an integer between 1 and 255.
- * **Value**: Option data value. Could be an array of string for a multivalued option.
- * **VendorClass**: Vendor class. Use an empty string for default vendor class.
- * **UserClass**: User class. Use an empty string for default user class.
- * **AddressFamily**:  Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
- * **Ensure**: Whether option should be set or removed. { *Present* | Absent }
+- **ReservedIP**: Reserved IP to set the option value.
+- **OptionId**: Option ID, specify an integer between 1 and 255.
+- **Value**: Option data value. Could be an array of string for a multivalued option.
+- **VendorClass**: Vendor class. Use an empty string for default vendor class.
+- **UserClass**: User class. Use an empty string for default user class.
+- **AddressFamily**:  Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
+- **Ensure**: Whether option should be set or removed. { *Present* | Absent }
 
- ### DhcpPolicyOptionValue
+### DhcpPolicyOptionValue
 
- * **PolicyName**: Dhcp Policy Name.
- * **OptionId**: Option ID, specify an integer between 1 and 255.
- * **Value**: Option data value. Could be an array of string for a multivalued option.
- * **ScopeId**: Scope ID to get policy values from. Do not use it to get an option from server level.
- * **VendorClass**: Vendor class. Use an empty string for default vendor class.
- * **AddressFamily**:  Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
- * **Ensure**: Whether option should be set or removed. { *Present* | Absent }
-
+- **PolicyName**: Dhcp Policy Name.
+- **OptionId**: Option ID, specify an integer between 1 and 255.
+- **Value**: Option data value. Could be an array of string for a multivalued option.
+- **ScopeId**: Scope ID to get policy values from. Do not use it to get an option from server level.
+- **VendorClass**: Vendor class. Use an empty string for default vendor class.
+- **AddressFamily**:  Sets the address family for the option definition. Currently only IPv4 is supported. { IPv4 }
+- **Ensure**: Whether option should be set or removed. { *Present* | Absent }
 
 ## Versions
 
@@ -149,53 +148,56 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 * Added default template files .codecov.yml, .gitattributes, and .gitignore, and .vscode folder.
 
 ### 2.0.0.0
-* BREAKING CHANGE: Switch to ScopeId as a key property for xDhcpServerScope ([issue #43](https://github.com/PowerShell/xDhcpServer/issues/48). [Bartek Bielawski (@bielawb)](https://github.com/bielawb)
+
+- BREAKING CHANGE: Switch to ScopeId as a key property for xDhcpServerScope ([issue #48](https://github.com/PowerShell/xDhcpServer/issues/48). [Bartek Bielawski (@bielawb)](https://github.com/bielawb)
 
 ### 1.7.0.0
 
-* Changes to xDhcpServer
-  * Updated year in LICENSE file.
-  * Updated year in module manifest.
-  * Added Codecov and status badges to README.md.
-  * Update appveyor.yml to use the default template.
-* Added xDhcpServerOptionDefinition
-* Added DhcpScopeOptionValue
-* Added DhcpServerOptionValue
-* Added DhcpReservedIPOptionValue
-* Added DhcpPolicyOptionValue
+- Changes to xDhcpServer
+  - Updated year in LICENSE file.
+  - Updated year in module manifest.
+  - Added Codecov and status badges to README.md.
+  - Update appveyor.yml to use the default template.
+- Added xDhcpServerOptionDefinition
+- Added DhcpScopeOptionValue
+- Added DhcpServerOptionValue
+- Added DhcpReservedIPOptionValue
+- Added DhcpPolicyOptionValue
 
 ### 1.6.0.0
-added xDhcpServerClass
+
+- Added xDhcpServerClass
 
 ### 1.5.0.0
-* Converted AppVeyor.yml to pull Pester from PSGallery instead of Chocolatey
-* Bug Fix fixes xDhcpServerOption\Get-TargetResource not returning Router property
+
+- Converted AppVeyor.yml to pull Pester from PSGallery instead of Chocolatey
+- Bug Fix fixes xDhcpServerOption\Get-TargetResource not returning Router property
 
 ### 1.4.0.0
 
-* Bug Fix fixes localization bug in xDhcpServerScope option enumeration
+- Bug Fix fixes localization bug in xDhcpServerScope option enumeration
 
 ### 1.3.0.0
 
-* Added **xDhcpServerAuthorization** resource.
-* Bug Fix LeaseDuration is no longer mandatory for xDhcpServerScope resource.
-* Bug Fix DnsServerIPAddress is no longer mandatory for xDhcpServerOption resource.
-* Bug Fix corrects verbose display output in xDhcpServerOption resource.
+- Added **xDhcpServerAuthorization** resource.
+- Bug Fix LeaseDuration is no longer mandatory for xDhcpServerScope resource.
+- Bug Fix DnsServerIPAddress is no longer mandatory for xDhcpServerOption resource.
+- Bug Fix corrects verbose display output in xDhcpServerOption resource.
 
-### 1.2
+### 1.2.0.0
 
-* Fix "Cannot set default gateway on xDhcpServerOption".
+- Fix "Cannot set default gateway on xDhcpServerOption".
 
-### 1.1
+### 1.1.0.0
 
-* Bug fix, enables creating more than 1 DHCP server scope.
+- Bug fix, enables creating more than 1 DHCP server scope.
 
-### 1.0
+### 1.0.0.0
 
-* Initial release with the following resources
-    * **xDhcpServerScope**
-    * **xDhcpServerReservation**
-    * **xDhcpServerOptions**
+- Initial release with the following resources
+  - **xDhcpServerScope**
+  - **xDhcpServerReservation**
+  - **xDhcpServerOptions**
 
 ## Examples
 
