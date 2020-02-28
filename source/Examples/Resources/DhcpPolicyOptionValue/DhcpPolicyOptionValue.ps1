@@ -4,15 +4,16 @@
 #>
 configuration Example
 {
-    Import-DscResource -ModuleName PSDscResources
-    Import-DscResource -moduleName xDhcpServer
-    WindowsFeature DHCP
+    Import-DscResource -ModuleName 'PSDscResources'
+    Import-DscResource -moduleName 'xDhcpServer'
+
+    WindowsFeature 'DHCP'
     {
        Name = 'DHCP'
        Ensure = 'Present'
     }
 
-    DhcpPolicyOptionValue policyOptionValue_ID-008
+    DhcpPolicyOptionValue 'PolicyOptionValue_ID-008'
     {
         OptionId      = 8
         Value         = '1.1.1.1'
@@ -23,7 +24,7 @@ configuration Example
         Ensure        = 'Present'
     }
 
-    DhcpPolicyOptionValue policyOptionValue_ID-008-scope
+    DhcpPolicyOptionValue 'PolicyOptionValue_ID-008-scope'
     {
         OptionId      = 8
         Value         = '1.1.1.1'

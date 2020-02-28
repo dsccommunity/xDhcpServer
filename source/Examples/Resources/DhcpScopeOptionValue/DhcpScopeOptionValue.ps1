@@ -4,16 +4,17 @@
 #>
 configuration Example
 {
-    Import-DscResource -ModuleName PSDscResources
-    Import-DscResource -moduleName xDhcpServer
-    WindowsFeature DHCP
+    Import-DscResource -ModuleName 'PSDscResources'
+    Import-DscResource -moduleName 'xDhcpServer'
+
+    WindowsFeature 'DHCP'
     {
        Name = 'DHCP'
        Ensure = 'Present'
     }
 
     # Setting scope gateway
-    DhcpScopeOptionValue scopeOptionGateway
+    DhcpScopeOptionValue 'ScopeOptionGateway'
     {
         OptionId = 3
         Value = 1.1.1.1
@@ -24,7 +25,7 @@ configuration Example
     }
 
     # Setting scope DNS servers
-    DhcpScopeOptionValue scopeOptionDNS
+    DhcpScopeOptionValue 'ScopeOptionDNS'
     {
         OptionId = 6
         Value = 1.1.1.1,2.2.2.2
@@ -35,7 +36,7 @@ configuration Example
     }
 
     # Setting scope DNS domain name
-    DhcpScopeOptionValue scopeOptionDNSDomainName
+    DhcpScopeOptionValue 'ScopeOptionDNSDomainName'
     {
         OptionId = 15
         Value = 'Contoso.com'

@@ -4,15 +4,16 @@
 #>
 configuration Example
 {
-    Import-DscResource -ModuleName PSDscResources
-    Import-DscResource -moduleName xDhcpServer
-    WindowsFeature DHCP
+    Import-DscResource -ModuleName 'PSDscResources'
+    Import-DscResource -moduleName 'xDhcpServer'
+
+    WindowsFeature 'DHCP'
     {
        Name = 'DHCP'
        Ensure = 'Present'
     }
 
-    DhcpReservedIPOptionValue ReservedIPOptionValue_ID-008
+    DhcpReservedIPOptionValue 'ReservedIPOptionValue_ID-008'
     {
         ReservedIP    = '192.168.0.1'
         OptionId      = 8

@@ -4,15 +4,16 @@
 #>
 configuration Example
 {
-    Import-DscResource -ModuleName PSDscResources
-    Import-DscResource -moduleName xDhcpServer
-    WindowsFeature DHCP
+    Import-DscResource -ModuleName 'PSDscResources'
+    Import-DscResource -moduleName 'xDhcpServer'
+
+    WindowsFeature 'DHCP'
     {
        Name = 'DHCP'
        Ensure = 'Present'
     }
 
-    DhcpServerOptionValue ServerOptionValue_ID-008
+    DhcpServerOptionValue 'ServerOptionValue_ID-008'
     {
         OptionId      = 8
         Value         = '1.1.1.1'

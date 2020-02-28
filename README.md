@@ -144,8 +144,9 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 
 ### Unreleased
 
-* Update appveyor.yml to use the default template.
-* Added default template files .codecov.yml, .gitattributes, and .gitignore, and .vscode folder.
+- Update appveyor.yml to use the default template.
+- Added default template files .codecov.yml, .gitattributes, and .gitignore, and .vscode folder.
+- Remove the deprecated resource xDhcpServerOption ([issue #46](https://github.com/PowerShell/xDhcpServer/issues/46).
 
 ### 2.0.0.0
 
