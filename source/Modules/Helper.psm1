@@ -21,7 +21,7 @@ function New-TerminatingError
         [Parameter(Mandatory = $true)]
         [String]
         $ErrorId,
-        
+
         [Parameter(Mandatory = $true)]
         [String]
         $ErrorMessage,
@@ -30,7 +30,7 @@ function New-TerminatingError
         [System.Management.Automation.ErrorCategory]
         $ErrorCategory
     )
-    
+
     $exception = New-Object -TypeName System.InvalidOperationException -ArgumentList $ErrorMessage
     $errorRecord = New-Object -TypeName System.Management.Automation.ErrorRecord -ArgumentList $exception, $ErrorId, $ErrorCategory, $null
     throw $errorRecord
@@ -79,8 +79,8 @@ function Get-ValidIPAddress
     {
         $errorMsg = $($LocalizedData.InvalidIPAddressFamily) -f $ipAddress,$AddressFamily
         New-TerminatingError -ErrorId 'InvalidIPAddressFamily' -ErrorMessage $errorMsg -ErrorCategory SyntaxError
-    } 
-    
+    }
+
     $ipAddress
 }
 

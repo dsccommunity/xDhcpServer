@@ -1,8 +1,8 @@
-# Load Localization Data
-Import-Module -Name (Join-Path -Path (Split-Path -Path $PSScriptRoot -Parent) `
-                               -ChildPath 'CommonResourceHelper.psm1')
+$script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
 
-$script:localizedData = Get-LocalizedData -ResourceName 'OptionValueHelper' -ScriptRoot $PSScriptRoot
+Import-Module -Name $script:resourceHelperModulePath
+
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
 <#
     .SYNOPSIS
@@ -10,7 +10,7 @@ $script:localizedData = Get-LocalizedData -ResourceName 'OptionValueHelper' -Scr
 
     .PARAMETER ApplyTo
         Specify where to get the DHCP option from.
-    
+
     .PARAMETER OptionId
         The option ID.
 
@@ -19,13 +19,13 @@ $script:localizedData = Get-LocalizedData -ResourceName 'OptionValueHelper' -Scr
 
     .PARAMETER UserClass
         The option user class.
-    
+
     .PARAMETER ScopeId
         If used, the option scope ID.
 
     .PARAMETER PolicyName
         If used, the option policy name.
-    
+
     .PARAMETER ReservedIP
         If used, the option reserved IP.
 
@@ -72,7 +72,7 @@ function Get-TargetResourceHelper
         [AllowNull()]
         [ipaddress]
         $ReservedIP,
-        
+
         [parameter(Mandatory = $true)]
         [ValidateSet('IPv4')]
         [String]
@@ -83,7 +83,7 @@ function Get-TargetResourceHelper
 
     # Check for DhcpServer module/role
     Assert-Module -moduleName DHCPServer
-    
+
     #endregion Input Validation
 
     # Checking if option needs to be configured for server, DHCP scope, Policy or reservedIP
@@ -124,8 +124,8 @@ function Get-TargetResourceHelper
             # Getting the dhcp policy option Value
             $policyGettingValueMessage = $localizedData.PolicyGettingValueMessage -f $OptionId, $VendorClass, $ScopeId, $PolicyName
             Write-Verbose $policyGettingValueMessage
-            
-            # Policy can exist on server or scope level, so we need to address both cases 
+
+            # Policy can exist on server or scope level, so we need to address both cases
             if ($ScopeId)
             {
                 $parameters = @{
@@ -157,7 +157,7 @@ function Get-TargetResourceHelper
                 ReservedIP  = $ReservedIP
                 OptionId    = $OptionId
                 VendorClass = $VendorClass
-                UserClass   = $UserClass                
+                UserClass   = $UserClass
             }
             $currentConfiguration = Get-DhcpServerv4OptionValue @parameters -ErrorAction SilentlyContinue
         }
@@ -204,25 +204,25 @@ function Get-TargetResourceHelper
 
     .PARAMETER ApplyTo
         Specify where to test the DHCP option.
-    
+
     .PARAMETER OptionId
         The option ID.
 
     .PARAMETER Value
         The option data value.
-        
+
     .PARAMETER VendorClass
         The option vendor class. Use an empty string for standard class.
 
     .PARAMETER UserClass
         The option user class.
-    
+
     .PARAMETER ScopeId
         If used, the option scope ID.
 
     .PARAMETER PolicyName
         If used, the option policy name.
-    
+
     .PARAMETER ReservedIP
         If used, the option reserved IP.
 
@@ -276,7 +276,7 @@ function Test-TargetResourceHelper
         [AllowNull()]
         [ipaddress]
         $ReservedIP,
-        
+
         [parameter(Mandatory = $true)]
         [ValidateSet('IPv4')]
         [String]
@@ -313,7 +313,7 @@ function Test-TargetResourceHelper
                     $result = $true
                 }
                 else
-                {                    
+                {
                     # Not found Option Value
                     $serverNotFoundValueMessage = $localizedData.ServerNotFoundValueMessage -f $OptionId, $VendorClass, $UserClass
                     Write-Verbose $serverNotFoundValueMessage
@@ -336,8 +336,8 @@ function Test-TargetResourceHelper
                     $serverNotFoundDoNothingValueMessage = $localizedData.ServerNotFoundDoNothingValueMessage -f $OptionId, $VendorClass, $UserClass
                     Write-Verbose $serverNotFoundDoNothingValueMessage
                     $result = $true
-                }       
-            }   
+                }
+            }
         }
 
         'Scope'
@@ -386,8 +386,8 @@ function Test-TargetResourceHelper
                     $scopeNotFoundDoNothingValueMessage = $localizedData.ScopeNotFoundDoNothingValueMessage -f $OptionId, $VendorClass, $UserClass, $ScopeId
                     Write-Verbose $scopeNotFoundDoNothingValueMessage
                     $result = $true
-                }       
-            }                  
+                }
+            }
         }
 
         'Policy'
@@ -413,7 +413,7 @@ function Test-TargetResourceHelper
                     $result = $true
                 }
                 else
-                {                    
+                {
                     # Not found Option Value
                     $policyNotFoundValueMessage = $localizedData.PolicyNotFoundValueMessage -f $OptionId, $VendorClass, $PolicyName
                     Write-Verbose $policyNotFoundValueMessage
@@ -437,8 +437,8 @@ function Test-TargetResourceHelper
                     $policyNotFoundDoNothingValueMessage = $localizedData.PolicyNotFoundDoNothingValueMessage -f $OptionId, $VendorClass, $PolicyName
                     Write-Verbose $policyNotFoundDoNothingValueMessage
                     $result = $true
-                }       
-            }                  
+                }
+            }
         }
 
         'ReservedIP'
@@ -464,7 +464,7 @@ function Test-TargetResourceHelper
                     $result = $true
                 }
                 else
-                {                    
+                {
                     # Not found Option Value
                     $reservedIPNotFoundValueMessage = $localizedData.ReservedIPNotFoundValueMessage -f $OptionId, $VendorClass, $UserClass, $ReservedIP
                     Write-Verbose $reservedIPNotFoundValueMessage
@@ -488,8 +488,8 @@ function Test-TargetResourceHelper
                     $reservedIPNotFoundDoNothingValueMessage = $localizedData.ReservedIPNotFoundDoNothingValueMessage -f $OptionId, $VendorClass, $UserClass, $scopeId, $ReservedIP
                     Write-Verbose $reservedIPNotFoundDoNothingValueMessage
                     $result = $true
-                }       
-            }                  
+                }
+            }
         }
     }
 
@@ -502,25 +502,25 @@ function Test-TargetResourceHelper
 
     .PARAMETER ApplyTo
         Specify where to set the DHCP option.
-    
+
     .PARAMETER OptionId
         The option ID.
 
     .PARAMETER Value
         The option data value.
-        
+
     .PARAMETER VendorClass
         The option vendor class. Use an empty string for standard class.
 
     .PARAMETER UserClass
         The option user class.
-    
+
     .PARAMETER ScopeId
         If used, the option scope ID.
 
     .PARAMETER PolicyName
         If used, the option policy name.
-    
+
     .PARAMETER ReservedIP
         If used, the option reserved IP.
 
@@ -575,7 +575,7 @@ function Set-TargetResourceHelper
         [AllowNull()]
         [ipaddress]
         $ReservedIP,
-        
+
         [parameter(Mandatory = $true)]
         [ValidateSet('IPv4')]
         [String]
@@ -599,7 +599,7 @@ function Set-TargetResourceHelper
                 AddressFamily = $AddressFamily
             }
             $currentConfiguration = Get-TargetResourceHelper -ApplyTo 'Server' @parameters
-    
+
             # Testing for Ensure = Present
             if ($Ensure -eq 'Present')
             {
@@ -618,7 +618,7 @@ function Set-TargetResourceHelper
                     Write-Verbose $serverRemoveValueMessage
                     Remove-DhcpServerv4OptionValue -OptionId $OptionId -VendorClass $VendorClass -UserClass $UserClass
                 }
-            }   
+            }
         }
 
         'Scope'
@@ -631,7 +631,7 @@ function Set-TargetResourceHelper
                 AddressFamily = $AddressFamily
             }
             $currentConfiguration = Get-TargetResourceHelper -ApplyTo 'Scope' @parameters
-    
+
             # Testing for Ensure = Present
             if ($Ensure -eq 'Present')
             {
@@ -651,7 +651,7 @@ function Set-TargetResourceHelper
                     Write-Verbose $scopeRemoveValueMessage
                     Remove-DhcpServerv4OptionValue -ScopeId $ScopeId -OptionId $currentConfiguration.OptionId -VendorClass $VendorClass -UserClass $UserClass
                 }
-            }   
+            }
         }
 
         'Policy'
@@ -668,7 +668,7 @@ function Set-TargetResourceHelper
                     AddressFamily = $AddressFamily
                 }
                 $currentConfiguration = Get-TargetResourceHelper -ApplyTo 'Policy' @parameters
-            
+
                 # Testing for Ensure = Present
                 if ($Ensure -eq 'Present')
                 {
@@ -685,7 +685,7 @@ function Set-TargetResourceHelper
                     if ($currentConfiguration.Ensure -eq 'Present')
                     {
                         $policyWithScopeRemoveValueMessage = $localizedData.policyWithScopeRemoveValueMessage -f $OptionId, $VendorClass, $PolicyName, $ScopeId
-                        Write-Verbose $policyWithScopeRemoveValueMessage                            
+                        Write-Verbose $policyWithScopeRemoveValueMessage
                         Remove-DhcpServerv4OptionValue -PolicyName $PolicyName -ScopeId $ScopeId -OptionId $OptionId -VendorClass $VendorClass
                     }
                 }
@@ -732,7 +732,7 @@ function Set-TargetResourceHelper
                 AddressFamily = $AddressFamily
             }
             $currentConfiguration = Get-TargetResourceHelper -ApplyTo 'ReservedIP' @parameters
-    
+
             # Testing for Ensure = Present
             if ($Ensure -eq 'Present')
             {
@@ -752,7 +752,7 @@ function Set-TargetResourceHelper
                     Write-Verbose $reservedIPRemoveValueMessage
                     Remove-DhcpServerv4OptionValue -ReservedIP $ReservedIP -OptionId $OptionId -VendorClass $VendorClass -UserClass $UserClass
                 }
-            }   
+            }
         }
     }
 }
