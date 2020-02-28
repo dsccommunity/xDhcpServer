@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Removed the deprecated resource xDhcpServerOption which has been replaced
-  by other DSC resource ([issue #46](https://github.com/dsccommunity/xDhcpServer/issues/46).
+  by other DSC resources ([issue #46](https://github.com/dsccommunity/xDhcpServer/issues/46).
 
 ### [2.0.0.0] - 2018-07-25
 
