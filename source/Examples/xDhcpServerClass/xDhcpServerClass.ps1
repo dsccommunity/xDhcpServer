@@ -1,6 +1,6 @@
 <#
     .SYNOPSiS
-       This example sets an option ID 8 (cookie servers) on a server level.
+       This example creates a new DHCP Server class.
 #>
 configuration Example
 {
@@ -13,13 +13,13 @@ configuration Example
         Ensure = 'Present'
     }
 
-    DhcpServerOptionValue 'ServerOptionValue_ID-008'
+    xDhcpServerClass 'VendorClass'
     {
-        OptionId      = 8
-        Value         = '1.1.1.1'
-        VendorClass   = ''
-        UserClass     = ''
+        ensure        = 'Present'
+        Name          = 'VendorClass'
+        Type          = 'Vendor'
+        AsciiData     = 'sampledata'
         AddressFamily = 'IPv4'
-        Ensure        = 'Present'
+        Description   = 'Vendor Class Description'
     }
 }

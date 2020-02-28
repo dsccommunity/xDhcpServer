@@ -9,40 +9,40 @@ configuration Example
 
     WindowsFeature 'DHCP'
     {
-       Name = 'DHCP'
-       Ensure = 'Present'
+        Name   = 'DHCP'
+        Ensure = 'Present'
     }
 
     # Setting scope gateway
     DhcpScopeOptionValue 'ScopeOptionGateway'
     {
-        OptionId = 3
-        Value = 1.1.1.1
-        ScopeId =   '1.1.1.0'
-        VendorClass = ''
-        UserClass   = ''
+        OptionId      = 3
+        Value         = 1.1.1.1
+        ScopeId       =   '1.1.1.0'
+        VendorClass   = ''
+        UserClass     = ''
         AddressFamily = 'IPv4'
     }
 
     # Setting scope DNS servers
     DhcpScopeOptionValue 'ScopeOptionDNS'
     {
-        OptionId = 6
-        Value = 1.1.1.1,2.2.2.2
-        ScopeId =   '1.1.1.0'
-        VendorClass = ''
-        UserClass   = ''
+        OptionId      = 6
+        Value         = 1.1.1.1, 2.2.2.2
+        ScopeId       =   '1.1.1.0'
+        VendorClass   = ''
+        UserClass     = ''
         AddressFamily = 'IPv4'
     }
 
     # Setting scope DNS domain name
     DhcpScopeOptionValue 'ScopeOptionDNSDomainName'
     {
-        OptionId = 15
-        Value = 'Contoso.com'
-        ScopeId =   '1.1.1.0'
-        VendorClass = ''
-        UserClass   = ''
+        OptionId      = 15
+        Value         = 'Contoso.com'
+        ScopeId       =   '1.1.1.0'
+        VendorClass   = ''
+        UserClass     = ''
         AddressFamily = 'IPv4'
     }
 }

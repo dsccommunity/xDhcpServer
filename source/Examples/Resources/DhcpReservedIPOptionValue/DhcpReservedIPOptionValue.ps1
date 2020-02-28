@@ -9,8 +9,8 @@ configuration Example
 
     WindowsFeature 'DHCP'
     {
-       Name = 'DHCP'
-       Ensure = 'Present'
+        Name   = 'DHCP'
+        Ensure = 'Present'
     }
 
     DhcpReservedIPOptionValue 'ReservedIPOptionValue_ID-008'
