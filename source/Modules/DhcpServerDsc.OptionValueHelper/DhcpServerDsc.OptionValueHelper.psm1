@@ -39,7 +39,7 @@ function Get-TargetResourceHelper
     param
     (
         [Parameter(Mandatory = $true)]
-        [ValidateSet('Server','Scope','Policy','ReservedIP')]
+        [ValidateSet('Server', 'Scope', 'Policy', 'ReservedIP')]
         [System.String]
         $ApplyTo,
 
@@ -91,16 +91,16 @@ function Get-TargetResourceHelper
     {
         'Server'
         {
-             # Getting the dhcp server option Value
-             $serverGettingValueMessage = $localizedData.ServerGettingValueMessage -f $OptionId, $VendorClass, $UserClass
-             Write-Verbose $serverGettingValueMessage
+            # Getting the dhcp server option Value
+            $serverGettingValueMessage = $localizedData.ServerGettingValueMessage -f $OptionId, $VendorClass, $UserClass
+            Write-Verbose $serverGettingValueMessage
 
-             $parameters = @{
+            $parameters = @{
                 OptionId    = $OptionId
                 VendorClass = $VendorClass
                 userClass   = $UserClass
-             }
-             $currentConfiguration = Get-DhcpServerv4OptionValue @parameters -ErrorAction SilentlyContinue
+            }
+            $currentConfiguration = Get-DhcpServerv4OptionValue @parameters -ErrorAction SilentlyContinue
         }
 
         'Scope'
@@ -238,7 +238,7 @@ function Test-TargetResourceHelper
     param
     (
         [Parameter(Mandatory = $true)]
-        [ValidateSet('Server','Scope','Policy','ReservedIP')]
+        [ValidateSet('Server', 'Scope', 'Policy', 'ReservedIP')]
         [System.String]
         $ApplyTo,
 
@@ -282,7 +282,7 @@ function Test-TargetResourceHelper
         $AddressFamily,
 
         [Parameter()]
-        [ValidateSet('Present','Absent')]
+        [ValidateSet('Present', 'Absent')]
         [System.String]
         $Ensure = 'Present'
     )
@@ -537,7 +537,7 @@ function Set-TargetResourceHelper
     param
     (
         [Parameter(Mandatory = $true)]
-        [ValidateSet('Server','Scope','Policy','ReservedIP')]
+        [ValidateSet('Server', 'Scope', 'Policy', 'ReservedIP')]
         [System.String]
         $ApplyTo,
 
@@ -581,7 +581,7 @@ function Set-TargetResourceHelper
         $AddressFamily,
 
         [Parameter()]
-        [ValidateSet('Present','Absent')]
+        [ValidateSet('Present', 'Absent')]
         [System.String]
         $Ensure = 'Present'
     )
@@ -602,9 +602,9 @@ function Set-TargetResourceHelper
             # Testing for Ensure = Present
             if ($Ensure -eq 'Present')
             {
-               $serverSettingValueMessage = $localizedData.ServerSettingValueMessage -f $OptionId, $VendorClass, $UserClass
-               Write-Verbose $serverSettingValueMessage
-               Set-DhcpServerv4OptionValue -OptionId $OptionId -Value $Value -VendorClass $VendorClass -UserClass $UserClass
+                $serverSettingValueMessage = $localizedData.ServerSettingValueMessage -f $OptionId, $VendorClass, $UserClass
+                Write-Verbose $serverSettingValueMessage
+                Set-DhcpServerv4OptionValue -OptionId $OptionId -Value $Value -VendorClass $VendorClass -UserClass $UserClass
             }
 
             # Ensure = 'Absent'

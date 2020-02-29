@@ -44,6 +44,7 @@ try
             AsciiData     = $testAsciiData
             AddressFamily = 'IPv4'
             Description   = $testClassDescription
+            Verbose       = $true
         }
 
         $fakeDhcpServerClass = [PSCustomObject] @{

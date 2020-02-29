@@ -48,6 +48,7 @@ try
             Type          = $type
             VendorClass   = $vendorClass
             MultiValued   = $multiValued
+            Verbose       = $true
         }
 
         $fakeDhcpServerv4OptionDefinition = [PSCustomObject] @{
@@ -72,12 +73,14 @@ try
             }
 
             It 'Should call "Assert-Module" to ensure "DHCPServer" module is available' {
-                $result = Get-TargetResource -OptionId $OptionId -Name $Name -Type $Type -VendorClass $VendorClass -AddressFamily IPv4 -Ensure Present
+                $result = Get-TargetResource -OptionId $OptionId -Name $Name -Type $Type -VendorClass $VendorClass -AddressFamily 'IPv4' -Ensure 'Present' -Verbose
+
                 Assert-MockCalled -CommandName Assert-Module -Exactly -Times 1 -Scope It
             }
 
             It 'Returns a "System.Collections.Hashtable" object type' {
-                $result = Get-TargetResource -OptionId $OptionId -Name $Name -Type $Type -VendorClass $VendorClass -AddressFamily IPv4 -Ensure Present
+                $result = Get-TargetResource -OptionId $OptionId -Name $Name -Type $Type -VendorClass $VendorClass -AddressFamily 'IPv4' -Ensure 'Present' -Verbose
+
                 $result -is [System.Collections.Hashtable] | Should -Be $true
             }
         }
@@ -96,12 +99,14 @@ try
             Mock -CommandName Remove-DhcpServerv4OptionDefinition
 
             It 'Returns a "System.Boolean" object type' {
-                $result = Test-TargetResource @testParams -Ensure Present
+                $result = Test-TargetResource @testParams -Ensure 'Present'
+
                 $result | Should -BeOfType [System.Boolean]
             }
 
             It 'Passes when all parameters are correct' {
-                $result = Test-TargetResource @testParams -Ensure Present
+                $result = Test-TargetResource @testParams -Ensure 'Present'
+
                 $result | Should -Be $true
             }
         }
@@ -122,6 +127,7 @@ try
 
                 $TempParams = $testParams.Clone()
                 $TempParams.OptionId = 2
+
                 Set-TargetResource @TempParams -Ensure 'Present'
 
                 Assert-MockCalled Add-DhcpServerv4OptionDefinition -Exactly -Times 1 -Scope It
@@ -133,6 +139,7 @@ try
                 }
 
                 Set-TargetResource @testParams -Ensure 'Absent'
+
                 Assert-MockCalled -CommandName Remove-DhcpServerv4OptionDefinition -Exactly -Times 1 -Scope It
             }
 
@@ -143,6 +150,7 @@ try
 
                 $TempParams = $testParams.Clone()
                 $TempParams.Description = 'New Description'
+
                 Set-TargetResource @TempParams -Ensure 'Present'
 
                 Assert-MockCalled -CommandName Set-DhcpServerv4OptionDefinition -Exactly -Times 1 -Scope It
@@ -155,6 +163,7 @@ try
 
                 $TempParams = $testParams.Clone()
                 $TempParams.Type = 'Byte'
+
                 Set-TargetResource @TempParams -Ensure 'Present'
 
                 Assert-MockCalled -CommandName Remove-DhcpServerv4OptionDefinition -Exactly -Times 1 -Scope It
@@ -169,6 +178,7 @@ try
 
                 $TempParams = $testParams.Clone()
                 $TempParams.Type = 'Byte'
+
                 Set-TargetResource @tempParams -Ensure 'Present'
 
                 Assert-MockCalled -CommandName Remove-DhcpServerv4OptionDefinition -Exactly -Times 1 -Scope It
@@ -183,6 +193,7 @@ try
 
                 $TempParams = $testParams.Clone()
                 $TempParams.MultiValued = $true
+
                 Set-TargetResource @TempParams -Ensure 'Present'
 
                 Assert-MockCalled -CommandName Remove-DhcpServerv4OptionDefinition -Exactly -Times 1 -Scope It
@@ -196,6 +207,7 @@ try
 
                 $TempParams = $testParams.Clone()
                 $TempParams.VendorClass = 'NewVendorClass'
+
                 Set-TargetResource @TempParams -Ensure 'Present'
 
                 Assert-MockCalled -CommandName Remove-DhcpServerv4OptionDefinition -Exactly -Times 1 -Scope It
@@ -211,6 +223,7 @@ try
                 $TempParams = $testParams.Clone()
                 $TempParams.VendorClass = 'NewVendorClass'
                 $TempParams.Description = 'New Description'
+
                 Set-TargetResource @TempParams -Ensure 'Present'
 
                 Assert-MockCalled -CommandName Remove-DhcpServerv4OptionDefinition -Exactly -Times 1 -Scope It
@@ -224,6 +237,7 @@ try
 
                 $TempParams = $testParams.Clone()
                 $TempParams.Description = 'New Description'
+
                 Set-TargetResource @testParams -Ensure 'Present'
 
                 Assert-MockCalled -CommandName Set-DhcpServerv4OptionDefinition -Exactly -Times 1 -Scope It

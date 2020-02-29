@@ -1,5 +1,5 @@
-# Localized resources for helper module OptionValueHelper.
-   
+# Localized resources for helper module DhcpServerDsc.OptionValueHelper.
+
 ConvertFrom-StringData @'
     ServerGettingValueMessage                  = Getting DHCP server option value "{0}" with vendor class "{1}" and user class "{2}".
     ServerExactMatchValueMessage               = Found DHCP server option value "{0}" with vendor class "{1}" and user class "{2}".

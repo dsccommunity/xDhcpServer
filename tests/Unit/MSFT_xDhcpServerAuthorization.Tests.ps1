@@ -1,4 +1,4 @@
-$script:dscModuleName   = 'xDhcpServer'
+$script:dscModuleName = 'xDhcpServer'
 $script:dscResourceName = 'MSFT_xDhcpServerAuthorization'
 
 function Invoke-TestSetup
@@ -34,15 +34,18 @@ try
     InModuleScope $script:dscResourceName {
         # Test TargetResource parameters with Ensure = 'Present'.
         $testPresentParams = @{
-            Ensure = 'Present'
-            DnsName = 'test1.contoso.com'
+            Ensure    = 'Present'
+            DnsName   = 'test1.contoso.com'
             IPAddress = '192.168.1.1'
+            Verbose   = $true
         }
+
         # Test TargetResource parameters with Ensure = 'Absent'.
         $testAbsentParams = @{
-            Ensure = 'Absent'
-            DnsName = 'test1.contoso.com'
+            Ensure    = 'Absent'
+            DnsName   = 'test1.contoso.com'
             IPAddress = '192.168.1.1'
+            Verbose   = $true
         }
 
         <#
@@ -53,15 +56,15 @@ try
         $fakeDhcpServersPresent = @(
             [PSCustomObject] @{
                 IPAddress = '192.168.1.1'
-                DnsName = 'test1.contoso.com'
+                DnsName   = 'test1.contoso.com'
             },
             [PSCustomObject] @{
                 IPAddress = '192.168.1.2'
-                DnsName = 'test2.contoso.com'
+                DnsName   = 'test2.contoso.com'
             },
             [PSCustomObject] @{
                 IPAddress = '192.168.1.3'
-                DnsName = 'test3.contoso.com'
+                DnsName   = 'test3.contoso.com'
             }
         )
 
@@ -69,11 +72,11 @@ try
         $fakeDhcpServersAbsent = @(
             @{
                 IPAddress = '192.168.1.2'
-                DnsName = 'test2.contoso.com'
+                DnsName   = 'test2.contoso.com'
             },
             @{
                 IPAddress = '192.168.1.3'
-                DnsName = 'test3.contoso.com'
+                DnsName   = 'test3.contoso.com'
             }
         )
 
@@ -81,15 +84,15 @@ try
         $fakeDhcpServersMismatchDnsName = @(
             @{
                 IPAddress = '192.168.1.1'
-                DnsName = 'test11.contoso.com'
+                DnsName   = 'test11.contoso.com'
             },
             @{
                 IPAddress = '192.168.1.2'
-                DnsName = 'test2.contoso.com'
+                DnsName   = 'test2.contoso.com'
             },
             @{
                 IPAddress = '192.168.1.3'
-                DnsName = 'test3.contoso.com'
+                DnsName   = 'test3.contoso.com'
             }
         )
 
@@ -97,15 +100,15 @@ try
         $fakeDhcpServersMismatchIPAddress = @(
             @{
                 IPAddress = '192.168.1.11'
-                DnsName = 'test1.contoso.com'
+                DnsName   = 'test1.contoso.com'
             },
             @{
                 IPAddress = '192.168.1.2'
-                DnsName = 'test2.contoso.com'
+                DnsName   = 'test2.contoso.com'
             },
             @{
                 IPAddress = '192.168.1.3'
-                DnsName = 'test3.contoso.com'
+                DnsName   = 'test3.contoso.com'
             }
         )
 
@@ -239,7 +242,7 @@ try
 
         Describe 'MSFT_xDhcpServerAuthorization\Get-IPv4Address' {
             It 'Returns a IPv4 address' {
-                $result = Get-IPv4Address | Select-Object -First 1
+                $result = Get-IPv4Address -Verbose | Select-Object -First 1
 
                 $result -match '\d+\.\d+\.\d+\.\d+' | Should -Be $true
             }
@@ -249,7 +252,7 @@ try
             It 'Returns at least the current NetBIOS name' {
                 $hostname = [System.Net.Dns]::GetHostname()
 
-                $result = Get-Hostname
+                $result = Get-Hostname -Verbose
 
                 $result -match $hostname | Should -Be $true
             }

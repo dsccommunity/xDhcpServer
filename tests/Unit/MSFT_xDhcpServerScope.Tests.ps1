@@ -48,6 +48,7 @@ try
             IPStartRange = $testIPStartRange
             IPEndRange   = $testIPEndRange
             SubnetMask   = $testSubnetMask
+            Verbose      = $true
         }
 
         $fakeDhcpServerv4Scope = [PSCustomObject] @{
@@ -111,6 +112,7 @@ try
                 }
 
                 $result = Get-TargetResource @testParams
+
                 $result.Name | Should -Be $testScopeName
                 $result.IPStartRange | Should -Be $testIPStartRange
                 $result.IPEndRange | Should -Be $testIPEndRange

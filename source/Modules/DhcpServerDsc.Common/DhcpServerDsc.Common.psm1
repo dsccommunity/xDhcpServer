@@ -1,16 +1,8 @@
-# Localized messages
-data LocalizedData
-{
-    # culture="en-US"
-    ConvertFrom-StringData @'
-RoleNotFound            = Please ensure that the PowerShell module for role {0} is installed
-InvalidIPAddressFormat  = Value of {0} property is not in a valid IP address format. Specify a valid IP address format and try again.
-InvalidIPAddressFamily = The IP address {0} is not a valid {1} address. Specify a valid IP address in {1} format and try again.
-InvalidTimeSpanFormat  = Value of {0} property is not in a valid timespan format. Specify the timespan in days.hrs:mins:secs format and try again.
-InvalidScopeIdSubnetMask = Value of byte {0} in {1} ({2}) is not valid. Binary AND with byte {0} in SubnetMask ({3}) should be equal to byte {0} in ScopeId ({4}).
-InvalidStartAndEndRangeMessage = Value of IPStartRange ({0}) and IPEndRange ({1}) are not valid. Start should be lower than end.
-'@
-}
+$script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
+
+Import-Module -Name $script:resourceHelperModulePath
+
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
 # Internal function to throw terminating error with specified ErrorCategory, ErrorId and ErrorMessage
 function New-TerminatingError
@@ -44,21 +36,22 @@ function Get-ValidIPAddress
     param
     (
         [Parameter(Mandatory = $true)]
-        [string]
+        [System.String]
         $IpString,
 
         [Parameter(Mandatory = $true)]
         [ValidateSet('IPv4')]
-        [String]
+        [System.String]
         $AddressFamily,
 
         [Parameter(Mandatory = $true)]
-        [string]
+        [System.String]
         $ParameterName
     )
 
     $ipAddressFamily = ''
-    if($AddressFamily -eq 'IPv4')
+
+    if ($AddressFamily -eq 'IPv4')
     {
         $ipAddressFamily = 'InterNetwork'
     }
@@ -67,21 +60,25 @@ function Get-ValidIPAddress
         $ipAddressFamily = 'InterNetworkV6'
     }
 
-    [System.Net.IPAddress]$ipAddress = $null
-    $result = [System.Net.IPAddress]::TryParse($IpString, [ref]$ipAddress)
-    if(-not $result)
+    [System.Net.IPAddress] $ipAddress = $null
+
+    $result = [System.Net.IPAddress]::TryParse($IpString, [ref] $ipAddress)
+
+    if (-not $result)
     {
         $errorMsg = $($LocalizedData.InvalidIPAddressFormat) -f $ParameterName
+
         New-TerminatingError -ErrorId 'NotValidIPAddress' -ErrorMessage $errorMsg -ErrorCategory InvalidType
     }
 
-    if($ipAddress.AddressFamily -ne $ipAddressFamily)
+    if ($ipAddress.AddressFamily -ne $ipAddressFamily)
     {
-        $errorMsg = $($LocalizedData.InvalidIPAddressFamily) -f $ipAddress,$AddressFamily
+        $errorMsg = $($LocalizedData.InvalidIPAddressFamily) -f $ipAddress, $AddressFamily
+
         New-TerminatingError -ErrorId 'InvalidIPAddressFamily' -ErrorMessage $errorMsg -ErrorCategory SyntaxError
     }
 
-    $ipAddress
+    return $ipAddress
 }
 
 # Internal function to assert if the role specific module is installed or not
@@ -91,11 +88,11 @@ function Assert-Module
     param
     (
         [Parameter()]
-        [String]
+        [System.String]
         $ModuleName = 'DHCPServer'
     )
 
-    if(! (Get-Module -Name $ModuleName -ListAvailable))
+    if (-not (Get-Module -Name $ModuleName -ListAvailable))
     {
         $errorMsg = $($LocalizedData.RoleNotFound) -f $ModuleName
         New-TerminatingError -ErrorId 'ModuleNotFound' -ErrorMessage $errorMsg -ErrorCategory ObjectNotFound
@@ -150,23 +147,23 @@ function Assert-ScopeParameter
     param
     (
         [Parameter(Mandatory = $true)]
-        [String]
+        [System.String]
         $ScopeId,
 
         [Parameter(Mandatory = $true)]
-        [String]
+        [System.String]
         $SubnetMask,
 
         [Parameter(Mandatory = $true)]
-        [String]
+        [System.String]
         $IPStartRange,
 
         [Parameter(Mandatory = $true)]
-        [String]
+        [System.String]
         $IPEndRange,
 
         [Parameter(Mandatory = $true)]
-        [String]
+        [System.String]
         $AddressFamily
     )
 
@@ -183,7 +180,7 @@ function Assert-ScopeParameter
     $endRange = Get-ValidIpAddress -IpString $IPEndRange -AddressFamily $AddressFamily -ParameterName IPEndRange
 
     # Check to ensure startRange is smaller than endRange
-    if($endRange.Address -lt $startRange.Address)
+    if ($endRange.Address -lt $startRange.Address)
     {
         $errorMsg = $LocalizedData.InvalidStartAndEndRangeMessage -f $IPStartRange, $IPEndRange
         New-TerminatingError -ErrorId RangeNotCorrect -ErrorMessage $errorMsg -ErrorCategory InvalidArgument
@@ -203,9 +200,10 @@ function Assert-ScopeParameter
             $parameterByte = $addressBytes[$parameter][$ipTokenIndex]
             $subnetMaskByte = $addressBytes['SubnetMask'][$ipTokenIndex]
             $scopeIdByte = $addressBytes['ScopeId'][$ipTokenIndex]
-            if(($parameterByte -band $subnetMaskByte) -ne $scopeIdByte)
+            if (($parameterByte -band $subnetMaskByte) -ne $scopeIdByte)
             {
                 $errorMsg = $($LocalizedData.InvalidScopeIdSubnetMask) -f ($ipTokenIndex + 1), $parameter, $parameterByte, $subnetMaskByte, $scopeIdByte
+
                 New-TerminatingError -ErrorId ScopeIdOrMaskIncorrect -ErrorMessage $errorMsg -ErrorCategory InvalidArgument
             }
         }
@@ -218,23 +216,23 @@ function Write-PropertyMessage
     param
     (
         [Parameter(Mandatory = $true)]
-        [Hashtable]
+        [System.Collections.Hashtable]
         $Parameters,
 
         [Parameter(Mandatory = $true)]
-        [String[]]
+        [System.String[]]
         $KeysToSkip,
 
         [Parameter(Mandatory = $true)]
-        [String]
+        [System.String]
         $MessageTemplate
     )
 
-    foreach($key in $parameters.keys)
+    foreach ($key in $parameters.keys)
     {
-        if($keysToSkip -notcontains $key)
+        if ($keysToSkip -notcontains $key)
         {
-            $msg = $MessageTemplate -f $key,$parameters[$key]
+            $msg = $MessageTemplate -f $key, $parameters[$key]
             Write-Verbose -Message $msg
         }
     }
@@ -247,21 +245,24 @@ function Get-ValidTimeSpan
     param
     (
         [Parameter(Mandatory = $true)]
-        [string]
+        [System.String]
         $TsString,
 
         [Parameter(Mandatory = $true)]
-        [string]
+        [System.String]
         $ParameterName
     )
 
-    [System.TimeSpan]$timeSpan = New-TimeSpan
-    $result = [System.TimeSpan]::TryParse($TsString, [ref]$timeSpan)
-    if(-not $result)
+    [System.TimeSpan] $timeSpan = New-TimeSpan
+
+    $result = [System.TimeSpan]::TryParse($TsString, [ref] $timeSpan)
+
+    if (-not $result)
     {
         $errorMsg = $($LocalizedData.InvalidTimeSpanFormat) -f $ParameterName
+
         New-TerminatingError -ErrorId 'NotValidTimeSpan' -ErrorMessage $errorMsg -ErrorCategory InvalidType
     }
 
-    $timeSpan
+    return $timeSpan
 }
