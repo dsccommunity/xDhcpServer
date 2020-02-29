@@ -1,4 +1,4 @@
-﻿$script:dscModuleName = 'xDhcpServer'
+$script:dscModuleName = 'xDhcpServer'
 $script:dscResourceName = 'MSFT_xDhcpServerClass'
 
 function Invoke-TestSetup

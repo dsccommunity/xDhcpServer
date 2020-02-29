@@ -1,3 +1,5 @@
+$currentPath = Split-Path -Path $PSScriptRoot -Parent
+
 $modulePathHelper = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/Helper.psm1'
 
 Import-Module -Name $modulePathHelper
