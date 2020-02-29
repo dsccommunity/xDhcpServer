@@ -40,56 +40,55 @@ function Get-TargetResourceHelper
     (
         [Parameter(Mandatory = $true)]
         [ValidateSet('Server','Scope','Policy','ReservedIP')]
-        [String]
+        [System.String]
         $ApplyTo,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [UInt32]
+        [System.UInt32]
         $OptionId,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [AllowEmptyString()]
-        [String]
+        [System.String]
         $VendorClass,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [AllowEmptyString()]
-        [String]
+        [System.String]
         $UserClass,
 
-        [parameter()]
+        [Parameter()]
         [AllowNull()]
-        [String]
+        [System.String]
         $ScopeId,
 
-        [parameter()]
+        [Parameter()]
         [AllowNull()]
-        [String]
+        [System.String]
         $PolicyName,
 
-        [parameter()]
+        [Parameter()]
         [AllowNull()]
-        [ipaddress]
+        [System.Net.IPAddress]
         $ReservedIP,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateSet('IPv4')]
-        [String]
+        [System.String]
         $AddressFamily
     )
 
     #region Input Validation
 
-    # Check for DhcpServer module/role
-    Assert-Module -moduleName DHCPServer
+    # Check for DhcpServer module/role.
+    Assert-Module -ModuleName 'DHCPServer'
 
     #endregion Input Validation
 
     # Checking if option needs to be configured for server, DHCP scope, Policy or reservedIP
     switch ($ApplyTo)
     {
-
         'Server'
         {
              # Getting the dhcp server option Value
@@ -240,51 +239,51 @@ function Test-TargetResourceHelper
     (
         [Parameter(Mandatory = $true)]
         [ValidateSet('Server','Scope','Policy','ReservedIP')]
-        [String]
+        [System.String]
         $ApplyTo,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [UInt32]
+        [System.UInt32]
         $OptionId,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [String[]]
         $Value,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [AllowEmptyString()]
-        [String]
+        [System.String]
         $VendorClass,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [AllowEmptyString()]
-        [String]
+        [System.String]
         $UserClass,
 
-        [parameter()]
+        [Parameter()]
         [AllowNull()]
-        [String]
+        [System.String]
         $ScopeId,
 
-        [parameter()]
+        [Parameter()]
         [AllowNull()]
-        [String]
+        [System.String]
         $PolicyName,
 
-        [parameter()]
+        [Parameter()]
         [AllowNull()]
-        [ipaddress]
+        [System.Net.IPAddress]
         $ReservedIP,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateSet('IPv4')]
-        [String]
+        [System.String]
         $AddressFamily,
 
         [Parameter()]
         [ValidateSet('Present','Absent')]
-        [String]
+        [System.String]
         $Ensure = 'Present'
     )
 
@@ -539,51 +538,51 @@ function Set-TargetResourceHelper
     (
         [Parameter(Mandatory = $true)]
         [ValidateSet('Server','Scope','Policy','ReservedIP')]
-        [String]
+        [System.String]
         $ApplyTo,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [UInt32]
+        [System.UInt32]
         $OptionId,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [String[]]
         $Value,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [AllowEmptyString()]
-        [String]
+        [System.String]
         $VendorClass,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [AllowEmptyString()]
-        [String]
+        [System.String]
         $UserClass,
 
-        [parameter()]
+        [Parameter()]
         [AllowNull()]
-        [String]
+        [System.String]
         $ScopeId,
 
-        [parameter()]
+        [Parameter()]
         [AllowNull()]
-        [String]
+        [System.String]
         $PolicyName,
 
-        [parameter()]
+        [Parameter()]
         [AllowNull()]
-        [ipaddress]
+        [System.Net.IPAddress]
         $ReservedIP,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateSet('IPv4')]
-        [String]
+        [System.String]
         $AddressFamily,
 
         [Parameter()]
         [ValidateSet('Present','Absent')]
-        [String]
+        [System.String]
         $Ensure = 'Present'
     )
 

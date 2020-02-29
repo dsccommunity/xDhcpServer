@@ -17,6 +17,9 @@ function Invoke-TestSetup
         -DSCResourceName $script:dscResourceName `
         -ResourceType 'Mof' `
         -TestType 'Unit'
+
+    # Import the stub functions.
+    Import-Module -Name "$PSScriptRoot/Stubs/DhcpServer_2016_OSBuild_14393_2395.psm1" -Force
 }
 
 function Invoke-TestCleanup
@@ -82,7 +85,7 @@ try
 
                 $result = Get-TargetResource @testParams
 
-                Assert-MockCalled -CommandName Assert-Module -Scope It -ModuleName OptionValueHelper
+                Assert-MockCalled -CommandName Assert-Module -Scope It
             }
 
             It 'Returns a "System.Collections.Hashtable" object type' {
@@ -167,15 +170,15 @@ try
 
             Mock -CommandName Assert-Module -ParameterFilter { $ModuleName -eq 'DHCPServer' }
 
-            Mock Remove-DhcpServerv4OptionValue -ModuleName OptionValueHelper
-            Mock Set-DhcpServerv4OptionValue -ModuleName OptionValueHelper
+            Mock Remove-DhcpServerv4OptionValue
+            Mock Set-DhcpServerv4OptionValue
 
             It 'Should call "Set-DhcpServerv4Optionvalue" when "Ensure" = "Present" and definition does not exist' {
 
                 Mock Get-DhcpServerv4OptionValue { return $null }
 
                 Set-TargetResource @testParams -Ensure 'Present' -Value $value
-                Assert-MockCalled -CommandName Set-DhcpServerv4OptionValue -Scope It -ModuleName OptionValueHelper
+                Assert-MockCalled -CommandName Set-DhcpServerv4OptionValue -Scope It
             }
 
             It 'Should call "Remove-DhcpServerv4OptionValue" when "Ensure" = "Absent" and Definition does exist' {

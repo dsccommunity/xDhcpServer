@@ -17,6 +17,9 @@ function Invoke-TestSetup
         -DSCResourceName $script:dscResourceName `
         -ResourceType 'Mof' `
         -TestType 'Unit'
+
+    # Import the stub functions.
+    Import-Module -Name "$PSScriptRoot/Stubs/DhcpServer_2016_OSBuild_14393_2395.psm1" -Force
 }
 
 function Invoke-TestCleanup
