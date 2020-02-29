@@ -16,7 +16,7 @@ function Reconcile-DhcpServerv4IPRecord {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Repair0', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -69,7 +69,7 @@ function Add-DhcpServerInDC {
         [Parameter(ParameterSetName='Add0', Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${DnsName},
 
         [Parameter(ParameterSetName='Add0', Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -115,7 +115,7 @@ function Add-DhcpServerSecurityGroup {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Add0')]
@@ -150,31 +150,31 @@ function Add-DhcpServerv4Class {
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=2, ValueFromPipelineByPropertyName=$true)]
         [ValidateSet('Vendor','User')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Type},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=3, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Data},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${Description},
 
         [Parameter(ParameterSetName='Add0')]
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Add0')]
@@ -216,7 +216,7 @@ function Add-DhcpServerv4ExclusionRange {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -281,21 +281,21 @@ Add-DhcpServerv4Failover [-Name] <string> [-ScopeId] <ipaddress[]> [-PartnerServ
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='LoadBalance', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
         [Parameter(ParameterSetName='HotStandby', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='LoadBalance', Mandatory=$true, Position=3, ValueFromPipelineByPropertyName=$true)]
         [Parameter(ParameterSetName='HotStandby', Mandatory=$true, Position=3, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${PartnerServer},
 
         [Parameter(ParameterSetName='LoadBalance', Mandatory=$true, Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -335,7 +335,7 @@ Add-DhcpServerv4Failover [-Name] <string> [-ScopeId] <ipaddress[]> [-PartnerServ
         [Parameter(ParameterSetName='HotStandby')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${SharedSecret},
 
         [Parameter(ParameterSetName='LoadBalance')]
@@ -356,7 +356,7 @@ Add-DhcpServerv4Failover [-Name] <string> [-ScopeId] <ipaddress[]> [-PartnerServ
         [ValidateSet('Active','Standby')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ServerRole},
 
         [Parameter(ParameterSetName='LoadBalance')]
@@ -401,7 +401,7 @@ function Add-DhcpServerv4FailoverScope {
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=2)]
@@ -414,7 +414,7 @@ function Add-DhcpServerv4FailoverScope {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Add0')]
@@ -456,11 +456,11 @@ function Add-DhcpServerv4Filter {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${Description},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -474,7 +474,7 @@ function Add-DhcpServerv4Filter {
         [ValidateSet('Allow','Deny')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${List},
 
         [Parameter(ParameterSetName='Add0')]
@@ -533,30 +533,30 @@ function Add-DhcpServerv4Lease {
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=3, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ClientId},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
         [ValidateSet('Active','Declined','Expired','ActiveReservation','InactiveReservation')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${AddressState},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
         [AllowNull()]
-        [string]
+        [System.String]
         ${HostName},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${Description},
 
         [Parameter(ParameterSetName='Add0')]
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Add0')]
@@ -569,21 +569,21 @@ function Add-DhcpServerv4Lease {
         [ValidateSet('A','PTR','AandPTR','NoRegistration')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${DnsRR},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
         [ValidateSet('Complete','Pending','NotApplicable')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${DnsRegistration},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
         [ValidateSet('UnSpecified','Dhcp','BootP','None','Both')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ClientType},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
@@ -600,7 +600,7 @@ function Add-DhcpServerv4Lease {
         [ValidateSet('FullAccess','RestrictedAccess','DropPacket','InProbation','Exempt','DefaultQuarantineSetting','NoQuarantineInfo')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${NapStatus},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
@@ -609,7 +609,7 @@ function Add-DhcpServerv4Lease {
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
         [AllowNull()]
-        [string]
+        [System.String]
         ${PolicyName},
 
         [Parameter(ParameterSetName='Add0')]
@@ -645,13 +645,13 @@ function Add-DhcpServerv4MulticastExclusionRange {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -705,13 +705,13 @@ function Add-DhcpServerv4MulticastScope {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -727,14 +727,14 @@ function Add-DhcpServerv4MulticastScope {
         ${EndRange},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${Description},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
         [ValidateSet('Active','InActive')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${State},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
@@ -795,17 +795,17 @@ function Add-DhcpServerv4OptionDefinition {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${Description},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -818,7 +818,7 @@ function Add-DhcpServerv4OptionDefinition {
         [ValidateSet('Byte','Word','DWord','DWordDWord','IPv4Address','String','BinaryData','EncapsulatedData')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Type},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
@@ -828,7 +828,7 @@ function Add-DhcpServerv4OptionDefinition {
         ${MultiValued},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${VendorClass},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
@@ -874,26 +874,26 @@ function Add-DhcpServerv4Policy {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=2, ValueFromPipelineByPropertyName=$true)]
         [ValidateSet('And','Or')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Condition},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
         [AllowNull()]
         [AllowEmptyString()]
-        [string]
+        [System.String]
         ${Description},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
@@ -1004,13 +1004,13 @@ function Add-DhcpServerv4PolicyIPRange {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -1070,7 +1070,7 @@ function Add-DhcpServerv4Reservation {
         [Alias('Cn','ReservationServer')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -1090,17 +1090,17 @@ function Add-DhcpServerv4Reservation {
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=3, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ClientId},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
         [Alias('HostName','ReservationName')]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
         [Alias('ReservationDescription')]
-        [string]
+        [System.String]
         ${Description},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
@@ -1108,7 +1108,7 @@ function Add-DhcpServerv4Reservation {
         [ValidateSet('Dhcp','Bootp','Both')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Type},
 
         [Parameter(ParameterSetName='Add0')]
@@ -1150,7 +1150,7 @@ function Add-DhcpServerv4Scope {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -1168,22 +1168,22 @@ function Add-DhcpServerv4Scope {
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=4, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${Description},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
         [ValidateSet('Active','InActive')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${State},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${SuperscopeName},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
@@ -1209,7 +1209,7 @@ function Add-DhcpServerv4Scope {
         ${NapEnable},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${NapProfile},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
@@ -1234,7 +1234,7 @@ function Add-DhcpServerv4Scope {
         [ValidateSet('Dhcp','Bootp','Both')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Type},
 
         [Parameter(ParameterSetName='Add0')]
@@ -1269,7 +1269,7 @@ function Add-DhcpServerv4Superscope {
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${SuperscopeName},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -1288,7 +1288,7 @@ function Add-DhcpServerv4Superscope {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Add0')]
@@ -1330,11 +1330,11 @@ function Add-DhcpServerv6Class {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${Description},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
@@ -1346,20 +1346,20 @@ function Add-DhcpServerv6Class {
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=3, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Data},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=2, ValueFromPipelineByPropertyName=$true)]
         [ValidateSet('Vendor','User')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Type},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Add0')]
@@ -1401,7 +1401,7 @@ function Add-DhcpServerv6ExclusionRange {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -1461,7 +1461,7 @@ function Add-DhcpServerv6Lease {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -1473,7 +1473,7 @@ function Add-DhcpServerv6Lease {
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=2, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ClientDuid},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=3, ValueFromPipelineByPropertyName=$true)]
@@ -1484,11 +1484,11 @@ function Add-DhcpServerv6Lease {
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
         [AllowNull()]
-        [string]
+        [System.String]
         ${HostName},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${Description},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
@@ -1499,7 +1499,7 @@ function Add-DhcpServerv6Lease {
         [ValidateSet('IANA','IATA')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${AddressType},
 
         [Parameter(ParameterSetName='Add0')]
@@ -1541,7 +1541,7 @@ function Add-DhcpServerv6OptionDefinition {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -1554,13 +1554,13 @@ function Add-DhcpServerv6OptionDefinition {
         [ValidateSet('Byte','Word','DWord','DWordDWord','IPv4Address','String','BinaryData','EncapsulatedData','IPv6Address')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Type},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
@@ -1570,11 +1570,11 @@ function Add-DhcpServerv6OptionDefinition {
         ${MultiValued},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${Description},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${VendorClass},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
@@ -1620,7 +1620,7 @@ function Add-DhcpServerv6Reservation {
         [Alias('Cn','ReservationServer')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -1634,7 +1634,7 @@ function Add-DhcpServerv6Reservation {
         [Alias('Duid')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ClientDuid},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=4, ValueFromPipelineByPropertyName=$true)]
@@ -1645,12 +1645,12 @@ function Add-DhcpServerv6Reservation {
 
         [Parameter(ParameterSetName='Add0', Position=5, ValueFromPipelineByPropertyName=$true)]
         [Alias('HostName','ReservationName')]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
         [Alias('ReservationDescription')]
-        [string]
+        [System.String]
         ${Description},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -1705,7 +1705,7 @@ function Add-DhcpServerv6Scope {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -1717,18 +1717,18 @@ function Add-DhcpServerv6Scope {
         [Parameter(ParameterSetName='Add0', Mandatory=$true, Position=2, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${Description},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
         [ValidateSet('Active','Inactive')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${State},
 
         [Parameter(ParameterSetName='Add0', ValueFromPipelineByPropertyName=$true)]
@@ -1792,13 +1792,13 @@ function Backup-DhcpServer {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Backup0', Mandatory=$true, Position=1)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Path},
 
         [Parameter(ParameterSetName='Backup0')]
@@ -1829,7 +1829,7 @@ function Export-DhcpServer {
     [CmdletBinding(SupportsShouldProcess=$true, ConfirmImpact='Medium')]
     param (
         [Parameter(Mandatory=$true, Position=0)]
-        [string]
+        [System.String]
         ${File},
 
         [Parameter(ValueFromPipelineByPropertyName=$true)]
@@ -1849,7 +1849,7 @@ function Export-DhcpServer {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Alias('Session')]
@@ -1876,7 +1876,7 @@ function Get-DhcpServerAuditLog {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get0')]
@@ -1912,7 +1912,7 @@ function Get-DhcpServerDatabase {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get0')]
@@ -1948,7 +1948,7 @@ function Get-DhcpServerDnsCredential {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get0')]
@@ -2013,7 +2013,7 @@ function Get-DhcpServerSetting {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get0')]
@@ -2049,7 +2049,7 @@ function Get-DhcpServerv4Binding {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get0')]
@@ -2091,14 +2091,14 @@ function Get-DhcpServerv4Class {
         [ValidateSet('Vendor','User')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Type},
 
         [Parameter(ParameterSetName='Get1')]
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get1')]
@@ -2147,13 +2147,13 @@ function Get-DhcpServerv4DnsSetting {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get0', ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${PolicyName},
 
         [Parameter(ParameterSetName='Get0')]
@@ -2189,7 +2189,7 @@ function Get-DhcpServerv4ExclusionRange {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get1', Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -2236,7 +2236,7 @@ Get-DhcpServerv4Failover -ScopeId <ipaddress[]> [-ComputerName <string>] [-CimSe
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Name', Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -2287,14 +2287,14 @@ function Get-DhcpServerv4Filter {
         [ValidateSet('Allow','Deny')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${List},
 
         [Parameter(ParameterSetName='Get1')]
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get1')]
@@ -2330,7 +2330,7 @@ function Get-DhcpServerv4FilterList {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get0')]
@@ -2365,7 +2365,7 @@ function Get-DhcpServerv4FreeIPAddress {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get0', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -2440,7 +2440,7 @@ Get-DhcpServerv4Lease [[-ScopeId] <ipaddress>] -BadLeases [-ComputerName <string
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='BadLeases', Mandatory=$true)]
@@ -2517,7 +2517,7 @@ function Get-DhcpServerv4MulticastExclusionRange {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get1', Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -2559,7 +2559,7 @@ function Get-DhcpServerv4MulticastLease {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get0', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -2601,7 +2601,7 @@ function Get-DhcpServerv4MulticastScope {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get1', Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -2643,7 +2643,7 @@ function Get-DhcpServerv4MulticastScopeStatistics {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get0', Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -2685,7 +2685,7 @@ function Get-DhcpServerv4OptionDefinition {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get1', Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -2696,7 +2696,7 @@ function Get-DhcpServerv4OptionDefinition {
 
         [Parameter(ParameterSetName='Get1', Position=2, ValueFromPipelineByPropertyName=$true)]
         [Alias('Name')]
-        [string]
+        [System.String]
         ${VendorClass},
 
         [Parameter(ParameterSetName='Get1')]
@@ -2735,14 +2735,14 @@ function Get-DhcpServerv4OptionValue {
     [OutputType('Microsoft.Management.Infrastructure.CimInstance#DhcpServerv4OptionValue')]
     param (
         [Parameter(ParameterSetName='Get0', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${VendorClass},
 
         [Parameter(ParameterSetName='Get0')]
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get0', Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -2765,7 +2765,7 @@ function Get-DhcpServerv4OptionValue {
         ${OptionId},
 
         [Parameter(ParameterSetName='Get0', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${UserClass},
 
         [Parameter(ParameterSetName='Get0')]
@@ -2781,7 +2781,7 @@ function Get-DhcpServerv4OptionValue {
         ${Brief},
 
         [Parameter(ParameterSetName='Get0', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${PolicyName},
 
         [Parameter(ParameterSetName='Get0')]
@@ -2817,7 +2817,7 @@ function Get-DhcpServerv4Policy {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get1', Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -2877,7 +2877,7 @@ function Get-DhcpServerv4PolicyIPRange {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get1')]
@@ -2923,7 +2923,7 @@ Get-DhcpServerv4Reservation [-ScopeId] <ipaddress> [-ClientId] <string[]> [-Comp
         [Alias('Cn','ReservationServer')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='ClientId', Mandatory=$true, Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -2986,7 +2986,7 @@ function Get-DhcpServerv4Scope {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get1', Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -3034,7 +3034,7 @@ function Get-DhcpServerv4ScopeStatistics {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get0')]
@@ -3076,7 +3076,7 @@ function Get-DhcpServerv4Statistics {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get0')]
@@ -3118,7 +3118,7 @@ function Get-DhcpServerv4Superscope {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get1')]
@@ -3154,7 +3154,7 @@ function Get-DhcpServerv4SuperscopeStatistics {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get0', Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -3196,7 +3196,7 @@ function Get-DhcpServerv6Binding {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get0')]
@@ -3238,14 +3238,14 @@ function Get-DhcpServerv6Class {
         [ValidateSet('Vendor','User')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Type},
 
         [Parameter(ParameterSetName='Get1')]
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get1')]
@@ -3281,7 +3281,7 @@ function Get-DhcpServerv6DnsSetting {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get0', Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -3330,7 +3330,7 @@ function Get-DhcpServerv6ExclusionRange {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get1', Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -3371,7 +3371,7 @@ function Get-DhcpServerv6FreeIPAddress {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get0', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -3436,7 +3436,7 @@ Get-DhcpServerv6Lease -IPAddress <ipaddress[]> [-ComputerName <string>] [-CimSes
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='IPAddress', Mandatory=$true, ValueFromPipelineByPropertyName=$true)]
@@ -3487,7 +3487,7 @@ function Get-DhcpServerv6OptionDefinition {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get1', Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -3498,7 +3498,7 @@ function Get-DhcpServerv6OptionDefinition {
 
         [Parameter(ParameterSetName='Get1', Position=2, ValueFromPipelineByPropertyName=$true)]
         [Alias('Name')]
-        [string]
+        [System.String]
         ${VendorClass},
 
         [Parameter(ParameterSetName='Get1')]
@@ -3539,11 +3539,11 @@ function Get-DhcpServerv6OptionValue {
         [Parameter(ParameterSetName='Get0')]
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get0', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${VendorClass},
 
         [Parameter(ParameterSetName='Get0', Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -3560,7 +3560,7 @@ function Get-DhcpServerv6OptionValue {
         ${ReservedIP},
 
         [Parameter(ParameterSetName='Get0', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${UserClass},
 
         [Parameter(ParameterSetName='Get0', Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -3619,7 +3619,7 @@ Get-DhcpServerv6Reservation -IPAddress <ipaddress[]> [-ComputerName <string>] [-
         [Alias('Cn','ReservationServer')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='IPAddress', Mandatory=$true, ValueFromPipelineByPropertyName=$true)]
@@ -3672,7 +3672,7 @@ function Get-DhcpServerv6Scope {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get1', Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -3720,7 +3720,7 @@ function Get-DhcpServerv6ScopeStatistics {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get0')]
@@ -3756,7 +3756,7 @@ function Get-DhcpServerv6StatelessStatistics {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get0')]
@@ -3798,7 +3798,7 @@ function Get-DhcpServerv6StatelessStore {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get0')]
@@ -3834,7 +3834,7 @@ function Get-DhcpServerv6Statistics {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get0')]
@@ -3870,7 +3870,7 @@ function Get-DhcpServerVersion {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Get0')]
@@ -3901,11 +3901,11 @@ function Import-DhcpServer {
     [CmdletBinding(SupportsShouldProcess=$true, ConfirmImpact='Medium')]
     param (
         [Parameter(Mandatory=$true, Position=0)]
-        [string]
+        [System.String]
         ${File},
 
         [Parameter(Mandatory=$true, Position=1)]
-        [string]
+        [System.String]
         ${BackupPath},
 
         [ipaddress[]]
@@ -3929,7 +3929,7 @@ function Import-DhcpServer {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Alias('Session')]
@@ -3959,7 +3959,7 @@ Invoke-DhcpServerv4FailoverReplication -ScopeId <ipaddress[]> [-ComputerName <st
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='ScopeId')]
@@ -4017,7 +4017,7 @@ function Remove-DhcpServerDnsCredential {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Remove1')]
@@ -4058,7 +4058,7 @@ function Remove-DhcpServerInDC {
         [Parameter(ParameterSetName='Remove2', Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${DnsName},
 
         [Parameter(ParameterSetName='Remove2', Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -4106,7 +4106,7 @@ function Remove-DhcpServerv4Class {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Remove2', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -4119,7 +4119,7 @@ function Remove-DhcpServerv4Class {
         [ValidateSet('Vendor','User')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Type},
 
         [Parameter(ParameterSetName='Remove2')]
@@ -4161,7 +4161,7 @@ function Remove-DhcpServerv4ExclusionRange {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Remove2', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -4239,7 +4239,7 @@ function Remove-DhcpServerv4Failover {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Remove0')]
@@ -4275,13 +4275,13 @@ function Remove-DhcpServerv4FailoverScope {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Remove1', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Remove1', Mandatory=$true, Position=2)]
@@ -4335,7 +4335,7 @@ function Remove-DhcpServerv4Filter {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Remove2')]
@@ -4408,7 +4408,7 @@ Remove-DhcpServerv4Lease [[-ScopeId] <ipaddress>] -BadLeases [-PassThru] [-Compu
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='BadLeases', Mandatory=$true)]
@@ -4479,7 +4479,7 @@ function Remove-DhcpServerv4MulticastExclusionRange {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Remove2', Position=3, ValueFromPipelineByPropertyName=$true)]
@@ -4491,7 +4491,7 @@ function Remove-DhcpServerv4MulticastExclusionRange {
         [Parameter(ParameterSetName='Remove2', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Remove2', Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -4539,7 +4539,7 @@ function Remove-DhcpServerv4MulticastLease {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Remove1')]
@@ -4551,7 +4551,7 @@ function Remove-DhcpServerv4MulticastLease {
         [Parameter(ParameterSetName='Remove1', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Remove1', Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -4593,7 +4593,7 @@ function Remove-DhcpServerv4MulticastScope {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Remove2', Mandatory=$true, ValueFromPipelineByPropertyName=$true)]
@@ -4647,7 +4647,7 @@ function Remove-DhcpServerv4OptionDefinition {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Remove2', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -4657,7 +4657,7 @@ function Remove-DhcpServerv4OptionDefinition {
         ${OptionId},
 
         [Parameter(ParameterSetName='Remove2', Position=2, ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${VendorClass},
 
         [Parameter(ParameterSetName='Remove2')]
@@ -4696,14 +4696,14 @@ function Remove-DhcpServerv4OptionValue {
     [OutputType('Microsoft.Management.Infrastructure.CimInstance#DhcpServerv4OptionValue')]
     param (
         [Parameter(ParameterSetName='Remove1', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${VendorClass},
 
         [Parameter(ParameterSetName='Remove1')]
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Remove1', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -4713,7 +4713,7 @@ function Remove-DhcpServerv4OptionValue {
         ${OptionId},
 
         [Parameter(ParameterSetName='Remove1', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${UserClass},
 
         [Parameter(ParameterSetName='Remove1', Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -4734,7 +4734,7 @@ function Remove-DhcpServerv4OptionValue {
         ${PassThru},
 
         [Parameter(ParameterSetName='Remove1', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${PolicyName},
 
         [Parameter(ParameterSetName='Remove1')]
@@ -4770,7 +4770,7 @@ function Remove-DhcpServerv4Policy {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Remove2')]
@@ -4823,7 +4823,7 @@ function Remove-DhcpServerv4PolicyIPRange {
         [Parameter(ParameterSetName='Remove2', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Remove2', Mandatory=$true, Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -4854,7 +4854,7 @@ function Remove-DhcpServerv4PolicyIPRange {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Remove2')]
@@ -4914,7 +4914,7 @@ Remove-DhcpServerv4Reservation [-ScopeId] <ipaddress> [-ClientId] <string[]> [-C
         [Alias('Cn','ReservationServer')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='ScopeId')]
@@ -4989,7 +4989,7 @@ function Remove-DhcpServerv4Scope {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Remove2')]
@@ -5025,13 +5025,13 @@ function Remove-DhcpServerv4Superscope {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Remove2', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${SuperscopeName},
 
         [Parameter(ParameterSetName='Remove2', Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -5085,7 +5085,7 @@ function Remove-DhcpServerv6Class {
         [ValidateSet('Vendor','User')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Type},
 
         [Parameter(ParameterSetName='Remove2', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -5098,7 +5098,7 @@ function Remove-DhcpServerv6Class {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Remove2')]
@@ -5134,7 +5134,7 @@ function Remove-DhcpServerv6ExclusionRange {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Remove2', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -5199,7 +5199,7 @@ Remove-DhcpServerv6Lease [-Prefix] <ipaddress> [-ComputerName <string>] [-PassTh
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Prefix')]
@@ -5257,7 +5257,7 @@ function Remove-DhcpServerv6OptionDefinition {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Remove2', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -5267,7 +5267,7 @@ function Remove-DhcpServerv6OptionDefinition {
         ${OptionId},
 
         [Parameter(ParameterSetName='Remove2', Position=2, ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${VendorClass},
 
         [Parameter(ParameterSetName='Remove2')]
@@ -5308,7 +5308,7 @@ function Remove-DhcpServerv6OptionValue {
         [Parameter(ParameterSetName='Remove1')]
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Remove1', Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -5335,11 +5335,11 @@ function Remove-DhcpServerv6OptionValue {
         ${PassThru},
 
         [Parameter(ParameterSetName='Remove1', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${VendorClass},
 
         [Parameter(ParameterSetName='Remove1', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${UserClass},
 
         [Parameter(ParameterSetName='Remove1')]
@@ -5380,7 +5380,7 @@ Remove-DhcpServerv6Reservation [-Prefix] <ipaddress> [-ComputerName <string>] [-
         [Alias('Cn','ReservationServer')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='IPAddress', Mandatory=$true, ValueFromPipelineByPropertyName=$true)]
@@ -5458,7 +5458,7 @@ function Remove-DhcpServerv6Scope {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Remove2')]
@@ -5493,19 +5493,19 @@ function Rename-DhcpServerv4Superscope {
         [Parameter(ParameterSetName='Rename3')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Rename3', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Rename3', Mandatory=$true, Position=2)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${NewName},
 
         [Parameter(ParameterSetName='Rename3')]
@@ -5547,7 +5547,7 @@ function Repair-DhcpServerv4IPRecord {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Repair0', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -5599,13 +5599,13 @@ function Restore-DhcpServer {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Restore1', Mandatory=$true, Position=1)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Path},
 
         [Parameter(ParameterSetName='Restore1')]
@@ -5652,7 +5652,7 @@ function Set-DhcpServerAuditLog {
         [Parameter(ParameterSetName='Set1', Position=2, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Path},
 
         [Parameter(ParameterSetName='Set1', ValueFromPipelineByPropertyName=$true)]
@@ -5677,7 +5677,7 @@ function Set-DhcpServerAuditLog {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Set1')]
@@ -5718,13 +5718,13 @@ function Set-DhcpServerDatabase {
         [Parameter(ParameterSetName='Set1', Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${FileName},
 
         [Parameter(ParameterSetName='Set1', Position=2, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${BackupPath},
 
         [Parameter(ParameterSetName='Set1', ValueFromPipelineByPropertyName=$true)]
@@ -5749,7 +5749,7 @@ function Set-DhcpServerDatabase {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Set1')]
@@ -5791,7 +5791,7 @@ function Set-DhcpServerDnsCredential {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Set2', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -5846,7 +5846,7 @@ function Set-DhcpServerSetting {
         [ValidateSet('Full','Restricted','NoAccess')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${NpsUnreachableAction},
 
         [Parameter(ParameterSetName='Set1', ValueFromPipelineByPropertyName=$true)]
@@ -5859,7 +5859,7 @@ function Set-DhcpServerSetting {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Set1', ValueFromPipelineByPropertyName=$true)]
@@ -5905,7 +5905,7 @@ function Set-DhcpServerv4Binding {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Set1', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -5958,31 +5958,31 @@ function Set-DhcpServerv4Class {
         [Parameter(ParameterSetName='Set3', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Set3', Mandatory=$true, Position=2, ValueFromPipelineByPropertyName=$true)]
         [ValidateSet('Vendor','User')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Type},
 
         [Parameter(ParameterSetName='Set3', Position=3, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Data},
 
         [Parameter(ParameterSetName='Set3', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${Description},
 
         [Parameter(ParameterSetName='Set3')]
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Set3')]
@@ -6024,7 +6024,7 @@ function Set-DhcpServerv4DnsSetting {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Set1', ValueFromPipelineByPropertyName=$true)]
@@ -6049,7 +6049,7 @@ function Set-DhcpServerv4DnsSetting {
         [ValidateSet('Always','Never','OnClientRequest')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${DynamicUpdates},
 
         [Parameter(ParameterSetName='Set1', Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -6074,7 +6074,7 @@ function Set-DhcpServerv4DnsSetting {
         [Parameter(ParameterSetName='Set1')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${PolicyName},
 
         [Parameter(ParameterSetName='Set1')]
@@ -6086,7 +6086,7 @@ function Set-DhcpServerv4DnsSetting {
         [Parameter(ParameterSetName='Set1')]
         [AllowNull()]
         [AllowEmptyString()]
-        [string]
+        [System.String]
         ${DnsSuffix},
 
         [Parameter(ParameterSetName='Set1')]
@@ -6122,13 +6122,13 @@ function Set-DhcpServerv4Failover {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Set1', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Set1', ValueFromPipelineByPropertyName=$true)]
@@ -6146,7 +6146,7 @@ function Set-DhcpServerv4Failover {
         [Parameter(ParameterSetName='Set1')]
         [AllowNull()]
         [AllowEmptyString()]
-        [string]
+        [System.String]
         ${SharedSecret},
 
         [Parameter(ParameterSetName='Set1', ValueFromPipelineByPropertyName=$true)]
@@ -6187,7 +6187,7 @@ function Set-DhcpServerv4Failover {
         [ValidateSet('LoadBalance','HotStandby')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Mode},
 
         [Parameter(ParameterSetName='Set1')]
@@ -6223,7 +6223,7 @@ function Set-DhcpServerv4FilterList {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Set1', Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -6277,11 +6277,11 @@ function Set-DhcpServerv4MulticastScope {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Set3', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${Description},
 
         [Parameter(ParameterSetName='Set3', ValueFromPipelineByPropertyName=$true)]
@@ -6299,7 +6299,7 @@ function Set-DhcpServerv4MulticastScope {
         [Parameter(ParameterSetName='Set3', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Set3')]
@@ -6317,7 +6317,7 @@ function Set-DhcpServerv4MulticastScope {
         [Parameter(ParameterSetName='Set3', ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${State},
 
         [Parameter(ParameterSetName='Set3', ValueFromPipelineByPropertyName=$true)]
@@ -6330,7 +6330,7 @@ function Set-DhcpServerv4MulticastScope {
         [Parameter(ParameterSetName='Set3')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${NewName},
 
         [Parameter(ParameterSetName='Set3', ValueFromPipelineByPropertyName=$true)]
@@ -6372,7 +6372,7 @@ function Set-DhcpServerv4OptionDefinition {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Set3', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -6384,15 +6384,15 @@ function Set-DhcpServerv4OptionDefinition {
         [Parameter(ParameterSetName='Set3', ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Set3', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${Description},
 
         [Parameter(ParameterSetName='Set3', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${VendorClass},
 
         [Parameter(ParameterSetName='Set3', ValueFromPipelineByPropertyName=$true)]
@@ -6440,7 +6440,7 @@ Set-DhcpServerv4OptionValue [[-ScopeId] <ipaddress>] [-PolicyName <string>] [-Pa
     param (
         [Parameter(ParameterSetName='OptionIds', ValueFromPipelineByPropertyName=$true)]
         [Parameter(ParameterSetName='CommonOptions', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${PolicyName},
 
         [Parameter(ParameterSetName='OptionIds')]
@@ -6460,7 +6460,7 @@ Set-DhcpServerv4OptionValue [[-ScopeId] <ipaddress>] [-PolicyName <string>] [-Pa
         [Parameter(ParameterSetName='CommonOptions', ValueFromPipelineByPropertyName=$true)]
         [AllowNull()]
         [AllowEmptyString()]
-        [string]
+        [System.String]
         ${DnsDomain},
 
         [Parameter(ParameterSetName='CommonOptions', ValueFromPipelineByPropertyName=$true)]
@@ -6492,7 +6492,7 @@ Set-DhcpServerv4OptionValue [[-ScopeId] <ipaddress>] [-PolicyName <string>] [-Pa
 
         [Parameter(ParameterSetName='OptionIds', ValueFromPipelineByPropertyName=$true)]
         [Parameter(ParameterSetName='CommonOptions', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${UserClass},
 
         [Parameter(ParameterSetName='CommonOptions', ValueFromPipelineByPropertyName=$true)]
@@ -6504,7 +6504,7 @@ Set-DhcpServerv4OptionValue [[-ScopeId] <ipaddress>] [-PolicyName <string>] [-Pa
         [Parameter(ParameterSetName='CommonOptions', ValueFromPipelineByPropertyName=$true)]
         [AllowNull()]
         [AllowEmptyString()]
-        [string]
+        [System.String]
         ${Wpad},
 
         [Parameter(ParameterSetName='OptionIds')]
@@ -6512,11 +6512,11 @@ Set-DhcpServerv4OptionValue [[-ScopeId] <ipaddress>] [-PolicyName <string>] [-Pa
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='OptionIds', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${VendorClass},
 
         [Parameter(ParameterSetName='OptionIds', Mandatory=$true, Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -6567,20 +6567,20 @@ function Set-DhcpServerv4Policy {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Set3', ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNull()]
         [AllowNull()]
         [AllowEmptyString()]
-        [string]
+        [System.String]
         ${Description},
 
         [Parameter(ParameterSetName='Set3', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Set3', Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -6618,7 +6618,7 @@ function Set-DhcpServerv4Policy {
         [Parameter(ParameterSetName='Set3')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${NewName},
 
         [Parameter(ParameterSetName='Set3', ValueFromPipelineByPropertyName=$true)]
@@ -6663,7 +6663,7 @@ function Set-DhcpServerv4Policy {
         [ValidateSet('And','Or')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Condition},
 
         [Parameter(ParameterSetName='Set3', ValueFromPipelineByPropertyName=$true)]
@@ -6704,7 +6704,7 @@ function Set-DhcpServerv4Reservation {
         [Alias('Cn','ReservationServer')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Set1', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -6717,17 +6717,17 @@ function Set-DhcpServerv4Reservation {
         [Parameter(ParameterSetName='Set1', ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ClientId},
 
         [Parameter(ParameterSetName='Set1', ValueFromPipelineByPropertyName=$true)]
         [Alias('HostName','ReservationName')]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Set1', ValueFromPipelineByPropertyName=$true)]
         [Alias('ReservationDescription')]
-        [string]
+        [System.String]
         ${Description},
 
         [Parameter(ParameterSetName='Set1', ValueFromPipelineByPropertyName=$true)]
@@ -6735,7 +6735,7 @@ function Set-DhcpServerv4Reservation {
         [ValidateSet('Dhcp','Bootp','Both')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Type},
 
         [Parameter(ParameterSetName='Set1')]
@@ -6794,7 +6794,7 @@ Set-DhcpServerv4Scope [-ScopeId] <ipaddress> -StartRange <ipaddress> -EndRange <
         [ValidateSet('Dhcp','Bootp','Both')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Type},
 
         [Parameter(ParameterSetName='WithRange', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -6806,7 +6806,7 @@ Set-DhcpServerv4Scope [-ScopeId] <ipaddress> -StartRange <ipaddress> -EndRange <
 
         [Parameter(ParameterSetName='WithRange', ValueFromPipelineByPropertyName=$true)]
         [Parameter(ParameterSetName='WithoutRange', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${Description},
 
         [Parameter(ParameterSetName='WithRange', ValueFromPipelineByPropertyName=$true)]
@@ -6820,7 +6820,7 @@ Set-DhcpServerv4Scope [-ScopeId] <ipaddress> -StartRange <ipaddress> -EndRange <
         [Parameter(ParameterSetName='WithoutRange', ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='WithRange', ValueFromPipelineByPropertyName=$true)]
@@ -6832,7 +6832,7 @@ Set-DhcpServerv4Scope [-ScopeId] <ipaddress> -StartRange <ipaddress> -EndRange <
 
         [Parameter(ParameterSetName='WithRange', ValueFromPipelineByPropertyName=$true)]
         [Parameter(ParameterSetName='WithoutRange', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${NapProfile},
 
         [Parameter(ParameterSetName='WithRange', ValueFromPipelineByPropertyName=$true)]
@@ -6847,12 +6847,12 @@ Set-DhcpServerv4Scope [-ScopeId] <ipaddress> -StartRange <ipaddress> -EndRange <
         [ValidateSet('Active','InActive')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${State},
 
         [Parameter(ParameterSetName='WithRange', ValueFromPipelineByPropertyName=$true)]
         [Parameter(ParameterSetName='WithoutRange', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${SuperscopeName},
 
         [Parameter(ParameterSetName='WithRange')]
@@ -6860,7 +6860,7 @@ Set-DhcpServerv4Scope [-ScopeId] <ipaddress> -StartRange <ipaddress> -EndRange <
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='WithRange', ValueFromPipelineByPropertyName=$true)]
@@ -6918,7 +6918,7 @@ function Set-DhcpServerv6Binding {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Set1', Mandatory=$true, Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -6972,11 +6972,11 @@ function Set-DhcpServerv6Class {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Set3', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${Description},
 
         [Parameter(ParameterSetName='Set3', ValueFromPipelineByPropertyName=$true)]
@@ -6988,20 +6988,20 @@ function Set-DhcpServerv6Class {
         [Parameter(ParameterSetName='Set3', Position=3, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Data},
 
         [Parameter(ParameterSetName='Set3', Mandatory=$true, Position=2, ValueFromPipelineByPropertyName=$true)]
         [ValidateSet('Vendor','User')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Type},
 
         [Parameter(ParameterSetName='Set3', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Set3')]
@@ -7043,7 +7043,7 @@ function Set-DhcpServerv6DnsSetting {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Set1', ValueFromPipelineByPropertyName=$true)]
@@ -7062,7 +7062,7 @@ function Set-DhcpServerv6DnsSetting {
         [ValidateSet('Always','Never','OnClientRequest')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${DynamicUpdates},
 
         [Parameter(ParameterSetName='Set1', Position=2, ValueFromPipelineByPropertyName=$true)]
@@ -7117,7 +7117,7 @@ function Set-DhcpServerv6OptionDefinition {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Set3', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -7129,15 +7129,15 @@ function Set-DhcpServerv6OptionDefinition {
         [Parameter(ParameterSetName='Set3', ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Set3', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${Description},
 
         [Parameter(ParameterSetName='Set3', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${VendorClass},
 
         [Parameter(ParameterSetName='Set3', ValueFromPipelineByPropertyName=$true)]
@@ -7206,7 +7206,7 @@ Set-DhcpServerv6OptionValue [[-Prefix] <ipaddress>] [-PassThru] [-Force] [-UserC
 
         [Parameter(ParameterSetName='OptionIds', ValueFromPipelineByPropertyName=$true)]
         [Parameter(ParameterSetName='CommonOptions', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${UserClass},
 
         [Parameter(ParameterSetName='CommonOptions', ValueFromPipelineByPropertyName=$true)]
@@ -7232,7 +7232,7 @@ Set-DhcpServerv6OptionValue [[-Prefix] <ipaddress>] [-PassThru] [-Force] [-UserC
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='OptionIds', ValueFromPipelineByPropertyName=$true)]
@@ -7256,7 +7256,7 @@ Set-DhcpServerv6OptionValue [[-Prefix] <ipaddress>] [-PassThru] [-Force] [-UserC
         ${OptionId},
 
         [Parameter(ParameterSetName='OptionIds', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${VendorClass},
 
         [Parameter(ParameterSetName='OptionIds')]
@@ -7295,7 +7295,7 @@ function Set-DhcpServerv6Reservation {
         [Alias('Cn','ReservationServer')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Set1', Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
@@ -7309,7 +7309,7 @@ function Set-DhcpServerv6Reservation {
         [Alias('Duid')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ClientDuid},
 
         [Parameter(ParameterSetName='Set1', ValueFromPipelineByPropertyName=$true)]
@@ -7320,12 +7320,12 @@ function Set-DhcpServerv6Reservation {
 
         [Parameter(ParameterSetName='Set1', ValueFromPipelineByPropertyName=$true)]
         [Alias('HostName','ReservationName')]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Set1', ValueFromPipelineByPropertyName=$true)]
         [Alias('ReservationDescription')]
-        [string]
+        [System.String]
         ${Description},
 
         [Parameter(ParameterSetName='Set1')]
@@ -7372,18 +7372,18 @@ function Set-DhcpServerv6Scope {
         [Parameter(ParameterSetName='Set3', ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${Name},
 
         [Parameter(ParameterSetName='Set3', ValueFromPipelineByPropertyName=$true)]
-        [string]
+        [System.String]
         ${Description},
 
         [Parameter(ParameterSetName='Set3', ValueFromPipelineByPropertyName=$true)]
         [ValidateSet('Active','Inactive')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${State},
 
         [Parameter(ParameterSetName='Set3', ValueFromPipelineByPropertyName=$true)]
@@ -7420,7 +7420,7 @@ function Set-DhcpServerv6Scope {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Set3')]
@@ -7480,7 +7480,7 @@ function Set-DhcpServerv6StatelessStore {
         [Alias('Cn')]
         [ValidateNotNullOrEmpty()]
         [ValidateNotNull()]
-        [string]
+        [System.String]
         ${ComputerName},
 
         [Parameter(ParameterSetName='Set1')]

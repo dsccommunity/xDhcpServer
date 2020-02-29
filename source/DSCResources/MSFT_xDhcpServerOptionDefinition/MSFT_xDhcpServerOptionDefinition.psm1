@@ -1,8 +1,8 @@
 $currentPath = Split-Path -Path $PSScriptRoot -Parent
 
-$modulePathHelper = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/DhcpServerDsc.Common'
+$script:moduleHelperPath = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/DhcpServerDsc.Common'
 
-Import-Module -Name $modulePathHelper
+Import-Module -Name $script:moduleHelperPath
 
 # Localized messages
 data LocalizedData
@@ -58,7 +58,7 @@ function Get-TargetResource
         [Parameter()]
         [ValidateSet('Present', 'Absent')]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Ensure = 'Present',
 
         [Parameter(Mandatory = $true)]
@@ -68,22 +68,22 @@ function Get-TargetResource
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Name,
 
         [Parameter(Mandatory = $true)]
         [ValidateSet('Byte', 'Word', 'Dword', 'DwordDword', 'IPv4Address', 'String', 'BinaryData', 'EncapsulatedData')]
-        [String]
+        [System.String]
         $Type,
 
         [Parameter(Mandatory = $true)]
         [AllowEmptyString()]
-        [String]
+        [System.String]
         $VendorClass,
 
         [Parameter(Mandatory = $true)]
         [ValidateSet('IPv4')]
-        [String]
+        [System.String]
         $AddressFamily
     )
 
@@ -96,7 +96,7 @@ function Get-TargetResource
 
     $gettingIDMessage = $localizedData.GettingOptionDefinitionIDMessage -f $OptionId, $VendorClass
     Write-Verbose -Message $gettingIDMessage
-    $dhcpServerOptionDefinition = Get-DhcpServerv4OptionDefinition -OptionId $OptionId -VendorClass $VendorClass -ErrorAction SilentlyContinue
+    $dhcpServerOptionDefinition = Get-DhcpServerv4OptionDefinition -OptionId $OptionId -VendorClass $VendorClass -ErrorAction 'SilentlyContinue'
 
     if ($dhcpServerOptionDefinition)
     {
@@ -168,7 +168,7 @@ function Set-TargetResource
         [Parameter()]
         [ValidateSet('Present', 'Absent')]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Ensure = 'Present',
 
         [Parameter(Mandatory = $true)]
@@ -178,22 +178,22 @@ function Set-TargetResource
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Name,
 
         [Parameter()]
         [AllowEmptyString()]
-        [String]
+        [System.String]
         $Description,
 
         [Parameter(Mandatory = $true)]
         [AllowEmptyString()]
-        [String]
+        [System.String]
         $VendorClass,
 
         [Parameter(Mandatory = $true)]
         [ValidateSet('Byte', 'Word', 'Dword', 'DwordDword', 'IPv4Address', 'String', 'BinaryData', 'EncapsulatedData')]
-        [String]
+        [System.String]
         $Type,
 
         [Parameter()]
@@ -202,12 +202,12 @@ function Set-TargetResource
 
         [Parameter(Mandatory = $true)]
         [ValidateSet('IPv4')]
-        [String]
+        [System.String]
         $AddressFamily
     )
 
     # Reading the DHCP option
-    $dhcpServerOptionDefinition = Get-TargetResource -OptionId $OptionId -Name $Name -VendorClass $VendorClass -Type $Type -AddressFamily $AddressFamily -ErrorAction SilentlyContinue
+    $dhcpServerOptionDefinition = Get-TargetResource -OptionId $OptionId -Name $Name -VendorClass $VendorClass -Type $Type -AddressFamily $AddressFamily -ErrorAction 'SilentlyContinue'
 
     # Testing for present
     if ($Ensure -eq 'Present')
@@ -292,7 +292,7 @@ function Test-TargetResource
         [Parameter()]
         [ValidateSet('Present', 'Absent')]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Ensure = 'Present',
 
         [Parameter(Mandatory = $true)]
@@ -301,22 +301,22 @@ function Test-TargetResource
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]
+        [System.String]
         $Name,
 
         [Parameter()]
         [AllowEmptyString()]
-        [String]
+        [System.String]
         $Description,
 
         [Parameter(Mandatory = $true)]
         [AllowEmptyString()]
-        [String]
+        [System.String]
         $VendorClass,
 
         [Parameter(Mandatory = $true)]
         [ValidateSet('Byte', 'Word', 'Dword', 'DwordDword', 'IPv4Address', 'String', 'BinaryData', 'EncapsulatedData')]
-        [String]
+        [System.String]
         $Type,
 
         [Parameter()]
@@ -325,7 +325,7 @@ function Test-TargetResource
 
         [Parameter(Mandatory = $true)]
         [ValidateSet('IPv4')]
-        [String]
+        [System.String]
         $AddressFamily
     )
 
@@ -339,7 +339,7 @@ function Test-TargetResource
     # Geting the dhcp option definition
     Write-Verbose -Message $testingIDMessage
 
-    $currentConfiguration = Get-TargetResource -OptionId $OptionId -Name $Name -VendorClass $VendorClass -Type $Type -AddressFamily $AddressFamily -ErrorAction SilentlyContinue
+    $currentConfiguration = Get-TargetResource -OptionId $OptionId -Name $Name -VendorClass $VendorClass -Type $Type -AddressFamily $AddressFamily -ErrorAction 'SilentlyContinue'
 
     if ($currentConfiguration.Ensure -eq 'Present')
     {

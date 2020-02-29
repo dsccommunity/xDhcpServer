@@ -1,8 +1,8 @@
 $currentPath = Split-Path -Path $PSScriptRoot -Parent
 
-$modulePathHelper = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/DhcpServerDsc.Common'
+$script:moduleHelperPath = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/DhcpServerDsc.Common'
 
-Import-Module -Name $modulePathHelper
+Import-Module -Name $script:moduleHelperPath
 
 # Localized messages
 data LocalizedData
@@ -27,33 +27,48 @@ function Get-TargetResource
     [OutputType([System.Collections.Hashtable])]
     param
     (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [ValidateSet('Present', 'Absent')]
-        [System.String] $Ensure,
+        [System.String]
+        $Ensure,
 
+        [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [System.String] $DnsName = ( Get-Hostname ),
+        [System.String]
+        $DnsName = (Get-Hostname),
 
+        [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [System.String] $IPAddress = ( Get-IPv4Address | Select-Object -First 1 )
+        [System.String]
+        $IPAddress = (Get-IPv4Address | Select-Object -First 1)
     )
-    Assert-Module -ModuleName 'DHCPServer';
+
+    Assert-Module -ModuleName 'DHCPServer'
+
     $IPAddress = Get-ValidIPAddress -IPString $IPAddress -AddressFamily 'IPv4' -ParameterName 'IPAddress'
-    $dhcpServer = Get-DhcpServerInDC | Where-Object { ($_.DnsName -eq $DnsName) -and ($_.IPAddress -eq $IPAddress) }
+
+    $dhcpServer = Get-DhcpServerInDC | Where-Object -FilterScript {
+        ($_.DnsName -eq $DnsName) -and ($_.IPAddress -eq $IPAddress)
+    }
+
     $targetResource = @{
         DnsName   = $dhcpServer.DnsName
         IPAddress = $dhcpServer.IPAddress
     }
+
     if ($dhcpServer)
     {
         Write-Verbose ($LocalizedData.ServerIsAuthorized -f $DnsName, $IPAddress)
+
         $targetResource['Ensure'] = 'Present'
     }
     else
     {
         Write-Verbose ($LocalizedData.ServerNotAuthorized -f $DnsName, $IPAddress)
+
         $targetResource['Ensure'] = 'Absent'
     }
+
     return $targetResource
 }
 
@@ -62,27 +77,39 @@ function Set-TargetResource
     [CmdletBinding()]
     param
     (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [ValidateSet('Present', 'Absent')]
-        [System.String] $Ensure,
+        [System.String]
+        $Ensure,
 
+        [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [System.String] $DnsName = ( Get-Hostname ),
+        [System.String]
+        $DnsName = (Get-Hostname),
 
+        [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [System.String] $IPAddress = ( Get-IPv4Address | Select-Object -First 1 )
+        [System.String]
+        $IPAddress = (Get-IPv4Address | Select-Object -First 1)
     )
+
     Assert-Module -ModuleName 'DHCPServer'
+
     $IPAddress = Get-ValidIPAddress -IPString $IPAddress -AddressFamily 'IPv4' -ParameterName 'IPAddress'
+
     if ($Ensure -eq 'Present')
     {
         Write-Verbose ($LocalizedData.AuthorizingServer -f $DnsName, $IPAddress)
+
         Add-DhcpServerInDc -DnsName $DnsName -IPAddress $IPAddress
     }
     elseif ($Ensure -eq 'Absent')
     {
         Write-Verbose ($LocalizedData.UnauthorizingServer -f $DnsName, $IPAddress)
-        Get-DhcpServerInDC | Where-Object { ($_.DnsName -eq $DnsName) -and ($_.IPAddress -eq $IPAddress) } | Remove-DhcpServerInDc
+
+        Get-DhcpServerInDC | Where-Object -FilterScript {
+            ($_.DnsName -eq $DnsName) -and ($_.IPAddress -eq $IPAddress)
+        } | Remove-DhcpServerInDc
     }
 }
 
@@ -92,17 +119,23 @@ function Test-TargetResource
     [OutputType([System.Boolean])]
     param
     (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [ValidateSet('Present', 'Absent')]
-        [System.String] $Ensure,
+        [System.String]
+        $Ensure,
 
+        [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [System.String] $DnsName = ( Get-Hostname ),
+        [System.String]
+        $DnsName = (Get-Hostname),
 
+        [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [System.String] $IPAddress = ( Get-IPv4Address | Select-Object -First 1 )
+        [System.String]
+        $IPAddress = (Get-IPv4Address | Select-Object -First 1)
     )
     $targetResource = Get-TargetResource @PSBoundParameters
+
     $isCompliant = $true
 
     if ($targetResource.Ensure -ne $Ensure)
@@ -118,6 +151,7 @@ function Test-TargetResource
             Write-Verbose ($LocalizedData.IncorrectPropertyValue -f 'DnsName', $DnsName, $targetResource.DnsName)
             $isCompliant = $false
         }
+
         if ($targetResource.IPAddress -ne $IPAddress)
         {
             Write-Verbose ($LocalizedData.IncorrectPropertyValue -f 'IPAddress', $IPAddress, $targetResource.IPAddress)
@@ -159,11 +193,13 @@ function Get-Hostname
 {
     [CmdletBinding()]
     [OutputType([System.String])]
-    param ( )
+    param ()
     process
     {
-        Write-Verbose $LocalizedData.ResolvingHostname;
-        $globalIpProperties = [System.Net.NetworkInformation.IPGlobalProperties]::GetIPGlobalProperties();
+        Write-Verbose $LocalizedData.ResolvingHostname
+
+        $globalIpProperties = [System.Net.NetworkInformation.IPGlobalProperties]::GetIPGlobalProperties()
+
         if ($globalIpProperties.DomainName)
         {
             return '{0}.{1}' -f $globalIpProperties.HostName, $globalIpProperties.DomainName
@@ -175,4 +211,4 @@ function Get-Hostname
     } #end process
 } #end function Get-Hostname
 
-Export-ModuleMember -Function *-TargetResource;
+Export-ModuleMember -Function *-TargetResource

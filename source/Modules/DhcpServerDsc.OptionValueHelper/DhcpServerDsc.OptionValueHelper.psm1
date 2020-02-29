@@ -1,4 +1,4 @@
-$script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
+$script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '../../Modules/DscResource.Common'
 
 Import-Module -Name $script:resourceHelperModulePath
 
@@ -100,7 +100,7 @@ function Get-TargetResourceHelper
                 VendorClass = $VendorClass
                 userClass   = $UserClass
             }
-            $currentConfiguration = Get-DhcpServerv4OptionValue @parameters -ErrorAction SilentlyContinue
+            $currentConfiguration = Get-DhcpServerv4OptionValue @parameters -ErrorAction 'SilentlyContinue'
         }
 
         'Scope'
@@ -115,7 +115,7 @@ function Get-TargetResourceHelper
                 VendorClass = $VendorClass
                 UserClass   = $UserClass
             }
-            $currentConfiguration = Get-DhcpServerv4OptionValue @parameters -ErrorAction SilentlyContinue
+            $currentConfiguration = Get-DhcpServerv4OptionValue @parameters -ErrorAction 'SilentlyContinue'
         }
 
         'Policy'
@@ -133,7 +133,7 @@ function Get-TargetResourceHelper
                     VendorClass = $VendorClass
                     ScopeId     = $ScopeId
                 }
-                $currentConfiguration = Get-DhcpServerv4OptionValue @parameters -ErrorAction SilentlyContinue
+                $currentConfiguration = Get-DhcpServerv4OptionValue @parameters -ErrorAction 'SilentlyContinue'
             }
             else
             {
@@ -142,7 +142,7 @@ function Get-TargetResourceHelper
                     OptionId    = $OptionId
                     VendorClass = $VendorClass
                 }
-                $currentConfiguration = Get-DhcpServerv4OptionValue @parameters -ErrorAction SilentlyContinue
+                $currentConfiguration = Get-DhcpServerv4OptionValue @parameters -ErrorAction 'SilentlyContinue'
             }
         }
 
@@ -158,7 +158,7 @@ function Get-TargetResourceHelper
                 VendorClass = $VendorClass
                 UserClass   = $UserClass
             }
-            $currentConfiguration = Get-DhcpServerv4OptionValue @parameters -ErrorAction SilentlyContinue
+            $currentConfiguration = Get-DhcpServerv4OptionValue @parameters -ErrorAction 'SilentlyContinue'
         }
     }
 

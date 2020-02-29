@@ -1,8 +1,8 @@
 $currentPath = Split-Path -Path $PSScriptRoot -Parent
 
-$modulePathHelper = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/DhcpServerDsc.Common'
+$script:moduleHelperPath = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/DhcpServerDsc.Common'
 
-Import-Module -Name $modulePathHelper
+Import-Module -Name $script:moduleHelperPath
 
 # Localized messages
 data LocalizedData
@@ -30,17 +30,22 @@ function Get-TargetResource
     [OutputType([System.Collections.Hashtable])]
     param
     (
-        [parameter(Mandatory)]
-        [String]$ScopeID,
+        [Parameter(Mandatory = $true)]
+        [System.String]
+        $ScopeID,
 
-        [parameter(Mandatory)]
-        [String]$ClientMACAddress,
+        [Parameter(Mandatory = $true)]
+        [System.String]
+        $ClientMACAddress,
 
-        [parameter(Mandatory)]
-        [String]$IPAddress,
+        [Parameter(Mandatory = $true)]
+        [System.String]
+        $IPAddress,
 
-        [ValidateSet("IPv4")]
-        [String]$AddressFamily = 'IPv4'
+        [Parameter()]
+        [ValidateSet('IPv4')]
+        [System.String]
+        $AddressFamily = 'IPv4'
     )
 
     #region input validation
@@ -51,7 +56,7 @@ function Get-TargetResource
     $ScopeID = (Get-ValidIpAddress -ipString $ScopeID -AddressFamily $AddressFamily -parameterName 'ScopeID').ToString()
 
     # Test if the ScopeID is valid
-    $null = Get-DhcpServerv4Scope -ScopeId $ScopeID -ErrorAction SilentlyContinue -ErrorVariable err
+    $null = Get-DhcpServerv4Scope -ScopeId $ScopeID -ErrorAction 'SilentlyContinue' -ErrorVariable err
     if ($err)
     {
         $errorMsg = $($LocalizedData.InvalidScopeIdMessage) -f $ScopeID
@@ -63,7 +68,9 @@ function Get-TargetResource
 
     #endregion input validation
 
-    $reservation = Get-DhcpServerv4Reservation -ScopeID $ScopeID | Where-Object IPAddress -eq $IPAddress
+    $reservation = Get-DhcpServerv4Reservation -ScopeID $ScopeID | Where-Object -FilterScript {
+        IPAddress -eq $IPAddress
+    }
 
     if ($reservation)
     {
@@ -74,7 +81,7 @@ function Get-TargetResource
         $ensure = 'Absent'
     }
 
-    @{
+    return @{
         ScopeID          = $ScopeID
         IPAddress        = $IPAddress
         ClientMACAddress = $reservation.ClientId
@@ -82,7 +89,6 @@ function Get-TargetResource
         AddressFamily    = $AddressFamily
         Ensure           = $Ensure
     }
-
 }
 
 function Set-TargetResource
@@ -90,34 +96,44 @@ function Set-TargetResource
     [CmdletBinding()]
     param
     (
-        [parameter(Mandatory)]
-        [String]$ScopeID,
+        [Parameter(Mandatory = $true)]
+        [System.String]
+        $ScopeID,
 
-        [parameter(Mandatory)]
-        [String]$ClientMACAddress,
+        [Parameter(Mandatory = $true)]
+        [System.String]
+        $ClientMACAddress,
 
-        [parameter(Mandatory)]
-        [String]$IPAddress,
+        [Parameter(Mandatory = $true)]
+        [System.String]
+        $IPAddress,
 
-        [String]$Name,
+        [Parameter()]
+        [System.String]
+        $Name,
 
-        [ValidateSet("IPv4")]
-        [String]$AddressFamily = 'IPv4',
+        [Parameter()]
+        [ValidateSet('IPv4')]
+        [System.String]
+        $AddressFamily = 'IPv4',
 
-        [ValidateSet("Present", "Absent")]
-        [String]$Ensure = 'Present'
+        [Parameter()]
+        [ValidateSet('Present', 'Absent')]
+        [System.String]
+        $Ensure = 'Present'
     )
 
     if ($PSBoundParameters.ContainsKey('Debug'))
     {
         $null = $PSBoundParameters.Remove('Debug')
     }
+
     if ($PSBoundParameters.ContainsKey('AddressFamily'))
     {
         $null = $PSBoundParameters.Remove('AddressFamily')
     }
 
-    Validate-ResourceProperties @PSBoundParameters -Apply
+    $null = Validate-ResourceProperties @PSBoundParameters -Apply
 }
 
 function Test-TargetResource
@@ -126,22 +142,31 @@ function Test-TargetResource
     [OutputType([System.Boolean])]
     param
     (
-        [parameter(Mandatory)]
-        [String]$ScopeID,
+        [Parameter(Mandatory = $true)]
+        [System.String]
+        $ScopeID,
 
-        [parameter(Mandatory)]
-        [String]$ClientMACAddress,
+        [Parameter(Mandatory = $true)]
+        [System.String]
+        $ClientMACAddress,
 
-        [parameter(Mandatory)]
-        [String]$IPAddress,
+        [Parameter(Mandatory = $true)]
+        [System.String]
+        $IPAddress,
 
-        [String]$Name,
+        [Parameter()]
+        [System.String]
+        $Name,
 
-        [ValidateSet("IPv4")]
-        [String]$AddressFamily = 'IPv4',
+        [Parameter()]
+        [ValidateSet('IPv4')]
+        [System.String]
+        $AddressFamily = 'IPv4',
 
-        [ValidateSet("Present", "Absent")]
-        [String]$Ensure = 'Present'
+        [Parameter()]
+        [ValidateSet('Present', 'Absent')]
+        [System.String]
+        $Ensure = 'Present'
     )
 
     #region input validation
@@ -152,7 +177,7 @@ function Test-TargetResource
     $ScopeID = (Get-ValidIpAddress -ipString $ScopeID -AddressFamily $AddressFamily -parameterName 'ScopeID').ToString()
 
     # Test if the ScopeID is valid
-    $null = Get-DhcpServerv4Scope -ScopeId $ScopeID -ErrorAction SilentlyContinue -ErrorVariable err
+    $null = Get-DhcpServerv4Scope -ScopeId $ScopeID -ErrorAction 'SilentlyContinue' -ErrorVariable err
     if ($err)
     {
         $errorMsg = $($LocalizedData.InvalidScopeIdMessage) -f $ScopeID
@@ -171,12 +196,13 @@ function Test-TargetResource
     {
         $null = $PSBoundParameters.Remove('Debug')
     }
+
     if ($PSBoundParameters.ContainsKey('AddressFamily'))
     {
         $null = $PSBoundParameters.Remove('AddressFamily')
     }
 
-    Validate-ResourceProperties @PSBoundParameters
+    return Validate-ResourceProperties @PSBoundParameters
 }
 
 #region Helper function
@@ -187,35 +213,50 @@ function Validate-ResourceProperties
     [CmdletBinding()]
     param
     (
-        [parameter(Mandatory)]
-        [String]$ScopeID,
+        [Parameter(Mandatory = $true)]
+        [System.String]
+        $ScopeID,
 
-        [parameter(Mandatory)]
-        [String]$ClientMACAddress,
+        [Parameter(Mandatory = $true)]
+        [System.String]
+        $ClientMACAddress,
 
-        [parameter(Mandatory)]
-        [String]$IPAddress,
+        [Parameter(Mandatory = $true)]
+        [System.String]
+        $IPAddress,
 
-        [String]$Name,
+        [Parameter()]
+        [System.String]
+        $Name,
 
-        [ValidateSet("IPv4")]
-        [String]$AddressFamily = 'IPv4',
+        [Parameter()]
+        [ValidateSet('IPv4')]
+        [System.String]
+        $AddressFamily = 'IPv4',
 
-        [ValidateSet("Present", "Absent")]
-        [String]$Ensure = 'Present',
+        [Parameter()]
+        [ValidateSet('Present', 'Absent')]
+        [System.String]
+        $Ensure = 'Present',
 
-        [Switch]$Apply
+        [Parameter()]
+        [System.Management.Automation.SwitchParameter]
+        $Apply
     )
 
-    $reservationMessage = $($LocalizedData.CheckingReservationMessage) -f $ScopeID, $IPAddress
+    $reservationMessage = $LocalizedData.CheckingReservationMessage -f $ScopeID, $IPAddress
     Write-Verbose -Message $reservationMessage
 
-    $reservation = Get-DhcpServerv4Reservation -ScopeID $ScopeID | Where-Object IPAddress -eq $IPAddress
+    $reservation = Get-DhcpServerv4Reservation -ScopeID $ScopeID | Where-Object -FilterScript {
+        IPAddress -eq $IPAddress
+    }
 
     # Initialize the parameter collection
     if ($Apply)
     {
-        $parameters = @{IPAddress = $IPAddress }
+        $parameters = @{
+            IPAddress = $IPAddress
+        }
     }
     # Found DHCP reservation
     if ($reservation)

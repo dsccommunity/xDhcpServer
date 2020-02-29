@@ -1,4 +1,4 @@
-$script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
+$script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '../../Modules/DscResource.Common'
 
 Import-Module -Name $script:resourceHelperModulePath
 
@@ -11,11 +11,11 @@ function New-TerminatingError
     param
     (
         [Parameter(Mandatory = $true)]
-        [String]
+        [System.String]
         $ErrorId,
 
         [Parameter(Mandatory = $true)]
-        [String]
+        [System.String]
         $ErrorMessage,
 
         [Parameter(Mandatory = $true)]

@@ -1,9 +1,9 @@
 $currentPath = Split-Path -Path $PSScriptRoot -Parent
 
-$modulePathHelper = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/DhcpServerDsc.Common'
+$script:moduleHelperPath = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/DhcpServerDsc.Common'
 $modulePathOptionValueHelper = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/DhcpServerDsc.OptionValueHelper'
 
-Import-Module -Name $modulePathHelper
+Import-Module -Name $script:moduleHelperPath
 Import-Module -Name $modulePathOptionValueHelper
 
 <#
@@ -24,6 +24,7 @@ Import-Module -Name $modulePathOptionValueHelper
 #>
 function Get-TargetResource
 {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSDSCUseVerboseMessageInDSCResource', "", Justification = 'Verbose messages are present in Get-TargetResourceHelper')]
     [CmdletBinding()]
     [OutputType([System.Collections.Hashtable])]
     param
@@ -35,17 +36,17 @@ function Get-TargetResource
 
         [Parameter(Mandatory = $true)]
         [AllowEmptyString()]
-        [String]
+        [System.String]
         $VendorClass,
 
         [Parameter(Mandatory = $true)]
         [AllowEmptyString()]
-        [String]
+        [System.String]
         $UserClass,
 
         [Parameter(Mandatory = $true)]
         [ValidateSet('IPv4')]
-        [String]
+        [System.String]
         $AddressFamily
     )
 
@@ -85,6 +86,7 @@ function Get-TargetResource
 #>
 function Set-TargetResource
 {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSDSCUseVerboseMessageInDSCResource', "", Justification = 'Verbose messages are present in Set-TargetResourceHelper')]
     [CmdletBinding()]
     param
     (
@@ -99,22 +101,22 @@ function Set-TargetResource
 
         [Parameter(Mandatory = $true)]
         [AllowEmptyString()]
-        [String]
+        [System.String]
         $VendorClass,
 
         [Parameter(Mandatory = $true)]
         [AllowEmptyString()]
-        [String]
+        [System.String]
         $UserClass,
 
         [Parameter(Mandatory = $true)]
         [ValidateSet('IPv4')]
-        [String]
+        [System.String]
         $AddressFamily,
 
         [Parameter()]
         [ValidateSet('Present', 'Absent')]
-        [String]
+        [System.String]
         $Ensure = 'Present'
     )
 
@@ -146,6 +148,7 @@ function Set-TargetResource
 #>
 function Test-TargetResource
 {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSDSCUseVerboseMessageInDSCResource', "", Justification = 'Verbose messages are present in Test-TargetResourceHelper')]
     [CmdletBinding()]
     [OutputType([System.Boolean])]
     param
@@ -161,22 +164,22 @@ function Test-TargetResource
 
         [Parameter(Mandatory = $true)]
         [AllowEmptyString()]
-        [String]
+        [System.String]
         $VendorClass,
 
         [Parameter(Mandatory = $true)]
         [AllowEmptyString()]
-        [String]
+        [System.String]
         $UserClass,
 
         [Parameter(Mandatory = $true)]
         [ValidateSet('IPv4')]
-        [String]
+        [System.String]
         $AddressFamily,
 
         [Parameter()]
         [ValidateSet('Present', 'Absent')]
-        [String]
+        [System.String]
         $Ensure = 'Present'
     )
 
