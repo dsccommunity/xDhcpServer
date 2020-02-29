@@ -1,4 +1,6 @@
-Import-Module $PSScriptRoot\..\Helper.psm1 -Verbose:$false
+$modulePathHelper = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/Helper.psm1'
+
+Import-Module -Name $modulePathHelper
 
 # Localized messages
 data LocalizedData
@@ -11,7 +13,7 @@ SetScopeMessage           = DHCP server scope with name '{0}' is now present.
 RemovingScopeMessage      = Removing DHCP server scope with the given ScopeId ({0})...
 DeleteScopeMessage        = DHCP server scope with the given ScopeId ({0}) is now absent.
 TestScopeMessage          = DHCP server scope with the given ScopeId ({0}) is '{1}' and it should be '{2}'.
-                          
+
 CheckPropertyMessage      = Checking DHCP server scope '{0}' ...
 NotDesiredPropertyMessage = DHCP server scope '{0}' is not correct; expected '{1}', actual '{2}'.
 DesiredPropertyMessage    = DHCP server scope '{0}' is correct.
@@ -75,7 +77,7 @@ function Get-TargetResource
         [Parameter(Mandatory = $true)]
         [String]
         $SubnetMask,
-        
+
         [Parameter()]
         [ValidateSet('IPv4')]
         [String]
@@ -96,11 +98,11 @@ function Get-TargetResource
         AddressFamily = $AddressFamily
     }
     Assert-ScopeParameter @ipAddressesAssertionParameters
-    
+
     #endregion Input Validation
 
     $dhcpScope = Get-DhcpServerv4Scope -ScopeId $ScopeId -ErrorAction SilentlyContinue
-    if($dhcpScope)
+    if ($dhcpScope)
     {
         $ensure = 'Present'
         $leaseDuration = $dhcpScope.LeaseDuration.ToString()
@@ -207,12 +209,12 @@ function Set-TargetResource
         $AddressFamily = 'IPv4',
 
         [Parameter()]
-        [ValidateSet('Active','Inactive')]
+        [ValidateSet('Active', 'Inactive')]
         [String]
         $State = 'Active',
 
         [Parameter()]
-        [ValidateSet('Present','Absent')]
+        [ValidateSet('Present', 'Absent')]
         [String]
         $Ensure = 'Present'
     )
@@ -231,12 +233,18 @@ function Set-TargetResource
         AddressFamily = $AddressFamily
     }
     Assert-ScopeParameter @ipAddressesAssertionParameters
-    
+
     #endregion Input Validation
 
-    
-    if($PSBoundParameters.ContainsKey('Debug')){ $null = $PSBoundParameters.Remove('Debug')}
-    if($PSBoundParameters.ContainsKey('AddressFamily')) {$null = $PSBoundParameters.Remove('AddressFamily')}
+
+    if ($PSBoundParameters.ContainsKey('Debug'))
+    {
+        $null = $PSBoundParameters.Remove('Debug')
+    }
+    if ($PSBoundParameters.ContainsKey('AddressFamily'))
+    {
+        $null = $PSBoundParameters.Remove('AddressFamily')
+    }
 
     Validate-ResourceProperties @PSBoundParameters -Apply
 
@@ -325,12 +333,12 @@ function Test-TargetResource
         $AddressFamily = 'IPv4',
 
         [Parameter()]
-        [ValidateSet('Active','Inactive')]
+        [ValidateSet('Active', 'Inactive')]
         [String]
         $State = 'Active',
 
         [Parameter()]
-        [ValidateSet('Present','Absent')]
+        [ValidateSet('Present', 'Absent')]
         [String]
         $Ensure = 'Present'
     )
@@ -349,11 +357,17 @@ function Test-TargetResource
         AddressFamily = $AddressFamily
     }
     Assert-ScopeParameter @ipAddressesAssertionParameters
-    
+
     #endregion Input Validation
 
-    if($PSBoundParameters.ContainsKey('Debug')){ $null = $PSBoundParameters.Remove('Debug')}
-    if($PSBoundParameters.ContainsKey('AddressFamily')) {$null = $PSBoundParameters.Remove('AddressFamily')}
+    if ($PSBoundParameters.ContainsKey('Debug'))
+    {
+        $null = $PSBoundParameters.Remove('Debug')
+    }
+    if ($PSBoundParameters.ContainsKey('AddressFamily'))
+    {
+        $null = $PSBoundParameters.Remove('AddressFamily')
+    }
 
     Validate-ResourceProperties @PSBoundParameters
 
@@ -394,12 +408,12 @@ function Validate-ResourceProperties
         $LeaseDuration,
 
         [Parameter()]
-        [ValidateSet('Active','Inactive')]
+        [ValidateSet('Active', 'Inactive')]
         [String]
         $State = 'Active',
 
         [Parameter()]
-        [ValidateSet('Present','Absent')]
+        [ValidateSet('Present', 'Absent')]
         [String]
         $Ensure = 'Present',
 
@@ -407,9 +421,9 @@ function Validate-ResourceProperties
         [Switch]
         $Apply
     )
-    
+
     # Convert the Lease duration to be a valid timespan
-    if($LeaseDuration)
+    if ($LeaseDuration)
     {
         $LeaseDuration = (Get-ValidTimeSpan -tsString $LeaseDuration -parameterName 'Leaseduration').ToString()
     }
@@ -419,34 +433,34 @@ function Validate-ResourceProperties
 
     $dhcpScope = Get-DhcpServerv4Scope -ScopeId $ScopeId -ErrorAction SilentlyContinue
     # Initialize the parameter collection
-    if($Apply)
-    { 
-        $parameters = @{}
+    if ($Apply)
+    {
+        $parameters = @{ }
     }
 
     # dhcpScope is set
-    if($dhcpScope)
+    if ($dhcpScope)
     {
         $TestScopeMessage = $($LocalizedData.TestScopeMessage) -f $ScopeId, 'present', $Ensure
         Write-Verbose -Message $TestScopeMessage
 
         # if it should be present, test individual properties to match parameter values
-        if($Ensure -eq 'Present')
+        if ($Ensure -eq 'Present')
         {
             #region Test the Scope Name
             $checkPropertyMsg = $($LocalizedData.CheckPropertyMessage) -f 'name'
             Write-Verbose -Message $checkPropertyMsg
 
-            if($dhcpScope.Name -ne $Name) 
+            if ($dhcpScope.Name -ne $Name)
             {
-                $notDesiredPropertyMsg = $($LocalizedData.NotDesiredPropertyMessage) -f 'name',$Name,$($dhcpScope.Name)
+                $notDesiredPropertyMsg = $($LocalizedData.NotDesiredPropertyMessage) -f 'name', $Name, $($dhcpScope.Name)
                 Write-Verbose -Message $notDesiredPropertyMsg
 
-                if($Apply)
+                if ($Apply)
                 {
                     $parameters['Name'] = $Name
                 }
-                else 
+                else
                 {
                     return $false
                 }
@@ -459,12 +473,12 @@ function Validate-ResourceProperties
             #endregion scope name
 
             #region Test the IPStartRange and IPEndRange
-            if($dhcpScope.StartRange -ne $IPStartRange -or $dhcpScope.EndRange -ne $IPEndRange)
+            if ($dhcpScope.StartRange -ne $IPStartRange -or $dhcpScope.EndRange -ne $IPEndRange)
             {
-                $notDesiredPropertyMsg = $($LocalizedData.NotDesiredPropertyMessage) -f 'Start/EndRange',"$IPStartRange/$IPEndRange","$($dhcpScope.StartRange)/$($dhcpScope.EndRange)"
+                $notDesiredPropertyMsg = $($LocalizedData.NotDesiredPropertyMessage) -f 'Start/EndRange', "$IPStartRange/$IPEndRange", "$($dhcpScope.StartRange)/$($dhcpScope.EndRange)"
                 Write-Verbose -Message $notDesiredPropertyMsg
 
-                if($Apply)
+                if ($Apply)
                 {
                     $parameters['StartRange'] = $IPStartRange
                     $parameters['EndRange'] = $IPEndRange
@@ -477,17 +491,17 @@ function Validate-ResourceProperties
             #endregion IPStartRange and IPEndRange
 
             #region Test the Scope Description
-            if($PSBoundParameters.ContainsKey('Description'))
+            if ($PSBoundParameters.ContainsKey('Description'))
             {
                 $checkPropertyMsg = $($LocalizedData.CheckPropertyMessage) -f 'description'
                 Write-Verbose -Message $checkPropertyMsg
 
-                if($dhcpScope.Description -ne $Description) 
+                if ($dhcpScope.Description -ne $Description)
                 {
-                    $notDesiredPropertyMsg = $($LocalizedData.NotDesiredPropertyMessage) -f 'description',$Description,$($dhcpScope.Description)
+                    $notDesiredPropertyMsg = $($LocalizedData.NotDesiredPropertyMessage) -f 'description', $Description, $($dhcpScope.Description)
                     Write-Verbose -Message $notDesiredPropertyMsg
- 
-                    if($Apply)
+
+                    if ($Apply)
                     {
                         $parameters['Description'] = $Description
                     }
@@ -505,17 +519,17 @@ function Validate-ResourceProperties
             #endregion scope description
 
             #region Test the Lease duration
-            if($PSBoundParameters.ContainsKey('LeaseDuration'))
+            if ($PSBoundParameters.ContainsKey('LeaseDuration'))
             {
                 $checkPropertyMsg = $($LocalizedData.CheckPropertyMessage) -f 'lease duration'
                 Write-Verbose -Message $checkPropertyMsg
 
-                if($dhcpScope.LeaseDuration -ne $LeaseDuration) 
+                if ($dhcpScope.LeaseDuration -ne $LeaseDuration)
                 {
-                    $notDesiredPropertyMsg = $($LocalizedData.NotDesiredPropertyMessage) -f 'lease duration',$LeaseDuration,$($dhcpScope.LeaseDuration)
+                    $notDesiredPropertyMsg = $($LocalizedData.NotDesiredPropertyMessage) -f 'lease duration', $LeaseDuration, $($dhcpScope.LeaseDuration)
                     Write-Verbose -Message $notDesiredPropertyMsg
- 
-                    if($Apply)
+
+                    if ($Apply)
                     {
                         $parameters['LeaseDuration'] = $LeaseDuration
                     }
@@ -533,17 +547,17 @@ function Validate-ResourceProperties
             #endregion lease duration
 
             #region Test the Scope State
-            if($PSBoundParameters.ContainsKey('State'))
+            if ($PSBoundParameters.ContainsKey('State'))
             {
                 $checkPropertyMsg = $($LocalizedData.CheckPropertyMessage) -f 'state'
                 Write-Verbose -Message $checkPropertyMsg
 
-                if($dhcpScope.State -ne $State) 
+                if ($dhcpScope.State -ne $State)
                 {
-                    $notDesiredPropertyMsg = $($LocalizedData.NotDesiredPropertyMessage) -f 'state',$State,$($dhcpScope.State)
+                    $notDesiredPropertyMsg = $($LocalizedData.NotDesiredPropertyMessage) -f 'state', $State, $($dhcpScope.State)
                     Write-Verbose -Message $notDesiredPropertyMsg
 
-                    if($Apply)
+                    if ($Apply)
                     {
                         $parameters['State'] = $State
                     }
@@ -564,12 +578,12 @@ function Validate-ResourceProperties
             $checkPropertyMsg = $($LocalizedData.CheckPropertyMessage) -f 'subnet mask'
             Write-Verbose -Message $checkPropertyMsg
 
-            if($dhcpScope.SubnetMask -ne $SubnetMask)
+            if ($dhcpScope.SubnetMask -ne $SubnetMask)
             {
-                $notDesiredPropertyMsg = $($LocalizedData.NotDesiredPropertyMessage) -f 'subnet mask',$SubnetMask,$($dhcpScope.SubnetMask)
+                $notDesiredPropertyMsg = $($LocalizedData.NotDesiredPropertyMessage) -f 'subnet mask', $SubnetMask, $($dhcpScope.SubnetMask)
                 Write-Verbose -Message $notDesiredPropertyMsg
 
-                if($Apply)
+                if ($Apply)
                 {
                     try
                     {
@@ -588,8 +602,8 @@ function Validate-ResourceProperties
                     {
                         New-TerminatingError -errorId DhcpServerScopeFailure -errorMessage $_.Exception.Message -errorCategory InvalidOperation
                     }
-                                          
-                    $setPropertyMsg = $($LocalizedData.SetPropertyMessage) -f 'subnet mask',$SubnetMask
+
+                    $setPropertyMsg = $($LocalizedData.SetPropertyMessage) -f 'subnet mask', $SubnetMask
                     Write-Verbose -Message $setPropertyMsg
                 }
                 else
@@ -604,14 +618,14 @@ function Validate-ResourceProperties
             }
             #endregion subnet mask
 
-            if($Apply)
+            if ($Apply)
             {
                 # If parameters contains more than 0 key, set the DhcpServer scope
-                if($parameters.Count -gt 0) 
+                if ($parameters.Count -gt 0)
                 {
                     Set-DhcpServerv4Scope @parameters -ScopeId $dhcpScope.ScopeId
                     Write-PropertyMessage -Parameters $parameters -keysToSkip ScopeId `
-                                          -Message $($LocalizedData.SetPropertyMessage) -Verbose
+                        -Message $($LocalizedData.SetPropertyMessage) -Verbose
                 }
             } # end Apply
             else
@@ -623,7 +637,7 @@ function Validate-ResourceProperties
         # If dhcpscope should be absent
         else
         {
-            if($Apply)
+            if ($Apply)
             {
                 $removingScopeMsg = $LocalizedData.RemovingScopeMessage -f $ScopeId
                 Write-Verbose -Message $removingScopeMsg
@@ -647,26 +661,26 @@ function Validate-ResourceProperties
         $TestScopeMessage = $($LocalizedData.TestScopeMessage) -f $ScopeId, 'absent', $Ensure
         Write-Verbose -Message $TestScopeMessage
 
-        if($Ensure -eq 'Present')
+        if ($Ensure -eq 'Present')
         {
-            if($Apply)
+            if ($Apply)
             {
                 # Add mandatory parameters
-                $parameters['Name']       = $Name
+                $parameters['Name'] = $Name
                 $parameters['StartRange'] = $IPStartRange
-                $parameters['EndRange']   = $IPEndRange
+                $parameters['EndRange'] = $IPEndRange
                 $parameters['SubnetMask'] = $SubnetMask
 
                 # Check if Lease duration is specified, add to parameter collection
-                if($PSBoundParameters.ContainsKey('LeaseDuration'))
+                if ($PSBoundParameters.ContainsKey('LeaseDuration'))
                 {
                     $parameters['LeaseDuration'] = $LeaseDuration
                 }
 
                 # Check if State is specified, add to parameter collection
-                if($PSBoundParameters.ContainsKey('State'))
+                if ($PSBoundParameters.ContainsKey('State'))
                 {
-                        $parameters['State'] = $State
+                    $parameters['State'] = $State
                 }
 
                 $addingScopeMessage = $LocalizedData.AddingScopeMessage -f $ScopeId
@@ -688,7 +702,7 @@ function Validate-ResourceProperties
             else
             {
                 return $false
-            }  
+            }
         } # end Ensure -eq Present
         else
         {

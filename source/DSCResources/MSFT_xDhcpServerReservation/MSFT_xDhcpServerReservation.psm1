@@ -1,4 +1,6 @@
-Import-Module $PSScriptRoot\..\Helper.psm1 -Verbose:$false
+$modulePathHelper = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/Helper.psm1'
+
+Import-Module -Name $modulePathHelper
 
 # Localized messages
 data LocalizedData
@@ -7,7 +9,7 @@ data LocalizedData
     ConvertFrom-StringData @'
 InvalidScopeIDMessage      = DHCP server scopeID {0} is not valid. Supply a valid scopeID and try again
 CheckingReservationMessage = Checking DHCP server reservation in scope id {0} for IP address {1} ...
-TestReservationMessage     = DHCP server reservation in the given scope id for the IP address is {0} and it should be {1} 
+TestReservationMessage     = DHCP server reservation in the given scope id for the IP address is {0} and it should be {1}
 RemovingReservationMessage = Removing DHCP server reservation from scope id {0} for MAC address {1} ...
 DeleteReservationMessage   = DHCP server reservation for the given MAC address is now absent
 AddingReservationMessage   = Adding DHCP server reservation with the given IP address ...
@@ -39,16 +41,16 @@ function Get-TargetResource
         [String]$AddressFamily = 'IPv4'
     )
 
-#region input validation
+    #region input validation
     # Check for DhcpServer module/role
     Assert-Module -moduleName DHCPServer
-    
+
     # Convert the ScopeID to be a valid IPAddress
     $ScopeID = (Get-ValidIpAddress -ipString $ScopeID -AddressFamily $AddressFamily -parameterName 'ScopeID').ToString()
 
     # Test if the ScopeID is valid
     $null = Get-DhcpServerv4Scope -ScopeId $ScopeID -ErrorAction SilentlyContinue -ErrorVariable err
-    if($err)
+    if ($err)
     {
         $errorMsg = $($LocalizedData.InvalidScopeIdMessage) -f $ScopeID
         New-TerminatingError -errorId ScopeIdNotFound -errorMessage $errorMsg -errorCategory InvalidOperation
@@ -56,12 +58,12 @@ function Get-TargetResource
 
     # Convert the Start Range to be a valid IPAddress
     $IPAddress = (Get-ValidIpAddress -ipString $IPAddress -AddressFamily $AddressFamily -parameterName 'IPAddress').ToString()
-    
-#endregion input validation
+
+    #endregion input validation
 
     $reservation = Get-DhcpServerv4Reservation -ScopeID $ScopeID | Where-Object IPAddress -eq $IPAddress
-    
-    if($reservation)
+
+    if ($reservation)
     {
         $ensure = 'Present'
     }
@@ -100,12 +102,18 @@ function Set-TargetResource
         [ValidateSet("IPv4")]
         [String]$AddressFamily = 'IPv4',
 
-        [ValidateSet("Present","Absent")]
+        [ValidateSet("Present", "Absent")]
         [String]$Ensure = 'Present'
     )
 
-    if($PSBoundParameters.ContainsKey('Debug')){ $null = $PSBoundParameters.Remove('Debug')}
-    if($PSBoundParameters.ContainsKey('AddressFamily')) {$null = $PSBoundParameters.Remove('AddressFamily')}
+    if ($PSBoundParameters.ContainsKey('Debug'))
+    {
+        $null = $PSBoundParameters.Remove('Debug')
+    }
+    if ($PSBoundParameters.ContainsKey('AddressFamily'))
+    {
+        $null = $PSBoundParameters.Remove('AddressFamily')
+    }
 
     Validate-ResourceProperties @PSBoundParameters -Apply
 }
@@ -130,11 +138,11 @@ function Test-TargetResource
         [ValidateSet("IPv4")]
         [String]$AddressFamily = 'IPv4',
 
-        [ValidateSet("Present","Absent")]
+        [ValidateSet("Present", "Absent")]
         [String]$Ensure = 'Present'
     )
 
-#region input validation
+    #region input validation
     # Check for DhcpServer module/role
     Assert-Module -moduleName DHCPServer
 
@@ -143,7 +151,7 @@ function Test-TargetResource
 
     # Test if the ScopeID is valid
     $null = Get-DhcpServerv4Scope -ScopeId $ScopeID -ErrorAction SilentlyContinue -ErrorVariable err
-    if($err)
+    if ($err)
     {
         $errorMsg = $($LocalizedData.InvalidScopeIdMessage) -f $ScopeID
         New-TerminatingError -errorId ScopeIdNotFound -errorMessage $errorMsg -errorCategory InvalidOperation
@@ -153,12 +161,18 @@ function Test-TargetResource
     $IPAddress = (Get-ValidIpAddress -ipString $IPAddress -AddressFamily $AddressFamily -parameterName 'IPAddress').ToString()
 
     #Convert the MAC Address into normalized form for comparison
-    $ClientMACAddress = $ClientMACAddress.Replace('-','') 
+    $ClientMACAddress = $ClientMACAddress.Replace('-', '')
 
-#endregion input validation
-    
-    if($PSBoundParameters.ContainsKey('Debug')){ $null = $PSBoundParameters.Remove('Debug')}
-    if($PSBoundParameters.ContainsKey('AddressFamily')) {$null = $PSBoundParameters.Remove('AddressFamily')}
+    #endregion input validation
+
+    if ($PSBoundParameters.ContainsKey('Debug'))
+    {
+        $null = $PSBoundParameters.Remove('Debug')
+    }
+    if ($PSBoundParameters.ContainsKey('AddressFamily'))
+    {
+        $null = $PSBoundParameters.Remove('AddressFamily')
+    }
 
     Validate-ResourceProperties @PSBoundParameters
 }
@@ -185,7 +199,7 @@ function Validate-ResourceProperties
         [ValidateSet("IPv4")]
         [String]$AddressFamily = 'IPv4',
 
-        [ValidateSet("Present","Absent")]
+        [ValidateSet("Present", "Absent")]
         [String]$Ensure = 'Present',
 
         [Switch]$Apply
@@ -193,36 +207,36 @@ function Validate-ResourceProperties
 
     $reservationMessage = $($LocalizedData.CheckingReservationMessage) -f $ScopeID, $IPAddress
     Write-Verbose -Message $reservationMessage
-    
+
     $reservation = Get-DhcpServerv4Reservation -ScopeID $ScopeID | Where-Object IPAddress -eq $IPAddress
 
     # Initialize the parameter collection
-    if($Apply)
-    { 
-        $parameters = @{IPAddress = $IPAddress}
+    if ($Apply)
+    {
+        $parameters = @{IPAddress = $IPAddress }
     }
     # Found DHCP reservation
-    if($reservation)
+    if ($reservation)
     {
         $TestReservationMessage = $($LocalizedData.TestReservationMessage) -f 'present', $Ensure
         Write-Verbose -Message $TestReservationMessage
-                
+
         # if it should be present, test individual properties to match parameter values
-        if($Ensure -eq 'Present')
-        {    
+        if ($Ensure -eq 'Present')
+        {
             #Convert the MAC Address into normalized form for comparison
-            $normalizedClientID = $reservation.ClientId.Replace('-','')
+            $normalizedClientID = $reservation.ClientId.Replace('-', '')
 
             #region Test MAC address
             $checkPropertyMsg = $($LocalizedData.CheckPropertyMessage) -f 'client MAC address'
             Write-Verbose -Message $checkPropertyMsg
-            
-            if($normalizedClientID -ne $ClientMACAddress)
+
+            if ($normalizedClientID -ne $ClientMACAddress)
             {
-                $notDesiredPropertyMsg = $($LocalizedData.NotDesiredPropertyMessage) -f 'client MAC address',$ClientMACAddress,$normalizedClientID
+                $notDesiredPropertyMsg = $($LocalizedData.NotDesiredPropertyMessage) -f 'client MAC address', $ClientMACAddress, $normalizedClientID
                 Write-Verbose -Message $notDesiredPropertyMsg
 
-                if($Apply)
+                if ($Apply)
                 {
                     $parameters['ClientID'] = $ClientMACAddress
                 }
@@ -241,13 +255,13 @@ function Validate-ResourceProperties
             #region Test reservation name
             $checkPropertyMsg = $($LocalizedData.CheckPropertyMessage) -f 'name'
             Write-Verbose -Message $checkPropertyMsg
-            
-            if($reservation.Name -ne $Name)
+
+            if ($reservation.Name -ne $Name)
             {
-                $notDesiredPropertyMsg = $($LocalizedData.NotDesiredPropertyMessage) -f 'name',$Name,$($reservation.Name)
+                $notDesiredPropertyMsg = $($LocalizedData.NotDesiredPropertyMessage) -f 'name', $Name, $($reservation.Name)
                 Write-Verbose -Message $notDesiredPropertyMsg
 
-                if($Apply)
+                if ($Apply)
                 {
                     $parameters['Name'] = $Name
                 }
@@ -263,15 +277,15 @@ function Validate-ResourceProperties
             }
             #endregion Test reservation name
 
-            if($Apply)
+            if ($Apply)
             {
                 # If parameters contains more than 1 key, set the DhcpServer reservation
-                if($parameters.Count -gt 1) 
+                if ($parameters.Count -gt 1)
                 {
                     Set-DhcpServerv4Reservation @parameters
 
                     Write-PropertyMessage -Parameters $parameters -keysToSkip IPAddress `
-                                          -Message $($LocalizedData.SetPropertyMessage) -Verbose
+                        -Message $($LocalizedData.SetPropertyMessage) -Verbose
                 }
             } # end Apply
             else
@@ -279,13 +293,13 @@ function Validate-ResourceProperties
                 return $true
             }
         } # end ensure -eq present
-        
+
         # If dhcpreservation should be absent
         else
         {
-            if($Apply)
+            if ($Apply)
             {
-                $removingReservationMsg = $($LocalizedData.RemovingReservationMessage) -f $ScopeID,$ClientMACAddress
+                $removingReservationMsg = $($LocalizedData.RemovingReservationMessage) -f $ScopeID, $ClientMACAddress
                 Write-Verbose -Message $removingReservationMsg
 
                 # Remove the reservation
@@ -303,48 +317,48 @@ function Validate-ResourceProperties
 
     else
     {
-           $TestReservationMessage = $($LocalizedData.TestReservationMessage) -f 'absent', $Ensure
-            Write-Verbose -Message $TestReservationMessage
+        $TestReservationMessage = $($LocalizedData.TestReservationMessage) -f 'absent', $Ensure
+        Write-Verbose -Message $TestReservationMessage
 
-            if($Ensure -eq 'Present')
+        if ($Ensure -eq 'Present')
+        {
+            if ($Apply)
             {
-                if($Apply)
+                # Add other mandatory parameters
+                $parameters['ScopeId'] = $ScopeID
+                $parameters['ClientId'] = $ClientMACAddress
+
+                # Check if reservation name is specified, add to parameter collection
+                if ($PSBoundParameters.ContainsKey('Name'))
                 {
-                    # Add other mandatory parameters
-                    $parameters['ScopeId']  = $ScopeID
-                    $parameters['ClientId'] = $ClientMACAddress
+                    $parameters['Name'] = $Name
+                }
 
-                    # Check if reservation name is specified, add to parameter collection
-                    if($PSBoundParameters.ContainsKey('Name'))
-                    {
-                        $parameters['Name'] = $Name
-                    }
+                $addingReservationeMessage = $LocalizedData.AddingReservationMessage
+                Write-Verbose -Message $addingReservationeMessage
 
-                    $addingReservationeMessage = $LocalizedData.AddingReservationMessage
-                    Write-Verbose -Message $addingReservationeMessage
-
-                    try
-                    {
-                        # Create a new scope with specified properties
-                        Add-DhcpServerv4Reservation @parameters
-
-                        $setReservationMessage = $($LocalizedData.SetReservationMessage) -f $Name
-                        Write-Verbose -Message $setReservationMessage
-                    }
-                    catch
-                    {
-                        New-TerminatingError -errorId DhcpServerReservationFailure -errorMessage $_.Exception.Message -errorCategory InvalidOperation
-                    }
-                }# end Apply
-                else
+                try
                 {
-                    return $false
-                }  
-            } # end Ensure -eq Present
+                    # Create a new scope with specified properties
+                    Add-DhcpServerv4Reservation @parameters
+
+                    $setReservationMessage = $($LocalizedData.SetReservationMessage) -f $Name
+                    Write-Verbose -Message $setReservationMessage
+                }
+                catch
+                {
+                    New-TerminatingError -errorId DhcpServerReservationFailure -errorMessage $_.Exception.Message -errorCategory InvalidOperation
+                }
+            }# end Apply
             else
             {
-                return $true
+                return $false
             }
+        } # end Ensure -eq Present
+        else
+        {
+            return $true
+        }
     } # end ! reservation
 }
 

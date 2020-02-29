@@ -1,10 +1,9 @@
 $currentPath = Split-Path -Path $MyInvocation.MyCommand.Path -Parent
 
-$modulePathhelper            = (Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Helper.psm1')
-$modulePathOptionValueHelper = (Join-Path -Path (Join-Path -Path (Join-Path -Path (Split-Path -Path (Split-Path -Path $currentPath -Parent) -Parent) `
-                                -ChildPath 'modules') -ChildPath 'DhcpServerDsc.OptionValueHelper') -ChildPath 'OptionValueHelper.psm1')
+$modulePathHelper = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/Helper.psm1'
+$modulePathOptionValueHelper = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/DhcpServerDsc.OptionValueHelper'
 
-Import-Module -Name $modulePathhelper
+Import-Module -Name $modulePathHelper
 Import-Module -Name $modulePathOptionValueHelper
 
 <#
@@ -13,7 +12,7 @@ Import-Module -Name $modulePathOptionValueHelper
 
     .PARAMETER PolicyName
         The Policy name.
-    
+
     .PARAMETER OptionId
         The ID of the option.
 
@@ -33,7 +32,7 @@ function Get-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]  
+        [ValidateNotNullOrEmpty()]
         [String]
         $PolicyName,
 
@@ -57,14 +56,14 @@ function Get-TargetResource
         [String]
         $AddressFamily
     )
-  
+
     $hashTable = Get-TargetResourceHelper -ApplyTo 'Policy' -UserClass '' @PSBoundParameters
-    
+
     # Removing properties that are not in the schema.mof before returning the hash table
     $hashTable.Remove('ApplyTo')
     $hashTable.Remove('ReservedIP')
     $hashTable.Remove('UserClass')
-    
+
     $hashTable
 }
 
@@ -83,13 +82,13 @@ function Get-TargetResource
 
     .PARAMETER ScopeId
         The scope ID to set the value. If not used server level values are used.
-        
+
     .PARAMETER VendorClass
         The vendor class of the option. Use an empty string for standard class.
 
     .PARAMETER AddressFamily
         The option definition address family (IPv4 or IPv6). Currently only the IPv4 is supported.
-        
+
     .PARAMETER Ensure
         When set to 'Present', the option will be created.
         When set to 'Absent', the option will be removed.
@@ -100,7 +99,7 @@ function Set-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]  
+        [ValidateNotNullOrEmpty()]
         [String]
         $PolicyName,
 
@@ -108,7 +107,7 @@ function Set-TargetResource
         [ValidateNotNullOrEmpty()]
         [UInt32]
         $OptionId,
-        
+
         [Parameter()]
         [String[]]
         $Value,
@@ -128,7 +127,7 @@ function Set-TargetResource
         $AddressFamily,
 
         [Parameter()]
-        [ValidateSet('Present','Absent')]
+        [ValidateSet('Present', 'Absent')]
         [String]
         $Ensure = 'Present'
     )
@@ -151,7 +150,7 @@ function Set-TargetResource
 
     .PARAMETER ScopeId
         The scope ID to test the value. If not used server level values are tested.
-        
+
     .PARAMETER VendorClass
         The vendor class of the option. Use an empty string for standard class.
 
@@ -169,10 +168,10 @@ function Test-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]  
+        [ValidateNotNullOrEmpty()]
         [String]
         $PolicyName,
-        
+
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [UInt32]
@@ -197,7 +196,7 @@ function Test-TargetResource
         $AddressFamily,
 
         [Parameter()]
-        [ValidateSet('Present','Absent')]
+        [ValidateSet('Present', 'Absent')]
         [String]
         $Ensure = 'Present'
     )

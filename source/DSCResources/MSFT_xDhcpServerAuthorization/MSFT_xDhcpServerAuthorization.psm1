@@ -1,4 +1,6 @@
-Import-Module $PSScriptRoot\..\Helper.psm1 -Verbose:$false
+$modulePathHelper = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/Helper.psm1'
+
+Import-Module -Name $modulePathHelper
 
 # Localized messages
 data LocalizedData
@@ -24,7 +26,7 @@ function Get-TargetResource
     param
     (
         [Parameter(Mandatory)]
-        [ValidateSet('Present','Absent')]
+        [ValidateSet('Present', 'Absent')]
         [System.String] $Ensure,
 
         [ValidateNotNullOrEmpty()]
@@ -37,7 +39,7 @@ function Get-TargetResource
     $IPAddress = Get-ValidIPAddress -IPString $IPAddress -AddressFamily 'IPv4' -ParameterName 'IPAddress'
     $dhcpServer = Get-DhcpServerInDC | Where-Object { ($_.DnsName -eq $DnsName) -and ($_.IPAddress -eq $IPAddress) }
     $targetResource = @{
-        DnsName = $dhcpServer.DnsName
+        DnsName   = $dhcpServer.DnsName
         IPAddress = $dhcpServer.IPAddress
     }
     if ($dhcpServer)
@@ -59,7 +61,7 @@ function Set-TargetResource
     param
     (
         [Parameter(Mandatory)]
-        [ValidateSet('Present','Absent')]
+        [ValidateSet('Present', 'Absent')]
         [System.String] $Ensure,
 
         [ValidateNotNullOrEmpty()]
@@ -89,7 +91,7 @@ function Test-TargetResource
     param
     (
         [Parameter(Mandatory)]
-        [ValidateSet('Present','Absent')]
+        [ValidateSet('Present', 'Absent')]
         [System.String] $Ensure,
 
         [ValidateNotNullOrEmpty()]
@@ -100,7 +102,7 @@ function Test-TargetResource
     )
     $targetResource = Get-TargetResource @PSBoundParameters
     $isCompliant = $true
-    
+
     if ($targetResource.Ensure -ne $Ensure)
     {
         Write-Verbose ($LocalizedData.IncorrectPropertyValue -f 'Ensure', $Ensure, $targetResource.Ensure)
@@ -120,12 +122,13 @@ function Test-TargetResource
             $isCompliant = $false
         }
     }
-    
+
     if ($isCompliant)
     {
         Write-Verbose ($LocalizedData.ResourceInDesiredState -f $DnsName)
     }
-    else {
+    else
+    {
         Write-Verbose ($LocalizedData.ResourceNotInDesiredState -f $DnsName)
     }
     return $isCompliant
@@ -149,7 +152,8 @@ function Get-IPv4Address
 } #end function Get-IPv4Address
 
 ## Internal function used to resolve the local hostname
-function Get-Hostname {
+function Get-Hostname
+{
     [CmdletBinding()]
     [OutputType([System.String])]
     param ( )

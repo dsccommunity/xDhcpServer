@@ -1,4 +1,6 @@
-Import-Module $PSScriptRoot\..\Helper.psm1 -Verbose:$false
+$modulePathHelper = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/Helper.psm1'
+
+Import-Module -Name $modulePathHelper
 
 # Localized messages
 data LocalizedData
@@ -17,52 +19,52 @@ function Get-TargetResource
     [OutputType([System.Collections.Hashtable])]
     param
     (
-        [Parameter(Mandatory)][ValidateSet('Present','Absent')]
+        [Parameter(Mandatory)][ValidateSet('Present', 'Absent')]
         [System.String] $Ensure,
-        
+
         [parameter(Mandatory)] [ValidateNotNullOrEmpty()]
         [String]$Name,
 
-        [parameter(Mandatory)][ValidateSet('Vendor','User')]
+        [parameter(Mandatory)][ValidateSet('Vendor', 'User')]
         [String]$Type,
 
         [parameter(Mandatory)][ValidateNotNullOrEmpty()]
         [string] $AsciiData,
-        
+
         [AllowEmptyString()]
         [string]$Description = '',
-        
+
         [parameter(Mandatory)][ValidateSet('IPv4')]
         [String]$AddressFamily
     )
 
-#region Input Validation
+    #region Input Validation
 
     # Check for DhcpServer module/role
     Assert-Module -moduleName DHCPServer
 
-#endregion Input Validation
+    #endregion Input Validation
 
     $DhcpServerClass = Get-DhcpServerv4Class -Name $Name -ErrorAction SilentlyContinue
 
     if ($DhcpServerClass)
     {
         $HashTable = @{
-        'Name'=$DhcpServerClass.Name
-        'Type'=$DhcpServerClass.Type
-        'AsciiData' = $DhcpServerClass.AsciiData
-        'Description' = $DhcpServerClass.Description
-        'AddressFamily' = 'IPv4'
+            'Name'          = $DhcpServerClass.Name
+            'Type'          = $DhcpServerClass.Type
+            'AsciiData'     = $DhcpServerClass.AsciiData
+            'Description'   = $DhcpServerClass.Description
+            'AddressFamily' = 'IPv4'
         }
     }
     else
     {
         $HashTable = @{
-        'Name' = ''
-        'Type' = ''
-        'AsciiData' = ''
-        'Description' = ''
-        'AddressFamily' = ''
+            'Name'          = ''
+            'Type'          = ''
+            'AsciiData'     = ''
+            'Description'   = ''
+            'AddressFamily' = ''
         }
     }
     $HashTable
@@ -73,27 +75,27 @@ function Set-TargetResource
     [CmdletBinding()]
     param
     (
-        [Parameter(Mandatory)][ValidateSet('Present','Absent')]
+        [Parameter(Mandatory)][ValidateSet('Present', 'Absent')]
         [System.String] $Ensure,
-        
+
         [parameter(Mandatory)] [ValidateNotNullOrEmpty()]
         [String]$Name,
 
-        [parameter(Mandatory)][ValidateSet('Vendor','User')]
+        [parameter(Mandatory)][ValidateSet('Vendor', 'User')]
         [String]$Type,
 
         [parameter(Mandatory)][ValidateNotNullOrEmpty()]
         [string] $AsciiData,
-        
+
         [AllowEmptyString()]
         [string]$Description = '',
-        
+
         [parameter(Mandatory)][ValidateSet('IPv4')]
         [String]$AddressFamily
     )
 
     $DhcpServerClass = Get-DhcpServerv4Class $Name -ErrorAction SilentlyContinue
-    
+
     #testing for ensure = present
     if ($Ensure -eq 'Present')
     {
@@ -114,7 +116,7 @@ function Set-TargetResource
             Add-DhcpServerv4Class -Name $Name -Type $Type -Data $AsciiData -Description $Description
         }
     }
-    
+
     #ensure = absent
     else
     {
@@ -129,25 +131,25 @@ function Test-TargetResource
     [OutputType([System.Boolean])]
     param
     (
-        [Parameter(Mandatory)][ValidateSet('Present','Absent')]
+        [Parameter(Mandatory)][ValidateSet('Present', 'Absent')]
         [System.String] $Ensure,
-        
+
         [parameter(Mandatory)] [ValidateNotNullOrEmpty()]
         [String]$Name,
 
-        [parameter(Mandatory)][ValidateSet('Vendor','User')]
+        [parameter(Mandatory)][ValidateSet('Vendor', 'User')]
         [String]$Type,
 
         [parameter(Mandatory)][ValidateNotNullOrEmpty()]
         [string] $AsciiData,
-        
+
         [AllowEmptyString()]
         [string]$Description = '',
-        
+
         [parameter(Mandatory)][ValidateSet('IPv4')]
         [String]$AddressFamily
     )
-    
+
     $DhcpServerClass = Get-DhcpServerv4Class -Name $Name -ErrorAction SilentlyContinue
 
     #testing for ensure = present
@@ -170,17 +172,17 @@ function Test-TargetResource
         #if $DhcpServerClass return false
         else
         {
-            $result = $false        
+            $result = $false
         }
     }
-    
+
     #ensure = absent
     else
     {
         #testing if $DhcpServerClass is not null, if it exists return false
         if ($DhcpServerClass)
         {
-            $result = $false            
+            $result = $false
         }
         #if it not exists return true
         else

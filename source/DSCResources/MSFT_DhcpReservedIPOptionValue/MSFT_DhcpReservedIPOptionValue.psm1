@@ -1,10 +1,9 @@
 $currentPath = Split-Path -Path $MyInvocation.MyCommand.Path -Parent
 
-$modulePathhelper            = (Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Helper.psm1')
-$modulePathOptionValueHelper = (Join-Path -Path (Join-Path -Path (Join-Path -Path (Split-Path -Path (Split-Path -Path $currentPath -Parent) -Parent) `
-                                -ChildPath 'modules') -ChildPath 'DhcpServerDsc.OptionValueHelper') -ChildPath 'OptionValueHelper.psm1')
+$modulePathHelper = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/Helper.psm1'
+$modulePathOptionValueHelper = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/DhcpServerDsc.OptionValueHelper'
 
-Import-Module -Name $modulePathhelper
+Import-Module -Name $modulePathHelper
 Import-Module -Name $modulePathOptionValueHelper
 
 <#
@@ -13,7 +12,7 @@ Import-Module -Name $modulePathOptionValueHelper
 
     .PARAMETER ReservedIP
         The Reserved IP to get the option value from.
-    
+
     .PARAMETER OptionId
         The ID of the option.
 
@@ -22,7 +21,7 @@ Import-Module -Name $modulePathOptionValueHelper
 
     .PARAMETER UserClass
         The user class of the option.
-    
+
     .PARAMETER AddressFamily
         The option definition address family (IPv4 or IPv6). Currently only the IPv4 is supported.
 #>
@@ -33,7 +32,7 @@ function Get-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]  
+        [ValidateNotNullOrEmpty()]
         [String]
         $ReservedIP,
 
@@ -57,7 +56,7 @@ function Get-TargetResource
         [String]
         $AddressFamily
     )
-  
+
     $hashTable = Get-TargetResourceHelper -ApplyTo 'ReservedIP' @PSBoundParameters
 
     # Removing properties that are not in the schema.mof before returning the hash table
@@ -80,7 +79,7 @@ function Get-TargetResource
 
     .PARAMETER Value
         The option data value.
-        
+
     .PARAMETER VendorClass
         The vendor class of the option. Use an empty string for standard class.
 
@@ -100,7 +99,7 @@ function Set-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]  
+        [ValidateNotNullOrEmpty()]
         [String]
         $ReservedIP,
 
@@ -108,7 +107,7 @@ function Set-TargetResource
         [ValidateNotNullOrEmpty()]
         [UInt32]
         $OptionId,
-        
+
         [Parameter()]
         [String[]]
         $Value,
@@ -129,7 +128,7 @@ function Set-TargetResource
         $AddressFamily,
 
         [Parameter()]
-        [ValidateSet('Present','Absent')]
+        [ValidateSet('Present', 'Absent')]
         [String]
         $Ensure = 'Present'
     )
@@ -149,13 +148,13 @@ function Set-TargetResource
 
     .PARAMETER Value
         The option data value.
-        
+
     .PARAMETER VendorClass
         The vendor class of the option. Use an empty string for standard class.
 
     .PARAMETER UserClass
         The user class of the option.
-    
+
     .PARAMETER AddressFamily
         The option definition address family (IPv4 or IPv6). Currently only the IPv4 is supported.
 
@@ -170,10 +169,10 @@ function Test-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]  
+        [ValidateNotNullOrEmpty()]
         [String]
         $ReservedIP,
-        
+
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [UInt32]
@@ -199,7 +198,7 @@ function Test-TargetResource
         $AddressFamily,
 
         [Parameter()]
-        [ValidateSet('Present','Absent')]
+        [ValidateSet('Present', 'Absent')]
         [String]
         $Ensure = 'Present'
     )

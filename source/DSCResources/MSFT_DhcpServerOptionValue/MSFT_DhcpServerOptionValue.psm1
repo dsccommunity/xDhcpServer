@@ -1,10 +1,9 @@
 $currentPath = Split-Path -Path $MyInvocation.MyCommand.Path -Parent
 
-$modulePathhelper            = (Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Helper.psm1')
-$modulePathOptionValueHelper = (Join-Path -Path (Join-Path -Path (Join-Path -Path (Split-Path -Path (Split-Path -Path $currentPath -Parent) -Parent) `
-                                -ChildPath 'modules') -ChildPath 'DhcpServerDsc.OptionValueHelper') -ChildPath 'OptionValueHelper.psm1')
+$modulePathHelper = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/Helper.psm1'
+$modulePathOptionValueHelper = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/DhcpServerDsc.OptionValueHelper'
 
-Import-Module -Name $modulePathhelper
+Import-Module -Name $modulePathHelper
 Import-Module -Name $modulePathOptionValueHelper
 
 <#
@@ -19,7 +18,7 @@ Import-Module -Name $modulePathOptionValueHelper
 
     .PARAMETER UserClass
         The user class of the option.
-    
+
     .PARAMETER AddressFamily
         The option definition address family (IPv4 or IPv6). Currently only the IPv4 is supported.
 #>
@@ -57,7 +56,7 @@ function Get-TargetResource
     $hashTable.Remove('PolicyName')
     $hashTable.Remove('ReservedIP')
     $hashTable.Remove('ScopeId')
- 
+
     $hashTable
 }
 
@@ -70,7 +69,7 @@ function Get-TargetResource
 
     .PARAMETER Value
         The data value option.
-        
+
     .PARAMETER VendorClass
         The vendor class of the option. Use an empty string for standard class.
 
@@ -114,7 +113,7 @@ function Set-TargetResource
         $AddressFamily,
 
         [Parameter()]
-        [ValidateSet('Present','Absent')]
+        [ValidateSet('Present', 'Absent')]
         [String]
         $Ensure = 'Present'
     )
@@ -131,13 +130,13 @@ function Set-TargetResource
 
     .PARAMETER Value
         The data value option.
-        
+
     .PARAMETER VendorClass
         The vendor class of the option. Use an empty string for standard class.
 
     .PARAMETER UserClass
         The user class of the option.
-    
+
     .PARAMETER AddressFamily
         The option definition address family (IPv4 or IPv6). Currently only the IPv4 is supported.
 
@@ -176,12 +175,12 @@ function Test-TargetResource
         $AddressFamily,
 
         [Parameter()]
-        [ValidateSet('Present','Absent')]
+        [ValidateSet('Present', 'Absent')]
         [String]
         $Ensure = 'Present'
     )
 
-    
+
     $result = Test-TargetResourceHelper -ApplyTo 'Server' @PSBoundParameters
     $result
 }
