@@ -89,7 +89,7 @@ function Get-TargetResource
     #region Input Validation
 
     # Check for DhcpServer module/role
-    Assert-Module -moduleName DHCPServer
+    Assert-Module -ModuleName 'DHCPServer'
 
     # Check values of IP Addresses used to define the scope
     $ipAddressesAssertionParameters = @{

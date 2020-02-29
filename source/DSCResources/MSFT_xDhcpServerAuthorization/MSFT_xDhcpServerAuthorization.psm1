@@ -141,15 +141,16 @@ function Get-IPv4Address
 {
     [CmdletBinding()]
     [OutputType([System.String])]
-    param ( )
+    param ()
     process
     {
-        Write-Verbose $LocalizedData.ResolvingIPv4Address
-        Get-WmiObject Win32_NetworkAdapterConfiguration -Namespace 'root\CIMV2' |
-            Where-Object IPEnabled -eq 'True' |
-                ForEach-Object {
-                    Write-Output ($_.IPAddress -notmatch ':')
-                }
+        Write-Verbose -Message $LocalizedData.ResolvingIPv4Address
+
+        Get-CimInstance -ClassName 'Win32_NetworkAdapterConfiguration' -Namespace 'root\CIMV2' |
+            Where-Object -FilterScript {
+                $_.IPEnabled -eq 'True' -and $_.IPAddress -notmatch ':'
+            } |
+                Select-Object -ExpandProperty 'IPAddress'
     } #end process
 } #end function Get-IPv4Address
 

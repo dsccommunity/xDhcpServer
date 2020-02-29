@@ -19,7 +19,7 @@ function Invoke-TestSetup
         -TestType 'Unit'
 
     # Import the stub functions.
-    Import-Module -Name "$PSScriptRoot/Stubs/DhcpServer_2016_OSBuild_14393_2395.psm1" -Force
+    Import-Module -Name "$PSScriptRoot/Stubs/DhcpServer_2016_OSBuild_14393_2395.psm1" -Force -DisableNameChecking
 }
 
 function Invoke-TestCleanup
@@ -99,7 +99,7 @@ try
 
                 $result = Get-TargetResource @testParams
 
-                $result | Should BeOfType [System.Collections.Hashtable]
+                $result | Should -BeOfType [System.Collections.Hashtable]
             }
 
             It 'Returns "Absent" when the option value does not exist' {
@@ -113,24 +113,24 @@ try
                 Mock -CommandName Get-DhcpServerv4OptionValue -MockWith $getFakeDhcpPolicyv4OptionValueDifferentValue -ModuleName 'DhcpServerDsc.OptionValueHelper'
 
                 $result = Get-TargetResource @testParams
-                $result.Ensure | Should Be $ensure
-                $result.OptionId | Should Be $optionId
-                $result.PolicyName | Should Be $policyName
-                $result.Value | Should Be @('DifferentValue')
-                $result.VendorClass | Should Be $vendorClass
-                $result.AddressFamily | Should Be $addressFamily
+                $result.Ensure | Should -Be $ensure
+                $result.OptionId | Should -Be $optionId
+                $result.PolicyName | Should -Be $policyName
+                $result.Value | Should -Be @('DifferentValue')
+                $result.VendorClass | Should -Be $vendorClass
+                $result.AddressFamily | Should -Be $addressFamily
             }
 
             It 'Returns the properties as $null when the option does not exist' {
                 Mock -CommandName Get-DhcpServerv4OptionValue -MockWith { return $null } -ModuleName 'DhcpServerDsc.OptionValueHelper'
 
                 $result = Get-TargetResource @testParams
-                $result.Ensure | Should Be 'Absent'
-                $result.OptionId | Should Be $null
-                $result.PolicyName | Should Be $null
-                $result.Value | Should Be $null
-                $result.VendorClass | Should Be $null
-                $result.AddressFamily | Should Be $null
+                $result.Ensure | Should -Be 'Absent'
+                $result.OptionId | Should -Be $null
+                $result.PolicyName | Should -Be $null
+                $result.Value | Should -Be $null
+                $result.VendorClass | Should -Be $null
+                $result.AddressFamily | Should -Be $null
             }
         }
 
@@ -144,28 +144,28 @@ try
                 Mock -CommandName Get-DhcpServerv4OptionValue -MockWith $GetFakeDhcpPolicyv4OptionValue -ModuleName 'DhcpServerDsc.OptionValueHelper'
 
                 $result = Test-TargetResource @testParams -Ensure 'Present' -Value $value
-                $result | Should BeOfType [System.Boolean]
+                $result | Should -BeOfType [System.Boolean]
             }
 
             It 'Returns $true when the option exists and Ensure = Present' {
                 Mock -CommandName Get-DhcpServerv4OptionValue -MockWith $GetFakeDhcpPolicyv4OptionValue -ModuleName 'DhcpServerDsc.OptionValueHelper'
 
                 $result = Test-TargetResource @testParams -Ensure 'Present' -Value $value
-                $result | Should Be $true
+                $result | Should -Be $true
             }
 
             It 'Returns $false when the option does not exist and Ensure = Present' {
                 Mock -CommandName Get-DhcpServerv4OptionValue -MockWith { return $null } -ModuleName 'DhcpServerDsc.OptionValueHelper'
 
                 $result = Test-TargetResource @testParams -Ensure 'Present' -Value $value
-                $result | Should Be $false
+                $result | Should -Be $false
             }
 
             It 'Returns $false when the option exists and Ensure = Absent ' {
                 Mock -CommandName Get-DhcpServerv4OptionValue -MockWith $GetFakeDhcpPolicyv4OptionValue -ModuleName 'DhcpServerDsc.OptionValueHelper'
 
                 $result = Test-TargetResource @testParams -Ensure 'Absent' -Value $value
-                $result | Should Be $false
+                $result | Should -Be $false
             }
         }
 

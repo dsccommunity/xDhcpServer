@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - xDhcpServer
   - Added automatic release with a new CI pipeline ([issue #59](https://github.com/dsccommunity/xDhcpServer/issues/59).
 
+### Changed
+
+- xDhcpServerAuthorization
+  - The helper function `Get-IPv4Address` was changed from using `Get-WmiObject`
+    to `Get-CimInstance` when fetching the enabled IP addresses.
+
 ### Removed
 
 - Removed the deprecated resource xDhcpServerOption which has been replaced

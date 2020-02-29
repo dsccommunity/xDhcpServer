@@ -19,7 +19,7 @@ function Invoke-TestSetup
         -TestType 'Unit'
 
     # Import the stub functions.
-    Import-Module -Name "$PSScriptRoot/Stubs/DhcpServer_2016_OSBuild_14393_2395.psm1" -Force
+    Import-Module -Name "$PSScriptRoot/Stubs/DhcpServer_2016_OSBuild_14393_2395.psm1" -Force -DisableNameChecking
 }
 
 function Invoke-TestCleanup
@@ -32,44 +32,18 @@ Invoke-TestSetup
 try
 {
     InModuleScope $script:dscResourceName {
-        # Mock missing functions
-        function Get-DhcpServerv4Class
-        {
-            throw 'Stub: Not implemented'
-        }
-
-        function Add-DhcpServerv4Class
-        {
-            throw 'Stub: Not implemented'
-        }
-
-        function Set-DhcpServerv4Class
-        {
-            throw 'Stub: Not implemented'
-        }
-
-        function Remove-DhcpServerv4Class
-        {
-            throw 'Stub: Not implemented'
-        }
-
-        #region Pester Test Initialization
-
-        $testClassName = 'Test Class';
-        $testClassType = 'Vendor';
-        $testAsciiData = 'test data';
-        $testClassDescription = 'test class description';
-        $testClassAddressFamily = 'IPv4';
-        $testEnsure = 'Present'
-
+        $testClassName = 'Test Class'
+        $testClassType = 'Vendor'
+        $testAsciiData = 'test data'
+        $testClassDescription = 'test class description'
+        $testClassAddressFamily = 'IPv4'
 
         $testParams = @{
-            Name          = $testClassName;
-            Type          = $testClassType;
-            AsciiData     = $testAsciiData;
+            Name          = $testClassName
+            Type          = $testClassType
+            AsciiData     = $testAsciiData
             AddressFamily = 'IPv4'
             Description   = $testClassDescription
-            #Ensure = $testEnsure
         }
 
         $fakeDhcpServerClass = [PSCustomObject] @{
@@ -80,80 +54,103 @@ try
             AddressFamily = $testClassAddressFamily
         }
 
-
-        #endregion
-
         Describe 'MSFT_xDhcpServerClass\Get-TargetResource' {
-            Mock Assert-Module -ParameterFilter { $ModuleName -eq 'DHCPServer' } { }
+            BeforeAll {
+                Mock -CommandName Assert-Module
+            }
 
             It 'Calls "Assert-Module" to ensure "DHCPServer" module is available' {
-                Mock Get-DhcpServerv4Class { return $fakeDhcpServerClass; }
+                Mock -CommandName Get-DhcpServerv4Class -MockWith {
+                    return $fakeDhcpServerClass
+                }
 
-                $result = Get-TargetResource @testParams -Ensure Present;
+                $result = Get-TargetResource @testParams -Ensure Present
 
-                Assert-MockCalled Assert-Module -ParameterFilter { $ModuleName -eq 'DHCPServer' } -Scope It;
+                Assert-MockCalled -CommandName Assert-Module -ParameterFilter {
+                    $ModuleName -eq 'DHCPServer'
+                } -Exactly -Times 1 -Scope It
             }
 
             It 'Returns a "System.Collections.Hashtable" object type' {
-                Mock Get-DhcpServerv4Class { return $fakeDhcpServerClass; }
-                $result = Get-TargetResource @testParams -Ensure Present;
-                $result -is [System.Collections.Hashtable] | Should Be $true;
+                Mock -CommandName Get-DhcpServerv4Class -MockWith {
+                    return $fakeDhcpServerClass
+                }
+
+                $result = Get-TargetResource @testParams -Ensure Present
+
+                $result -is [System.Collections.Hashtable] | Should -Be $true
             }
         }
 
         Describe 'MSFT_xDhcpServerClass\Test-TargetResource' {
-            Mock Assert-Module -ParameterFilter { $ModuleName -eq 'DHCPServer' } { }
+            BeforeAll {
+                Mock -CommandName Assert-Module
+            }
 
             It 'Returns a "System.Boolean" object type' {
-                Mock Get-DhcpServerv4Class { return $fakeDhcpServerClass; }
+                Mock -CommandName Get-DhcpServerv4Class -MockWith {
+                    return $fakeDhcpServerClass
+                }
 
-                $result = Test-TargetResource @testParams -Ensure Present;
+                $result = Test-TargetResource @testParams -Ensure Present
 
-                $result -is [System.Boolean] | Should Be $true;
+                $result -is [System.Boolean] | Should -Be $true
             }
 
             It 'Passes when all parameters are correct' {
-                Mock Get-DhcpServerv4Class { return $fakeDhcpServerClass; }
+                Mock -CommandName Get-DhcpServerv4Class {
+                    return $fakeDhcpServerClass
+                }
 
-                $result = Test-TargetResource @testParams -Ensure Present;
+                $result = Test-TargetResource @testParams -Ensure Present
 
-                $result | Should Be $true;
+                $result | Should -Be $true
             }
 
         }
-        #endregion Function Test-TargetResource
 
-        #region Function Set-TargetResource
         Describe 'MSFT_xDhcpServerClass\Set-TargetResource' {
-            Mock Assert-Module -ParameterFilter { $ModuleName -eq 'DHCPServer' } { }
+            BeforeAll {
+                Mock -CommandName Assert-Module
+            }
 
             It 'Calls "Add-DhcpServerv4Class" when "Ensure" = "Present" and class does not exist' {
-                Mock Set-DhcpServerv4Class { }
-                Mock Add-DhcpServerv4Class { }
+                Mock -CommandName Get-DhcpServerv4Class -MockWith {
+                    return $null
+                }
 
-                Set-TargetResource @testParams -Ensure Present;
+                Mock -CommandName Set-DhcpServerv4Class
+                Mock -CommandName Add-DhcpServerv4Class
 
-                Assert-MockCalled Add-DhcpServerv4Class -Scope It;
+                Set-TargetResource @testParams -Ensure Present
+
+                Assert-MockCalled -CommandName Add-DhcpServerv4Class -Exactly -Times 1 -Scope It
             }
 
             It 'Calls "Remove-DhcpServerv4Class" when "Ensure" = "Absent" and scope does exist' {
-                Mock Get-DhcpServerv4Class { return $fakeDhcpServerClass; }
-                Mock Remove-DhcpServerv4Class { }
+                Mock -CommandName Get-DhcpServerv4Class -MockWith {
+                    return $fakeDhcpServerClass
+                }
 
-                Set-TargetResource @testParams -Ensure 'Absent';
+                Mock -CommandName Remove-DhcpServerv4Class
 
-                Assert-MockCalled Remove-DhcpServerv4Class -Scope It;
+                Set-TargetResource @testParams -Ensure 'Absent'
+
+                Assert-MockCalled -CommandName Remove-DhcpServerv4Class -Exactly -Times 1 -Scope It
             }
 
             It 'Calls Set-DhcpServerv4Class when asciidata changes' {
-                Mock Get-DhcpServerv4Class { return $fakeDhcpServerClass; }
-                Mock Set-DhcpServerv4Class { }
+                Mock -CommandName Get-DhcpServerv4Class -MockWith {
+                    return $fakeDhcpServerClass
+                }
+
+                Mock -CommandName Set-DhcpServerv4Class
 
                 $testParams.AsciiData = 'differentdata'
 
-                Set-TargetResource @testParams -Ensure 'Present';
+                Set-TargetResource @testParams -Ensure 'Present'
 
-                Assert-MockCalled Set-DhcpServerv4Class -Scope It;
+                Assert-MockCalled -CommandName Set-DhcpServerv4Class -Exactly -Times 1 -Scope It
             }
         }
     } #end InModuleScope

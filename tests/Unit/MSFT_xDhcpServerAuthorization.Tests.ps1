@@ -19,7 +19,7 @@ function Invoke-TestSetup
         -TestType 'Unit'
 
     # Import the stub functions.
-    Import-Module -Name "$PSScriptRoot/Stubs/DhcpServer_2016_OSBuild_14393_2395.psm1" -Force
+    Import-Module -Name "$PSScriptRoot/Stubs/DhcpServer_2016_OSBuild_14393_2395.psm1" -Force -DisableNameChecking
 }
 
 function Invoke-TestCleanup
@@ -32,30 +32,6 @@ Invoke-TestSetup
 try
 {
     InModuleScope $script:dscResourceName {
-        # Mock missing functions
-        function Get-DhcpServerInDc
-        {
-            throw 'Stub: Not implemented'
-        }
-
-        function Add-DhcpServerInDc
-        {
-            throw 'Stub: Not implemented'
-        }
-
-
-        function Remove-DhcpServerInDc
-        {
-            [CmdletBinding()]
-            param
-            (
-                [Parameter(ValueFromPipeline)]
-                $someValue
-            )
-
-            throw 'Stub: Not implemented'
-        }
-
         # Test TargetResource parameters with Ensure = 'Present'.
         $testPresentParams = @{
             Ensure = 'Present'
@@ -69,17 +45,21 @@ try
             IPAddress = '192.168.1.1'
         }
 
-        # Authorized server list with test1.contoso.com authorized.
+        <#
+            Authorized server list with test1.contoso.com authorized.
+            This needs to be a PSCustomObject to work with ValueFromPipelineByPropertyName
+            when calling cmdlet Remove-DhcpServerInDC.
+        #>
         $fakeDhcpServersPresent = @(
-            @{
+            [PSCustomObject] @{
                 IPAddress = '192.168.1.1'
                 DnsName = 'test1.contoso.com'
             },
-            @{
+            [PSCustomObject] @{
                 IPAddress = '192.168.1.2'
                 DnsName = 'test2.contoso.com'
             },
-            @{
+            [PSCustomObject] @{
                 IPAddress = '192.168.1.3'
                 DnsName = 'test3.contoso.com'
             }
@@ -130,120 +110,149 @@ try
         )
 
         Describe 'MSFT_xDhcpServerAuthorization\Get-TargetResource' {
-            Mock Assert-Module { };
+            BeforeAll {
+                Mock -CommandName Assert-Module
+            }
 
             It 'Returns a [System.Collection.Hashtable] type' {
-                Mock Get-DhcpServerInDC { return $fakeDhcpServersPresent; }
-
-                $result = Get-TargetResource @testPresentParams;
-
-                $result -is [System.Collections.Hashtable] | Should Be $true;
-            }
-            It 'Returns Ensure is Present when DHCP server authorization exists' {
-                Mock Get-DhcpServerInDC { return $fakeDhcpServersPresent; }
+                Mock -CommandName Get-DhcpServerInDC -MockWith {
+                    return $fakeDhcpServersPresent
+                }
 
                 $result = Get-TargetResource @testPresentParams
 
-                $result.Ensure | Should Be 'Present';
+                $result -is [System.Collections.Hashtable] | Should -Be $true
             }
+
+            It 'Returns Ensure is Present when DHCP server authorization exists' {
+                Mock -CommandName Get-DhcpServerInDC -MockWith {
+                    return $fakeDhcpServersPresent
+                }
+
+                $result = Get-TargetResource @testPresentParams
+
+                $result.Ensure | Should -Be 'Present'
+            }
+
             It 'Returns Ensure is Absent when DHCP server authorization does not exist' {
-                Mock Get-DhcpServerInDC { }
+                Mock -CommandName Get-DhcpServerInDC
 
-                $result = Get-TargetResource @testPresentParams;
+                $result = Get-TargetResource @testPresentParams
 
-                $result.Ensure | Should Be 'Absent';
+                $result.Ensure | Should -Be 'Absent'
             }
 
         }
 
         Describe 'MSFT_xDhcpServerAuthorization\Test-TargetResource' {
-            Mock Assert-Module { };
+            BeforeAll {
+                Mock -CommandName Assert-Module
+            }
 
             It 'Returns a [System.Boolean] type' {
-                Mock Get-DhcpServerInDC { return $fakeDhcpServersPresent; }
-
-                $result = Test-TargetResource @testPresentParams;
-
-                $result -is [System.Boolean] | Should Be $true;
-            }
-            It 'Fails when DHCP Server authorization does not exist and Ensure is Present' {
-                Mock Get-DhcpServerInDC { return $fakeDhcpServersAbsent; }
-
-                Test-TargetResource @testPresentParams | Should Be $false;
-            }
-            It 'Fails when DHCP Server authorization does exist and Ensure is Absent' {
-                Mock Get-DhcpServerInDC { return $fakeDhcpServersPresent; }
-
-                Test-TargetResource @testAbsentParams | Should Be $false;
-            }
-            It 'Fails when DHCP Server authorization does exist, Ensure is Present but DnsName is wrong' {
-                Mock Get-DhcpServerInDC { return $fakeDhcpServersMismatchDnsName; }
-
-                Test-TargetResource @testPresentParams | Should Be $false;
-            }
-            It 'Fails when DHCP Server authorization does exist, Ensure is Present but IPAddress is wrong' {
-                Mock Get-DhcpServerInDC { return $fakeDhcpServersMismatchIPAddress; }
-
-                Test-TargetResource @testPresentParams | Should Be $false;
-            }
-            It 'Passes when DHCP Server authorization does exist and Ensure is Present' {
-                Mock Get-DhcpServerInDC { return $fakeDhcpServersPresent; }
+                Mock Get-DhcpServerInDC -MockWith {
+                    return $fakeDhcpServersPresent
+                }
 
                 $result = Test-TargetResource @testPresentParams
 
-                $result -is [System.Boolean] | Should Be $true;
+                $result -is [System.Boolean] | Should -Be $true
             }
+
+            It 'Fails when DHCP Server authorization does not exist and Ensure is Present' {
+                Mock -CommandName Get-DhcpServerInDC -MockWith {
+                    return $fakeDhcpServersAbsent
+                }
+
+                Test-TargetResource @testPresentParams | Should -Be $false
+            }
+
+            It 'Fails when DHCP Server authorization does exist and Ensure is Absent' {
+                Mock -CommandName Get-DhcpServerInDC -MockWith {
+                    return $fakeDhcpServersPresent
+                }
+
+                Test-TargetResource @testAbsentParams | Should -Be $false
+            }
+
+            It 'Fails when DHCP Server authorization does exist, Ensure is Present but DnsName is wrong' {
+                Mock -CommandName Get-DhcpServerInDC -MockWith {
+                    return $fakeDhcpServersMismatchDnsName
+                }
+
+                Test-TargetResource @testPresentParams | Should -Be $false
+            }
+
+            It 'Fails when DHCP Server authorization does exist, Ensure is Present but IPAddress is wrong' {
+                Mock -CommandName Get-DhcpServerInDC -MockWith {
+                    return $fakeDhcpServersMismatchIPAddress
+                }
+
+                Test-TargetResource @testPresentParams | Should -Be $false
+            }
+
+            It 'Passes when DHCP Server authorization does exist and Ensure is Present' {
+                Mock -CommandName Get-DhcpServerInDC -MockWith {
+                    return $fakeDhcpServersPresent
+                }
+
+                $result = Test-TargetResource @testPresentParams
+
+                $result -is [System.Boolean] | Should -Be $true
+            }
+
             It 'Passes when DHCP Server authorization does not exist and Ensure is Absent' {
-                Mock Get-DhcpServerInDC { return $fakeDhcpServersAbsent; }
+                Mock Get-DhcpServerInDC -MockWith {
+                    return $fakeDhcpServersAbsent
+                }
 
                 $result = Test-TargetResource @testAbsentParams
 
-                $result -is [System.Boolean] | Should Be $true;
+                $result -is [System.Boolean] | Should -Be $true
             }
-
         }
 
         Describe 'MSFT_xDhcpServerAuthorization\Set-TargetResource' {
-            Mock Assert-Module { };
+            BeforeAll {
+                Mock -CommandName Assert-Module
+            }
 
             It 'Calls Add-DhcpServerInDc when Ensure is Present' {
-                Mock Add-DhcpServerInDC { }
+                Mock -CommandName Add-DhcpServerInDC
 
-                Set-TargetResource @testPresentParams;
+                Set-TargetResource @testPresentParams
 
-                Assert-MockCalled Add-DhcpServerInDC -Scope It;
+                Assert-MockCalled -CommandName Add-DhcpServerInDC -Exactly -Times 1 -Scope It
             }
             It 'Calls Remove-DhcpServerInDc when Ensure is Present' {
-                Mock Get-DhcpServerInDC { return $fakeDhcpServersPresent; }
-                Mock Remove-DhcpServerInDC { }
+                Mock -CommandName Get-DhcpServerInDC -MockWith {
+                    return $fakeDhcpServersPresent
+                }
 
-                Set-TargetResource @testAbsentParams;
+                Mock -CommandName Remove-DhcpServerInDC
 
-                Assert-MockCalled Remove-DhcpServerInDC -Scope It;
+                Set-TargetResource @testAbsentParams
+
+                Assert-MockCalled -CommandName Remove-DhcpServerInDC -Exactly -Times 1 -Scope It
             }
-
         }
 
         Describe 'MSFT_xDhcpServerAuthorization\Get-IPv4Address' {
-
             It 'Returns a IPv4 address' {
-                $result = Get-IPv4Address;
+                $result = Get-IPv4Address | Select-Object -First 1
 
-                $result -match '\d+\.\d+\.\d+\.\d+' | Should Be $true;
+                $result -match '\d+\.\d+\.\d+\.\d+' | Should -Be $true
             }
-
         }
 
         Describe 'MSFT_xDhcpServerAuthorization\Get-Hostname' {
-
             It 'Returns at least the current NetBIOS name' {
-                $hostname = [System.Net.Dns]::GetHostname();
+                $hostname = [System.Net.Dns]::GetHostname()
 
-                $result = Get-Hostname;
+                $result = Get-Hostname
 
-                $result -match $hostname | Should Be $true;
+                $result -match $hostname | Should -Be $true
             }
-
         }
     } #end InModuleScope
 }
