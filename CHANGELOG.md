@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - BREAKING CHANGE: Removed the deprecated resource xDhcpServerOption which has been replaced
   by other DSC resources ([issue #46](https://github.com/dsccommunity/xDhcpServer/issues/46).
+- Removed the file `TestSampleUsingAzure.ps1` as it was not a working example
+  of running integration tests.
 
 ### [2.0.0.0] - 2018-07-25
 
