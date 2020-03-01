@@ -86,7 +86,7 @@ configuration SampleConfiguration
         Description   = 'Vendor Class Description'
     }
 
-    xDhcpServerOptionDefinition 'DHCPServerOptionDefinition'
+    xDhcpServerOptionDefinition 'DHCPServerOptionDefinition1'
     {
         Ensure        = 'Present'
         Name          = 'Cisco AP c1700 Provisioning'
@@ -97,7 +97,7 @@ configuration SampleConfiguration
         Description   = 'Sample description'
     }
 
-    xDhcpServerOptionDefinition 'DHCPServerOptionDefinition'
+    xDhcpServerOptionDefinition 'DHCPServerOptionDefinition2'
     {
         Ensure        = 'Present'
         Name          = 'sample name'
