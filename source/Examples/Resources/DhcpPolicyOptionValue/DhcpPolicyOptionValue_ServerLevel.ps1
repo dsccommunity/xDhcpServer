@@ -23,15 +23,4 @@ configuration Example
         PolicyName    = 'TestPolicy'
         Ensure        = 'Present'
     }
-
-    DhcpPolicyOptionValue 'PolicyOptionValue_ID-008-scope'
-    {
-        OptionId      = 8
-        Value         = '1.1.1.1'
-        ScopeId       = '192.168.0.0'
-        VendorClass   = ''
-        AddressFamily = 'IPv4'
-        PolicyName    = 'TestPolicy'
-        Ensure        = 'Present'
-    }
 }
