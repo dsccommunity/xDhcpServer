@@ -5,6 +5,7 @@ DHCP Server.
 
 [![Build Status](https://dev.azure.com/dsccommunity/xDhcpServer/_apis/build/status/dsccommunity.xDhcpServer?branchName=master)](https://dev.azure.com/dsccommunity/xDhcpServer/_build/latest?definitionId={definitionId}&branchName=master)
 ![Azure DevOps coverage (branch)](https://img.shields.io/azure-devops/coverage/dsccommunity/xDhcpServer/{definitionId}/master)
+![codecov](https://codecov.io/gh/dsccommunity/xDhcpServer/branch/master/graph/badge.svg)](https://codecov.io/gh/dsccommunity/xDhcpServer)
 [![Azure DevOps tests](https://img.shields.io/azure-devops/tests/dsccommunity/xDhcpServer/{definitionId}/master)](https://dsccommunity.visualstudio.com/xDhcpServer/_test/analytics?definitionId={definitionId}&contextType=build)
 [![PowerShell Gallery (with prereleases)](https://img.shields.io/powershellgallery/vpre/xDhcpServer?label=xDhcpServer%20Preview)](https://www.powershellgallery.com/packages/xDhcpServer/)
 [![PowerShell Gallery](https://img.shields.io/powershellgallery/v/xDhcpServer?label=xDhcpServer)](https://www.powershellgallery.com/packages/xDhcpServer/)
