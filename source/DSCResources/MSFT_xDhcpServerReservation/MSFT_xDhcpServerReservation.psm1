@@ -1,28 +1,10 @@
-$currentPath = Split-Path -Path $PSScriptRoot -Parent
+$script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '../../Modules/DscResource.Common'
+$script:moduleHelperPath = Join-Path -Path $PSScriptRoot -ChildPath '../../Modules/DhcpServerDsc.Common'
 
-$script:moduleHelperPath = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/DhcpServerDsc.Common'
-
+Import-Module -Name $script:resourceHelperModulePath
 Import-Module -Name $script:moduleHelperPath
 
-# Localized messages
-data LocalizedData
-{
-    # culture="en-US"
-    ConvertFrom-StringData @'
-InvalidScopeIDMessage      = DHCP server scopeID {0} is not valid. Supply a valid scopeID and try again
-CheckingReservationMessage = Checking DHCP server reservation in scope id {0} for IP address {1} ...
-TestReservationMessage     = DHCP server reservation in the given scope id for the IP address is {0} and it should be {1}
-RemovingReservationMessage = Removing DHCP server reservation from scope id {0} for MAC address {1} ...
-DeleteReservationMessage   = DHCP server reservation for the given MAC address is now absent
-AddingReservationMessage   = Adding DHCP server reservation with the given IP address ...
-SetReservationMessage      = DHCP server reservation in the given scope id for the IP address {0} is now present
-
-CheckPropertyMessage       = Checking DHCP server reservation {0} for the given ipaddress ...
-NotDesiredPropertyMessage  = DHCP server reservation for the given ipaddress doesn't have correct {0}. Expected {1}, actual {2}
-DesiredPropertyMessage     = DHCP server reservation {0} for the given ipaddress is correct.
-SetPropertyMessage         = DHCP server reservation {0} for the given ipaddress is set.
-'@
-}
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
 function Get-TargetResource
 {
@@ -48,6 +30,10 @@ function Get-TargetResource
         $AddressFamily = 'IPv4'
     )
 
+    Write-Verbose -Message (
+        $script:localizedData.GetServerReservationMessage -f $ScopeID
+    )
+
     #region input validation
     # Check for DhcpServer module/role
     Assert-Module -moduleName DHCPServer
@@ -59,8 +45,8 @@ function Get-TargetResource
     $null = Get-DhcpServerv4Scope -ScopeId $ScopeID -ErrorAction 'SilentlyContinue' -ErrorVariable err
     if ($err)
     {
-        $errorMsg = $($LocalizedData.InvalidScopeIdMessage) -f $ScopeID
-        New-TerminatingError -errorId ScopeIdNotFound -errorMessage $errorMsg -errorCategory InvalidOperation
+        $errorMessage = $script:localizedData.InvalidScopeIdMessage -f $ScopeID
+        New-InvalidOperationException -Message $errorMessage
     }
 
     # Convert the Start Range to be a valid IPAddress
@@ -123,6 +109,10 @@ function Set-TargetResource
         $Ensure = 'Present'
     )
 
+    Write-Verbose -Message (
+        $script:localizedData.SetServerReservationMessage -f $ScopeID
+    )
+
     if ($PSBoundParameters.ContainsKey('Debug'))
     {
         $null = $PSBoundParameters.Remove('Debug')
@@ -133,7 +123,7 @@ function Set-TargetResource
         $null = $PSBoundParameters.Remove('AddressFamily')
     }
 
-    $null = Validate-ResourceProperties @PSBoundParameters -Apply
+    $null = Update-ResourceProperties @PSBoundParameters -Apply
 }
 
 function Test-TargetResource
@@ -169,6 +159,10 @@ function Test-TargetResource
         $Ensure = 'Present'
     )
 
+    Write-Verbose -Message (
+        $script:localizedData.TestServerReservationMessage -f $ScopeID
+    )
+
     #region input validation
     # Check for DhcpServer module/role
     Assert-Module -moduleName DHCPServer
@@ -180,8 +174,8 @@ function Test-TargetResource
     $null = Get-DhcpServerv4Scope -ScopeId $ScopeID -ErrorAction 'SilentlyContinue' -ErrorVariable err
     if ($err)
     {
-        $errorMsg = $($LocalizedData.InvalidScopeIdMessage) -f $ScopeID
-        New-TerminatingError -errorId ScopeIdNotFound -errorMessage $errorMsg -errorCategory InvalidOperation
+        $errorMessage = $script:localizedData.InvalidScopeIdMessage -f $ScopeID
+        New-InvalidOperationException -Message $errorMessage
     }
 
     # Convert the Start Range to be a valid IPAddress
@@ -202,15 +196,16 @@ function Test-TargetResource
         $null = $PSBoundParameters.Remove('AddressFamily')
     }
 
-    return Validate-ResourceProperties @PSBoundParameters
+    return Update-ResourceProperties @PSBoundParameters
 }
 
 #region Helper function
 
 # Internal function to validate dhcpOptions properties
-function Validate-ResourceProperties
+function Update-ResourceProperties
 {
     [CmdletBinding()]
+    [OutputType([System.Boolean])]
     param
     (
         [Parameter(Mandatory = $true)]
@@ -244,7 +239,7 @@ function Validate-ResourceProperties
         $Apply
     )
 
-    $reservationMessage = $LocalizedData.CheckingReservationMessage -f $ScopeID, $IPAddress
+    $reservationMessage = $script:localizedData.CheckingReservationMessage -f $ScopeID, $IPAddress
     Write-Verbose -Message $reservationMessage
 
     $reservation = Get-DhcpServerv4Reservation -ScopeID $ScopeID | Where-Object -FilterScript {
@@ -261,7 +256,7 @@ function Validate-ResourceProperties
     # Found DHCP reservation
     if ($reservation)
     {
-        $TestReservationMessage = $($LocalizedData.TestReservationMessage) -f 'present', $Ensure
+        $TestReservationMessage = $($script:localizedData.TestReservationMessage) -f 'present', $Ensure
         Write-Verbose -Message $TestReservationMessage
 
         # if it should be present, test individual properties to match parameter values
@@ -271,12 +266,12 @@ function Validate-ResourceProperties
             $normalizedClientID = $reservation.ClientId.Replace('-', '')
 
             #region Test MAC address
-            $checkPropertyMsg = $($LocalizedData.CheckPropertyMessage) -f 'client MAC address'
+            $checkPropertyMsg = $($script:localizedData.CheckPropertyMessage) -f 'client MAC address'
             Write-Verbose -Message $checkPropertyMsg
 
             if ($normalizedClientID -ne $ClientMACAddress)
             {
-                $notDesiredPropertyMsg = $($LocalizedData.NotDesiredPropertyMessage) -f 'client MAC address', $ClientMACAddress, $normalizedClientID
+                $notDesiredPropertyMsg = $($script:localizedData.NotDesiredPropertyMessage) -f 'client MAC address', $ClientMACAddress, $normalizedClientID
                 Write-Verbose -Message $notDesiredPropertyMsg
 
                 if ($Apply)
@@ -290,18 +285,18 @@ function Validate-ResourceProperties
             } # end ClientID ne ClientMACAddress
             else
             {
-                $desiredPropertyMsg = $($LocalizedData.DesiredPropertyMessage) -f 'client MAC address'
+                $desiredPropertyMsg = $($script:localizedData.DesiredPropertyMessage) -f 'client MAC address'
                 Write-Verbose -Message $desiredPropertyMsg
             }
             #endregion Test MAC address
 
             #region Test reservation name
-            $checkPropertyMsg = $($LocalizedData.CheckPropertyMessage) -f 'name'
+            $checkPropertyMsg = $($script:localizedData.CheckPropertyMessage) -f 'name'
             Write-Verbose -Message $checkPropertyMsg
 
             if ($reservation.Name -ne $Name)
             {
-                $notDesiredPropertyMsg = $($LocalizedData.NotDesiredPropertyMessage) -f 'name', $Name, $($reservation.Name)
+                $notDesiredPropertyMsg = $($script:localizedData.NotDesiredPropertyMessage) -f 'name', $Name, $($reservation.Name)
                 Write-Verbose -Message $notDesiredPropertyMsg
 
                 if ($Apply)
@@ -315,7 +310,7 @@ function Validate-ResourceProperties
             } # end reservation.Name -ne Name
             else
             {
-                $desiredPropertyMsg = $($LocalizedData.DesiredPropertyMessage) -f 'name'
+                $desiredPropertyMsg = $($script:localizedData.DesiredPropertyMessage) -f 'name'
                 Write-Verbose -Message $desiredPropertyMsg
             }
             #endregion Test reservation name
@@ -328,7 +323,7 @@ function Validate-ResourceProperties
                     Set-DhcpServerv4Reservation @parameters
 
                     Write-PropertyMessage -Parameters $parameters -keysToSkip IPAddress `
-                        -Message $($LocalizedData.SetPropertyMessage) -Verbose
+                        -Message $($script:localizedData.SetPropertyMessage) -Verbose
                 }
             } # end Apply
             else
@@ -342,13 +337,13 @@ function Validate-ResourceProperties
         {
             if ($Apply)
             {
-                $removingReservationMsg = $($LocalizedData.RemovingReservationMessage) -f $ScopeID, $ClientMACAddress
+                $removingReservationMsg = $($script:localizedData.RemovingReservationMessage) -f $ScopeID, $ClientMACAddress
                 Write-Verbose -Message $removingReservationMsg
 
                 # Remove the reservation
                 Remove-DhcpServerv4Reservation -ScopeId $ScopeID -ClientId $ClientMACAddress
 
-                $deleteReservationMsg = $LocalizedData.deleteReservationMessage
+                $deleteReservationMsg = $script:localizedData.deleteReservationMessage
                 Write-Verbose -Message $deleteReservationMsg
             }
             else
@@ -360,7 +355,7 @@ function Validate-ResourceProperties
 
     else
     {
-        $TestReservationMessage = $($LocalizedData.TestReservationMessage) -f 'absent', $Ensure
+        $TestReservationMessage = $($script:localizedData.TestReservationMessage) -f 'absent', $Ensure
         Write-Verbose -Message $TestReservationMessage
 
         if ($Ensure -eq 'Present')
@@ -377,7 +372,7 @@ function Validate-ResourceProperties
                     $parameters['Name'] = $Name
                 }
 
-                $addingReservationeMessage = $LocalizedData.AddingReservationMessage
+                $addingReservationeMessage = $script:localizedData.AddingReservationMessage
                 Write-Verbose -Message $addingReservationeMessage
 
                 try
@@ -385,12 +380,13 @@ function Validate-ResourceProperties
                     # Create a new scope with specified properties
                     Add-DhcpServerv4Reservation @parameters
 
-                    $setReservationMessage = $($LocalizedData.SetReservationMessage) -f $Name
+                    $setReservationMessage = $($script:localizedData.SetReservationMessage) -f $Name
                     Write-Verbose -Message $setReservationMessage
                 }
                 catch
                 {
-                    New-TerminatingError -errorId DhcpServerReservationFailure -errorMessage $_.Exception.Message -errorCategory InvalidOperation
+                    $errorMessage = $script:localizedData.DhcpServerReservationFailure -f $ScopeID
+                    New-InvalidOperationException -Message $errorMessage -ErrorRecord $_
                 }
             }# end Apply
             else
@@ -408,4 +404,3 @@ function Validate-ResourceProperties
 #endregion
 
 Export-ModuleMember -Function *-TargetResource
-

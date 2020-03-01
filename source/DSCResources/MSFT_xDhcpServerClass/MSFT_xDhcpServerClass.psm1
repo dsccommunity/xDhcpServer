@@ -1,19 +1,10 @@
-$currentPath = Split-Path -Path $PSScriptRoot -Parent
+$script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '../../Modules/DscResource.Common'
+$script:moduleHelperPath = Join-Path -Path $PSScriptRoot -ChildPath '../../Modules/DhcpServerDsc.Common'
 
-$script:moduleHelperPath = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/DhcpServerDsc.Common'
-
+Import-Module -Name $script:resourceHelperModulePath
 Import-Module -Name $script:moduleHelperPath
 
-# Localized messages
-data LocalizedData
-{
-    # culture="en-US"
-    ConvertFrom-StringData @'
-    SettingClassIDMessage     = Setting DHCP Server Class {0}
-    AddingClassIDMessage      = Adding DHCP Server Class {0}
-    RemovingClassIDMessage    = Removing DHCP Server Class {0}
-'@
-}
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
 function Get-TargetResource
 {
@@ -52,6 +43,10 @@ function Get-TargetResource
         $AddressFamily
     )
 
+    Write-Verbose -Message (
+        $script:localizedData.GetServerClassMessage -f $Name
+    )
+
     #region Input Validation
 
     # Check for DhcpServer module/role
@@ -81,6 +76,7 @@ function Get-TargetResource
             'AddressFamily' = ''
         }
     }
+
     $HashTable
 }
 
@@ -120,6 +116,10 @@ function Set-TargetResource
         $AddressFamily
     )
 
+    Write-Verbose -Message (
+        $script:localizedData.SetServerClassMessage -f $Name
+    )
+
     $DhcpServerClass = Get-DhcpServerv4Class $Name -ErrorAction 'SilentlyContinue'
 
     #testing for ensure = present
@@ -129,28 +129,28 @@ function Set-TargetResource
         if ($DhcpServerClass)
         {
             #if it exists we use the set verb
-            $scopeIDMessage = $($LocalizedData.SettingClassIDMessage) -f $Name
+            $scopeIDMessage = $script:localizedData.SettingClassIDMessage -f $Name
             Write-Verbose -Message $scopeIDMessage
+
             set-DhcpServerv4Class -Name $Name -Type $Type -Data $AsciiData -Description $Description
         }
-
-        #class not exists
         else
         {
-            $scopeIDMessage = $($LocalizedData.AddingClassIDMessage) -f $Name
+            $scopeIDMessage = $script:localizedData.AddingClassIDMessage -f $Name
             Write-Verbose -Message $scopeIDMessage
+
             Add-DhcpServerv4Class -Name $Name -Type $Type -Data $AsciiData -Description $Description
         }
     }
-
-    #ensure = absent
     else
     {
-        $scopeIDMessage = $($LocalizedData.RemovingClassIDMessage) -f $Name
+        $scopeIDMessage = $script:localizedData.RemovingClassIDMessage -f $Name
         Write-Verbose -Message $scopeIDMessage
+
         Remove-DhcpServerv4Class -Name $Name -Type $Type
     }
 }
+
 function Test-TargetResource
 {
     [CmdletBinding()]
@@ -188,6 +188,10 @@ function Test-TargetResource
         $AddressFamily
     )
 
+    Write-Verbose -Message (
+        $script:localizedData.TestServerClassMessage -f $Name
+    )
+
     $DhcpServerClass = Get-DhcpServerv4Class -Name $Name -ErrorAction 'SilentlyContinue'
 
     # testing for ensure = present
@@ -201,7 +205,6 @@ function Test-TargetResource
             {
                 $result = $true
             }
-
             else
             {
                 $result = $false
@@ -213,8 +216,6 @@ function Test-TargetResource
             $result = $false
         }
     }
-
-    #ensure = absent
     else
     {
         # testing if $DhcpServerClass is not null, if it exists return false

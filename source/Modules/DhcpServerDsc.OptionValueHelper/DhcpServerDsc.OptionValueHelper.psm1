@@ -92,7 +92,7 @@ function Get-TargetResourceHelper
         'Server'
         {
             # Getting the dhcp server option Value
-            $serverGettingValueMessage = $localizedData.ServerGettingValueMessage -f $OptionId, $VendorClass, $UserClass
+            $serverGettingValueMessage = $script:localizedData.ServerGettingValueMessage -f $OptionId, $VendorClass, $UserClass
             Write-Verbose $serverGettingValueMessage
 
             $parameters = @{
@@ -106,7 +106,7 @@ function Get-TargetResourceHelper
         'Scope'
         {
             # Getting the dhcp server option Value
-            $scopeGettingValueMessage = $localizedData.ScopeGettingValueMessage -f $OptionId, $VendorClass, $UserClass, $ScopeId
+            $scopeGettingValueMessage = $script:localizedData.ScopeGettingValueMessage -f $OptionId, $VendorClass, $UserClass, $ScopeId
             Write-Verbose $scopeGettingValueMessage
 
             $parameters = @{
@@ -121,7 +121,7 @@ function Get-TargetResourceHelper
         'Policy'
         {
             # Getting the dhcp policy option Value
-            $policyGettingValueMessage = $localizedData.PolicyGettingValueMessage -f $OptionId, $VendorClass, $ScopeId, $PolicyName
+            $policyGettingValueMessage = $script:localizedData.PolicyGettingValueMessage -f $OptionId, $VendorClass, $ScopeId, $PolicyName
             Write-Verbose $policyGettingValueMessage
 
             # Policy can exist on server or scope level, so we need to address both cases
@@ -149,7 +149,7 @@ function Get-TargetResourceHelper
         'ReservedIP'
         {
             # Getting the dhcp reserved IP option Value
-            $reservedIPGettingValueMessage = $localizedData.ReservedIPGettingValueMessage -f $OptionId, $VendorClass, $PolicyName, $ReservedIP
+            $reservedIPGettingValueMessage = $script:localizedData.ReservedIPGettingValueMessage -f $OptionId, $VendorClass, $PolicyName, $ReservedIP
             Write-Verbose $reservedIPGettingValueMessage
 
             $parameters = @{
@@ -307,14 +307,14 @@ function Test-TargetResourceHelper
                 if (($currentConfiguration.Ensure -eq 'Present') -and (@(Compare-Object -ReferenceObject $currentConfiguration.Value -DifferenceObject $Value -SyncWindow 0 -CaseSensitive).Length -eq 0))
                 {
                     # Found an exact match
-                    $serverExactMatchValueMessage = $localizedData.ServerExactMatchValueMessage -f $OptionId, $VendorClass, $UserClass
+                    $serverExactMatchValueMessage = $script:localizedData.ServerExactMatchValueMessage -f $OptionId, $VendorClass, $UserClass
                     Write-Verbose $serverExactMatchValueMessage
                     $result = $true
                 }
                 else
                 {
                     # Not found Option Value
-                    $serverNotFoundValueMessage = $localizedData.ServerNotFoundValueMessage -f $OptionId, $VendorClass, $UserClass
+                    $serverNotFoundValueMessage = $script:localizedData.ServerNotFoundValueMessage -f $OptionId, $VendorClass, $UserClass
                     Write-Verbose $serverNotFoundValueMessage
                     $result = $false
                 }
@@ -325,14 +325,14 @@ function Test-TargetResourceHelper
                 if ($currentConfiguration.Ensure -eq 'Present')
                 {
                     # Found a match, should return $false since it should not be here
-                    $serverFoundAndRemoveValueMessage = $localizedData.ServerFoundAndRemoveValueMessage -f $OptionId, $VendorClass, $UserClass
+                    $serverFoundAndRemoveValueMessage = $script:localizedData.ServerFoundAndRemoveValueMessage -f $OptionId, $VendorClass, $UserClass
                     Write-Verbose $serverFoundAndRemoveValueMessage
                     $result = $false
                 }
                 else
                 {
                     # Not found Option Value, return $true
-                    $serverNotFoundDoNothingValueMessage = $localizedData.ServerNotFoundDoNothingValueMessage -f $OptionId, $VendorClass, $UserClass
+                    $serverNotFoundDoNothingValueMessage = $script:localizedData.ServerNotFoundDoNothingValueMessage -f $OptionId, $VendorClass, $UserClass
                     Write-Verbose $serverNotFoundDoNothingValueMessage
                     $result = $true
                 }
@@ -356,14 +356,14 @@ function Test-TargetResourceHelper
                 if (($currentConfiguration.Ensure -eq 'Present') -and (@(Compare-Object -ReferenceObject $currentConfiguration.Value -DifferenceObject $Value -SyncWindow 0 -CaseSensitive).Length -eq 0))
                 {
                     # Found an exact match
-                    $scopeExactMatchValueMessage = $localizedData.ScopeExactMatchValueMessage -f $OptionId, $VendorClass, $UserClass, $ScopeId
+                    $scopeExactMatchValueMessage = $script:localizedData.ScopeExactMatchValueMessage -f $OptionId, $VendorClass, $UserClass, $ScopeId
                     Write-Verbose $scopeExactMatchValueMessage
                     $result = $true
                 }
                 else
                 {
                     # Not found Option Value
-                    $scopeNotFoundValueMessage = $localizedData.ScopeNotFoundValueMessage -f $OptionId, $VendorClass, $UserClass, $ScopeId
+                    $scopeNotFoundValueMessage = $script:localizedData.ScopeNotFoundValueMessage -f $OptionId, $VendorClass, $UserClass, $ScopeId
                     Write-Verbose $scopeNotFoundValueMessage
                     $result = $false
                 }
@@ -375,14 +375,14 @@ function Test-TargetResourceHelper
                 if (($currentConfiguration.Ensure -eq 'Present'))
                 {
                     # Found a match, should return $false since it should not be here
-                    $scopeFoundAndRemoveValueMessage = $localizedData.ScopeFoundAndRemoveValueMessage -f $OptionId, $VendorClass, $UserClass, $ScopeId
+                    $scopeFoundAndRemoveValueMessage = $script:localizedData.ScopeFoundAndRemoveValueMessage -f $OptionId, $VendorClass, $UserClass, $ScopeId
                     Write-Verbose $scopeFoundAndRemoveValueMessage
                     $result = $false
                 }
                 else
                 {
                     # Not found Option Value, return $true
-                    $scopeNotFoundDoNothingValueMessage = $localizedData.ScopeNotFoundDoNothingValueMessage -f $OptionId, $VendorClass, $UserClass, $ScopeId
+                    $scopeNotFoundDoNothingValueMessage = $script:localizedData.ScopeNotFoundDoNothingValueMessage -f $OptionId, $VendorClass, $UserClass, $ScopeId
                     Write-Verbose $scopeNotFoundDoNothingValueMessage
                     $result = $true
                 }
@@ -407,14 +407,14 @@ function Test-TargetResourceHelper
                 if (($currentConfiguration.Ensure -eq 'Present') -and (@(Compare-Object -ReferenceObject $currentConfiguration.Value -DifferenceObject $Value -SyncWindow 0 -CaseSensitive).Length -eq 0))
                 {
                     # Found an exact match
-                    $policyExactMatchValueMessage = $localizedData.PolicyExactMatchValueMessage -f $OptionId, $VendorClass, $PolicyName
+                    $policyExactMatchValueMessage = $script:localizedData.PolicyExactMatchValueMessage -f $OptionId, $VendorClass, $PolicyName
                     Write-Verbose $policyExactMatchValueMessage
                     $result = $true
                 }
                 else
                 {
                     # Not found Option Value
-                    $policyNotFoundValueMessage = $localizedData.PolicyNotFoundValueMessage -f $OptionId, $VendorClass, $PolicyName
+                    $policyNotFoundValueMessage = $script:localizedData.PolicyNotFoundValueMessage -f $OptionId, $VendorClass, $PolicyName
                     Write-Verbose $policyNotFoundValueMessage
                     $result = $false
                 }
@@ -426,14 +426,14 @@ function Test-TargetResourceHelper
                 if (($currentConfiguration.Ensure -eq 'Present'))
                 {
                     # Found a match, should return $false since it should not be here
-                    $policyFoundAndRemoveValueMessage = $localizedData.PolicyFoundAndRemoveValueMessage -f $OptionId, $VendorClass, $PolicyName
+                    $policyFoundAndRemoveValueMessage = $script:localizedData.PolicyFoundAndRemoveValueMessage -f $OptionId, $VendorClass, $PolicyName
                     Write-Verbose $policyFoundAndRemoveValueMessage
                     $result = $false
                 }
                 else
                 {
                     # Not found Option Value, return $true
-                    $policyNotFoundDoNothingValueMessage = $localizedData.PolicyNotFoundDoNothingValueMessage -f $OptionId, $VendorClass, $PolicyName
+                    $policyNotFoundDoNothingValueMessage = $script:localizedData.PolicyNotFoundDoNothingValueMessage -f $OptionId, $VendorClass, $PolicyName
                     Write-Verbose $policyNotFoundDoNothingValueMessage
                     $result = $true
                 }
@@ -458,14 +458,14 @@ function Test-TargetResourceHelper
                 if (($currentConfiguration.Ensure -eq 'Present') -and (@(Compare-Object -ReferenceObject $currentConfiguration.Value -DifferenceObject $Value -SyncWindow 0 -CaseSensitive).Length -eq 0))
                 {
                     # Found an exact match
-                    $reservedIPExactMatchValueMessage = $localizedData.ReservedIPExactMatchValueMessage -f $OptionId, $VendorClass, $UserClass, $ReservedIP
+                    $reservedIPExactMatchValueMessage = $script:localizedData.ReservedIPExactMatchValueMessage -f $OptionId, $VendorClass, $UserClass, $ReservedIP
                     Write-Verbose $reservedIPExactMatchValueMessage
                     $result = $true
                 }
                 else
                 {
                     # Not found Option Value
-                    $reservedIPNotFoundValueMessage = $localizedData.ReservedIPNotFoundValueMessage -f $OptionId, $VendorClass, $UserClass, $ReservedIP
+                    $reservedIPNotFoundValueMessage = $script:localizedData.ReservedIPNotFoundValueMessage -f $OptionId, $VendorClass, $UserClass, $ReservedIP
                     Write-Verbose $reservedIPNotFoundValueMessage
                     $result = $false
                 }
@@ -477,14 +477,14 @@ function Test-TargetResourceHelper
                 if ($currentConfiguration.Ensure -eq 'Present')
                 {
                     # Found a match, should return $false since it should not be here
-                    $reservedIPFoundAndRemoveValueMessage = $localizedData.ReservedIPFoundAndRemoveValueMessage -f $OptionId, $VendorClass, $UserClass, $ScopeId, $ReservedIP
+                    $reservedIPFoundAndRemoveValueMessage = $script:localizedData.ReservedIPFoundAndRemoveValueMessage -f $OptionId, $VendorClass, $UserClass, $ScopeId, $ReservedIP
                     Write-Verbose $reservedIPFoundAndRemoveValueMessage
                     $result = $false
                 }
                 else
                 {
                     # Not found Option Value, return $true
-                    $reservedIPNotFoundDoNothingValueMessage = $localizedData.ReservedIPNotFoundDoNothingValueMessage -f $OptionId, $VendorClass, $UserClass, $scopeId, $ReservedIP
+                    $reservedIPNotFoundDoNothingValueMessage = $script:localizedData.ReservedIPNotFoundDoNothingValueMessage -f $OptionId, $VendorClass, $UserClass, $scopeId, $ReservedIP
                     Write-Verbose $reservedIPNotFoundDoNothingValueMessage
                     $result = $true
                 }
@@ -602,7 +602,7 @@ function Set-TargetResourceHelper
             # Testing for Ensure = Present
             if ($Ensure -eq 'Present')
             {
-                $serverSettingValueMessage = $localizedData.ServerSettingValueMessage -f $OptionId, $VendorClass, $UserClass
+                $serverSettingValueMessage = $script:localizedData.ServerSettingValueMessage -f $OptionId, $VendorClass, $UserClass
                 Write-Verbose $serverSettingValueMessage
                 Set-DhcpServerv4OptionValue -OptionId $OptionId -Value $Value -VendorClass $VendorClass -UserClass $UserClass
             }
@@ -613,7 +613,7 @@ function Set-TargetResourceHelper
                 # If it exists and Ensure is 'Present' we should remove it
                 if ($currentConfiguration.Ensure -eq 'Present')
                 {
-                    $serverRemoveValueMessage = $localizedData.ServerRemoveValueMessage -f $OptionId, $VendorClass, $UserClass
+                    $serverRemoveValueMessage = $script:localizedData.ServerRemoveValueMessage -f $OptionId, $VendorClass, $UserClass
                     Write-Verbose $serverRemoveValueMessage
                     Remove-DhcpServerv4OptionValue -OptionId $OptionId -VendorClass $VendorClass -UserClass $UserClass
                 }
@@ -635,7 +635,7 @@ function Set-TargetResourceHelper
             if ($Ensure -eq 'Present')
             {
                 # If value should be present we just set it
-                $scopeSettingValueMessage = $localizedData.ScopeSettingValueMessage -f $OptionId, $VendorClass, $UserClass, $ScopeId
+                $scopeSettingValueMessage = $script:localizedData.ScopeSettingValueMessage -f $OptionId, $VendorClass, $UserClass, $ScopeId
                 Write-Verbose $scopeSettingValueMessage
                 Set-DhcpServerv4OptionValue -ScopeId $ScopeId -OptionId $OptionId -Value $Value -VendorClass $VendorClass -UserClass $UserClass
             }
@@ -646,7 +646,7 @@ function Set-TargetResourceHelper
                 # If it exists and Ensure is 'Present' we should remove it
                 if ($currentConfiguration.Ensure -eq 'Present')
                 {
-                    $scopeRemoveValueMessage = $localizedData.ScopeRemoveValueMessage -f $OptionId, $VendorClass, $UserClass, $ScopeId
+                    $scopeRemoveValueMessage = $script:localizedData.ScopeRemoveValueMessage -f $OptionId, $VendorClass, $UserClass, $ScopeId
                     Write-Verbose $scopeRemoveValueMessage
                     Remove-DhcpServerv4OptionValue -ScopeId $ScopeId -OptionId $currentConfiguration.OptionId -VendorClass $VendorClass -UserClass $UserClass
                 }
@@ -672,7 +672,7 @@ function Set-TargetResourceHelper
                 if ($Ensure -eq 'Present')
                 {
                     # If value should be present we just set it
-                    $policyWithScopeSettingValueMessage = $localizedData.PolicyWithScopeSettingValueMessage -f $OptionId, $VendorClass, $PolicyName, $ScopeId
+                    $policyWithScopeSettingValueMessage = $script:localizedData.PolicyWithScopeSettingValueMessage -f $OptionId, $VendorClass, $PolicyName, $ScopeId
                     Write-Verbose $policyWithScopeSettingValueMessage
                     Set-DhcpServerv4OptionValue -PolicyName $PolicyName -OptionId $OptionId -ScopeId $ScopeId -Value $Value -VendorClass $VendorClass
                 }
@@ -683,7 +683,7 @@ function Set-TargetResourceHelper
                     # If it exists and Ensure is 'Present' we should remove it
                     if ($currentConfiguration.Ensure -eq 'Present')
                     {
-                        $policyWithScopeRemoveValueMessage = $localizedData.policyWithScopeRemoveValueMessage -f $OptionId, $VendorClass, $PolicyName, $ScopeId
+                        $policyWithScopeRemoveValueMessage = $script:localizedData.policyWithScopeRemoveValueMessage -f $OptionId, $VendorClass, $PolicyName, $ScopeId
                         Write-Verbose $policyWithScopeRemoveValueMessage
                         Remove-DhcpServerv4OptionValue -PolicyName $PolicyName -ScopeId $ScopeId -OptionId $OptionId -VendorClass $VendorClass
                     }
@@ -704,7 +704,7 @@ function Set-TargetResourceHelper
                 if ($Ensure -eq 'Present')
                 {
                     # If value should be present we just set it
-                    $policySettingValueMessage = $localizedData.PolicySettingValueMessage -f $OptionId, $VendorClass, $PolicyName
+                    $policySettingValueMessage = $script:localizedData.PolicySettingValueMessage -f $OptionId, $VendorClass, $PolicyName
                     Write-Verbose $policySettingValueMessage
                     Set-DhcpServerv4OptionValue -PolicyName $PolicyName -OptionId $OptionId -Value $Value -VendorClass $VendorClass
                 }
@@ -713,7 +713,7 @@ function Set-TargetResourceHelper
                     # If it exists and Ensure is 'Present' we should remove it
                     if ($currentConfiguration.Ensure -eq 'Present')
                     {
-                        $policyRemoveValueMessage = $localizedData.PolicyRemoveValueMessage -f $OptionId, $VendorClass, $PolicyName
+                        $policyRemoveValueMessage = $script:localizedData.PolicyRemoveValueMessage -f $OptionId, $VendorClass, $PolicyName
                         Write-Verbose $policyRemoveValueMessage
                         Remove-DhcpServerv4OptionValue -PolicyName $PolicyName -OptionId $OptionId -VendorClass $VendorClass
                     }
@@ -736,7 +736,7 @@ function Set-TargetResourceHelper
             if ($Ensure -eq 'Present')
             {
                 # If value should be present we just set it
-                $reservedIPSettingValueMessage = $localizedData.ReservedIPSettingValueMessage -f $OptionId, $VendorClass, $UserClass, $ReservedIP
+                $reservedIPSettingValueMessage = $script:localizedData.ReservedIPSettingValueMessage -f $OptionId, $VendorClass, $UserClass, $ReservedIP
                 Write-Verbose $reservedIPSettingValueMessage
                 Set-DhcpServerv4OptionValue -ReservedIP $ReservedIP -OptionId $OptionId -Value $Value -VendorClass $VendorClass -UserClass $UserClass
             }
@@ -747,7 +747,7 @@ function Set-TargetResourceHelper
                 # If it exists and Ensure is 'Present' we should remove it
                 if ($currentConfiguration.Ensure -eq 'Present')
                 {
-                    $reservedIPRemoveValueMessage = $localizedData.ReservedIPRemoveValueMessage -f $OptionId, $VendorClass, $UserClass, $ReservedIP
+                    $reservedIPRemoveValueMessage = $script:localizedData.ReservedIPRemoveValueMessage -f $OptionId, $VendorClass, $UserClass, $ReservedIP
                     Write-Verbose $reservedIPRemoveValueMessage
                     Remove-DhcpServerv4OptionValue -ReservedIP $ReservedIP -OptionId $OptionId -VendorClass $VendorClass -UserClass $UserClass
                 }

@@ -1,25 +1,10 @@
-$currentPath = Split-Path -Path $PSScriptRoot -Parent
+$script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '../../Modules/DscResource.Common'
+$script:moduleHelperPath = Join-Path -Path $PSScriptRoot -ChildPath '../../Modules/DhcpServerDsc.Common'
 
-$script:moduleHelperPath = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/DhcpServerDsc.Common'
-
+Import-Module -Name $script:resourceHelperModulePath
 Import-Module -Name $script:moduleHelperPath
 
-# Localized messages
-data LocalizedData
-{
-    # culture="en-US"
-    ConvertFrom-StringData @'
-ResolvingIPv4Address      = Resolving first local IPv4 IP address ...
-ResolvingHostname         = Resolving local hostname ...
-AuthorizingServer         = Authorizing DHCP Server '{0}' with IP address '{1}'
-UnauthorizingServer       = Unauthorizing DHCP Server '{0}' with IP address '{1}'
-ServerIsAuthorized        = DHCP Server '{0}' with IP address '{1}' IS authorized
-ServerNotAuthorized       = DHCP Server '{0}' with IP address '{1}' is NOT authorized
-IncorrectPropertyValue    = Property '{0}' is incorrect. Expected '{1}', actual '{2}'
-ResourceInDesiredState    = DHCP Server '{0}' is in the desired state
-ResourceNotInDesiredState = DHCP Server '{0}' is NOT in the desired state
-'@
-}
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
 function Get-TargetResource
 {
@@ -43,6 +28,10 @@ function Get-TargetResource
         $IPAddress = (Get-IPv4Address | Select-Object -First 1)
     )
 
+    Write-Verbose -Message (
+        $script:localizedData.GetServerAuthorizationMessage -f $ScopeId
+    )
+
     Assert-Module -ModuleName 'DHCPServer'
 
     $IPAddress = Get-ValidIPAddress -IPString $IPAddress -AddressFamily 'IPv4' -ParameterName 'IPAddress'
@@ -58,13 +47,13 @@ function Get-TargetResource
 
     if ($dhcpServer)
     {
-        Write-Verbose ($LocalizedData.ServerIsAuthorized -f $DnsName, $IPAddress)
+        Write-Verbose ($script:localizedData.ServerIsAuthorized -f $DnsName, $IPAddress)
 
         $targetResource['Ensure'] = 'Present'
     }
     else
     {
-        Write-Verbose ($LocalizedData.ServerNotAuthorized -f $DnsName, $IPAddress)
+        Write-Verbose ($script:localizedData.ServerNotAuthorized -f $DnsName, $IPAddress)
 
         $targetResource['Ensure'] = 'Absent'
     }
@@ -93,19 +82,23 @@ function Set-TargetResource
         $IPAddress = (Get-IPv4Address | Select-Object -First 1)
     )
 
+    Write-Verbose -Message (
+        $script:localizedData.SetServerAuthorizationMessage -f $ScopeId
+    )
+
     Assert-Module -ModuleName 'DHCPServer'
 
     $IPAddress = Get-ValidIPAddress -IPString $IPAddress -AddressFamily 'IPv4' -ParameterName 'IPAddress'
 
     if ($Ensure -eq 'Present')
     {
-        Write-Verbose ($LocalizedData.AuthorizingServer -f $DnsName, $IPAddress)
+        Write-Verbose ($script:localizedData.AuthorizingServer -f $DnsName, $IPAddress)
 
         Add-DhcpServerInDc -DnsName $DnsName -IPAddress $IPAddress
     }
     elseif ($Ensure -eq 'Absent')
     {
-        Write-Verbose ($LocalizedData.UnauthorizingServer -f $DnsName, $IPAddress)
+        Write-Verbose ($script:localizedData.UnauthorizingServer -f $DnsName, $IPAddress)
 
         Get-DhcpServerInDC | Where-Object -FilterScript {
             ($_.DnsName -eq $DnsName) -and ($_.IPAddress -eq $IPAddress)
@@ -134,13 +127,18 @@ function Test-TargetResource
         [System.String]
         $IPAddress = (Get-IPv4Address | Select-Object -First 1)
     )
+
+    Write-Verbose -Message (
+        $script:localizedData.TestServerAuthorizationMessage -f $ScopeId
+    )
+
     $targetResource = Get-TargetResource @PSBoundParameters
 
     $isCompliant = $true
 
     if ($targetResource.Ensure -ne $Ensure)
     {
-        Write-Verbose ($LocalizedData.IncorrectPropertyValue -f 'Ensure', $Ensure, $targetResource.Ensure)
+        Write-Verbose ($script:localizedData.IncorrectPropertyValue -f 'Ensure', $Ensure, $targetResource.Ensure)
         $isCompliant = $false
 
     }
@@ -148,25 +146,26 @@ function Test-TargetResource
     {
         if ($targetResource.DnsName -ne $DnsName)
         {
-            Write-Verbose ($LocalizedData.IncorrectPropertyValue -f 'DnsName', $DnsName, $targetResource.DnsName)
+            Write-Verbose ($script:localizedData.IncorrectPropertyValue -f 'DnsName', $DnsName, $targetResource.DnsName)
             $isCompliant = $false
         }
 
         if ($targetResource.IPAddress -ne $IPAddress)
         {
-            Write-Verbose ($LocalizedData.IncorrectPropertyValue -f 'IPAddress', $IPAddress, $targetResource.IPAddress)
+            Write-Verbose ($script:localizedData.IncorrectPropertyValue -f 'IPAddress', $IPAddress, $targetResource.IPAddress)
             $isCompliant = $false
         }
     }
 
     if ($isCompliant)
     {
-        Write-Verbose ($LocalizedData.ResourceInDesiredState -f $DnsName)
+        Write-Verbose ($script:localizedData.ResourceInDesiredState -f $DnsName)
     }
     else
     {
-        Write-Verbose ($LocalizedData.ResourceNotInDesiredState -f $DnsName)
+        Write-Verbose ($script:localizedData.ResourceNotInDesiredState -f $DnsName)
     }
+
     return $isCompliant
 }
 
@@ -178,7 +177,7 @@ function Get-IPv4Address
     param ()
     process
     {
-        Write-Verbose -Message $LocalizedData.ResolvingIPv4Address
+        Write-Verbose -Message $script:localizedData.ResolvingIPv4Address
 
         Get-CimInstance -ClassName 'Win32_NetworkAdapterConfiguration' -Namespace 'root\CIMV2' |
             Where-Object -FilterScript {
@@ -196,7 +195,7 @@ function Get-Hostname
     param ()
     process
     {
-        Write-Verbose $LocalizedData.ResolvingHostname
+        Write-Verbose $script:localizedData.ResolvingHostname
 
         $globalIpProperties = [System.Net.NetworkInformation.IPGlobalProperties]::GetIPGlobalProperties()
 

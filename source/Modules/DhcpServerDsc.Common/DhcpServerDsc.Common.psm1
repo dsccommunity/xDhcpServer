@@ -66,14 +66,14 @@ function Get-ValidIPAddress
 
     if (-not $result)
     {
-        $errorMsg = $($LocalizedData.InvalidIPAddressFormat) -f $ParameterName
+        $errorMsg = $($script:localizedData.InvalidIPAddressFormat) -f $ParameterName
 
         New-TerminatingError -ErrorId 'NotValidIPAddress' -ErrorMessage $errorMsg -ErrorCategory InvalidType
     }
 
     if ($ipAddress.AddressFamily -ne $ipAddressFamily)
     {
-        $errorMsg = $($LocalizedData.InvalidIPAddressFamily) -f $ipAddress, $AddressFamily
+        $errorMsg = $($script:localizedData.InvalidIPAddressFamily) -f $ipAddress, $AddressFamily
 
         New-TerminatingError -ErrorId 'InvalidIPAddressFamily' -ErrorMessage $errorMsg -ErrorCategory SyntaxError
     }
@@ -94,7 +94,7 @@ function Assert-Module
 
     if (-not (Get-Module -Name $ModuleName -ListAvailable))
     {
-        $errorMsg = $($LocalizedData.RoleNotFound) -f $ModuleName
+        $errorMsg = $($script:localizedData.RoleNotFound) -f $ModuleName
         New-TerminatingError -ErrorId 'ModuleNotFound' -ErrorMessage $errorMsg -ErrorCategory ObjectNotFound
     }
 }
@@ -182,7 +182,7 @@ function Assert-ScopeParameter
     # Check to ensure startRange is smaller than endRange
     if ($endRange.Address -lt $startRange.Address)
     {
-        $errorMsg = $LocalizedData.InvalidStartAndEndRangeMessage -f $IPStartRange, $IPEndRange
+        $errorMsg = $script:localizedData.InvalidStartAndEndRangeMessage -f $IPStartRange, $IPEndRange
         New-TerminatingError -ErrorId RangeNotCorrect -ErrorMessage $errorMsg -ErrorCategory InvalidArgument
     }
 
@@ -202,7 +202,7 @@ function Assert-ScopeParameter
             $scopeIdByte = $addressBytes['ScopeId'][$ipTokenIndex]
             if (($parameterByte -band $subnetMaskByte) -ne $scopeIdByte)
             {
-                $errorMsg = $($LocalizedData.InvalidScopeIdSubnetMask) -f ($ipTokenIndex + 1), $parameter, $parameterByte, $subnetMaskByte, $scopeIdByte
+                $errorMsg = $($script:localizedData.InvalidScopeIdSubnetMask) -f ($ipTokenIndex + 1), $parameter, $parameterByte, $subnetMaskByte, $scopeIdByte
 
                 New-TerminatingError -ErrorId ScopeIdOrMaskIncorrect -ErrorMessage $errorMsg -ErrorCategory InvalidArgument
             }
@@ -259,7 +259,7 @@ function Get-ValidTimeSpan
 
     if (-not $result)
     {
-        $errorMsg = $($LocalizedData.InvalidTimeSpanFormat) -f $ParameterName
+        $errorMsg = $($script:localizedData.InvalidTimeSpanFormat) -f $ParameterName
 
         New-TerminatingError -ErrorId 'NotValidTimeSpan' -ErrorMessage $errorMsg -ErrorCategory InvalidType
     }

@@ -1,10 +1,10 @@
 $currentPath = Split-Path -Path $PSScriptRoot -Parent
 
 $script:moduleHelperPath = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/DhcpServerDsc.Common'
-$modulePathOptionValueHelper = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/DhcpServerDsc.OptionValueHelper'
+$script:moduleOptionValueHelperPath = Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Modules/DhcpServerDsc.OptionValueHelper'
 
 Import-Module -Name $script:moduleHelperPath
-Import-Module -Name $modulePathOptionValueHelper
+Import-Module -Name $script:moduleOptionValueHelperPath
 
 <#
     .SYNOPSIS
@@ -39,7 +39,7 @@ function Get-TargetResource
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [UInt32]
+        [System.UInt32]
         $OptionId,
 
         [Parameter()]
@@ -107,7 +107,7 @@ function Set-TargetResource
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [UInt32]
+        [System.UInt32]
         $OptionId,
 
         [Parameter()]
@@ -177,7 +177,7 @@ function Test-TargetResource
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [UInt32]
+        [System.UInt32]
         $OptionId,
 
         [Parameter()]

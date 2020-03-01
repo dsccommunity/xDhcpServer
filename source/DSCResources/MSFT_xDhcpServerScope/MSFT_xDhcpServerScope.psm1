@@ -374,6 +374,7 @@ function Test-TargetResource
 function Update-ResourceProperties
 {
     [CmdletBinding()]
+    [OutputType([System.Boolean])]
     param
     (
         [Parameter(Mandatory = $true)]
