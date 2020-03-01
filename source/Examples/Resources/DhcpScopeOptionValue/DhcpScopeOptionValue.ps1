@@ -17,8 +17,8 @@ configuration Example
     DhcpScopeOptionValue 'ScopeOptionGateway'
     {
         OptionId      = 3
-        Value         = 1.1.1.1
-        ScopeId       =   '1.1.1.0'
+        Value         = '1.1.1.1'
+        ScopeId       = '1.1.1.0'
         VendorClass   = ''
         UserClass     = ''
         AddressFamily = 'IPv4'
@@ -28,8 +28,8 @@ configuration Example
     DhcpScopeOptionValue 'ScopeOptionDNS'
     {
         OptionId      = 6
-        Value         = 1.1.1.1, 2.2.2.2
-        ScopeId       =   '1.1.1.0'
+        Value         = @('1.1.1.1', '2.2.2.2')
+        ScopeId       = '1.1.1.0'
         VendorClass   = ''
         UserClass     = ''
         AddressFamily = 'IPv4'
@@ -39,8 +39,8 @@ configuration Example
     DhcpScopeOptionValue 'ScopeOptionDNSDomainName'
     {
         OptionId      = 15
-        Value         = 'Contoso.com'
-        ScopeId       =   '1.1.1.0'
+        Value         = 'contoso.com'
+        ScopeId       = '1.1.1.0'
         VendorClass   = ''
         UserClass     = ''
         AddressFamily = 'IPv4'

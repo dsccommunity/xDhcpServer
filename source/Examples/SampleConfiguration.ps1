@@ -36,14 +36,41 @@ configuration Sample_xDhcpServerScope_NewScope
         DependsOn        = @('[WindowsFeature]DHCP')
     }
 
-    xDhcpServerOption 'Option'
+    # Setting scope gateway
+    DhcpScopeOptionValue 'ScopeOptionGateway'
     {
-        Ensure             = 'Present'
-        ScopeID            = '192.168.1.0'
-        DnsDomain          = 'contoso.com'
-        DnsServerIPAddress = '192.168.1.22', '192.168.1.1'
-        AddressFamily      = 'IPv4'
-        Router             = '192.168.1.1'
+        OptionId      = 3
+        ScopeID       = '192.168.1.0'
+        Value         = '192.168.1.1'
+        VendorClass   = ''
+        UserClass     = ''
+        AddressFamily = 'IPv4'
+
+        DependsOn          = @('[WindowsFeature]DHCP')
+    }
+
+    # Setting scope DNS servers
+    DhcpScopeOptionValue 'ScopeOptionDNS'
+    {
+        OptionId      = 6
+        ScopeID       = '192.168.1.0'
+        Value         = @('192.168.1.22', '192.168.1.1')
+        VendorClass   = ''
+        UserClass     = ''
+        AddressFamily = 'IPv4'
+
+        DependsOn          = @('[WindowsFeature]DHCP')
+    }
+
+    # Setting scope DNS domain name
+    DhcpScopeOptionValue 'ScopeOptionDNSDomainName'
+    {
+        OptionId      = 15
+        ScopeID       = '192.168.1.0'
+        Value         = 'contoso.com'
+        VendorClass   = ''
+        UserClass     = ''
+        AddressFamily = 'IPv4'
 
         DependsOn          = @('[WindowsFeature]DHCP')
     }
