@@ -1,4 +1,4 @@
-configuration Sample_xDhcpServerScope_NewScope
+configuration SampleConfiguration
 {
     Import-DscResource -ModuleName 'PSDscResources' -ModuleVersion '2.12.0.0'
     Import-DscResource -ModuleName xDhcpServer
