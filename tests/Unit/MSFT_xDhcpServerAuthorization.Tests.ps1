@@ -34,18 +34,20 @@ try
     InModuleScope $script:dscResourceName {
         # Test TargetResource parameters with Ensure = 'Present'.
         $testPresentParams = @{
-            Ensure    = 'Present'
-            DnsName   = 'test1.contoso.com'
-            IPAddress = '192.168.1.1'
-            Verbose   = $true
+            IsSingleInstance = 'Yes'
+            Ensure           = 'Present'
+            DnsName          = 'test1.contoso.com'
+            IPAddress        = '192.168.1.1'
+            Verbose          = $true
         }
 
         # Test TargetResource parameters with Ensure = 'Absent'.
         $testAbsentParams = @{
-            Ensure    = 'Absent'
-            DnsName   = 'test1.contoso.com'
-            IPAddress = '192.168.1.1'
-            Verbose   = $true
+            IsSingleInstance = 'Yes'
+            Ensure           = 'Absent'
+            DnsName          = 'test1.contoso.com'
+            IPAddress        = '192.168.1.1'
+            Verbose          = $true
         }
 
         <#

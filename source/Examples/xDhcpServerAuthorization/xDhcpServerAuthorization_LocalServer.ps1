@@ -15,6 +15,7 @@ configuration Example
 
     xDhcpServerAuthorization 'LocalServerActivation'
     {
-        Ensure = 'Present'
+        IsSingleInstance = 'Yes'
+        Ensure           = 'Present'
     }
 }

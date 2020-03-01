@@ -8,8 +8,9 @@ configuration Example
 
     xDhcpServerAuthorization 'RemoteServerActivation'
     {
-        Ensure    = 'Present'
-        DnsName   = 'servertoauthorize.contoso.com'
-        IPAddress = '192.168.0.1'
+        IsSingleInstance = 'Yes'
+        Ensure           = 'Present'
+        DnsName          = 'ServerToAuthorize.contoso.com'
+        IPAddress        = '192.168.0.1'
     }
 }

@@ -13,12 +13,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - xDhcpServerAuthorization
+  - BREAKING CHANGE: The resource is now a single instance resource so
+    that it is only possible to use the resource once in a configuration
+    with the parameter `Ensure` set to either `Present` or `Absent`
+    ([issue #40](https://github.com/dsccommunity/xDhcpServer/issues/40).
   - The helper function `Get-IPv4Address` was changed from using `Get-WmiObject`
     to `Get-CimInstance` when fetching the enabled IP addresses.
 
 ### Removed
 
-- Removed the deprecated resource xDhcpServerOption which has been replaced
+- BREAKING CHANGE: Removed the deprecated resource xDhcpServerOption which has been replaced
   by other DSC resources ([issue #46](https://github.com/dsccommunity/xDhcpServer/issues/46).
 
 ### [2.0.0.0] - 2018-07-25

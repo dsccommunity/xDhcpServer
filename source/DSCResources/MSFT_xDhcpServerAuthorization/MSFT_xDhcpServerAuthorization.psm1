@@ -13,6 +13,11 @@ function Get-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
+        [ValidateSet('Yes')]
+        [System.String]
+        $IsSingleInstance,
+
+        [Parameter(Mandatory = $true)]
         [ValidateSet('Present', 'Absent')]
         [System.String]
         $Ensure,
@@ -67,6 +72,11 @@ function Set-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
+        [ValidateSet('Yes')]
+        [System.String]
+        $IsSingleInstance,
+
+        [Parameter(Mandatory = $true)]
         [ValidateSet('Present', 'Absent')]
         [System.String]
         $Ensure,
@@ -112,6 +122,11 @@ function Test-TargetResource
     [OutputType([System.Boolean])]
     param
     (
+        [Parameter(Mandatory = $true)]
+        [ValidateSet('Yes')]
+        [System.String]
+        $IsSingleInstance,
+
         [Parameter(Mandatory = $true)]
         [ValidateSet('Present', 'Absent')]
         [System.String]
