@@ -12,14 +12,15 @@ configuration Sample_xDhcpServerScope_NewScope
     xDhcpServerScope 'Scope'
     {
         Ensure        = 'Present'
+        ScopeId       = '192.168.1.0'
         IPStartRange  = '192.168.1.1'
         IPEndRange    = '192.168.1.254'
-
         Name          = 'ContosoScope'
         SubnetMask    = '255.255.255.0'
         LeaseDuration = '00:08:00'
         State         = 'Active'
         AddressFamily = 'IPv4'
+
         DependsOn     = @('[WindowsFeature]DHCP')
     }
 
@@ -31,6 +32,7 @@ configuration Sample_xDhcpServerScope_NewScope
         IPAddress        = '192.168.1.2'
         Name             = 'DSCPullServer'
         AddressFamily    = 'IPv4'
+
         DependsOn        = @('[WindowsFeature]DHCP')
     }
 
@@ -42,6 +44,7 @@ configuration Sample_xDhcpServerScope_NewScope
         DnsServerIPAddress = '192.168.1.22', '192.168.1.1'
         AddressFamily      = 'IPv4'
         Router             = '192.168.1.1'
+
         DependsOn          = @('[WindowsFeature]DHCP')
     }
 
@@ -52,6 +55,7 @@ configuration Sample_xDhcpServerScope_NewScope
         Type          = 'Vendor'
         AsciiData     = 'sampledata'
         AddressFamily = 'IPv4'
+
         Description   = 'Vendor Class Description'
     }
 

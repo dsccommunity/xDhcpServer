@@ -16,13 +16,13 @@ configuration Example
 
     xDhcpServerScope 'Scope'
     {
-        ScopeId       = '192.168.1.0'
         Ensure        = 'Present'
-        IPEndRange    = '192.168.1.254'
+        ScopeId       = '192.168.1.0'
         IPStartRange  = '192.168.1.1'
-        Name          = 'PowerShellScope'
+        IPEndRange    = '192.168.1.254'
+        Name          = 'ContosoScope'
         SubnetMask    = '255.255.255.0'
-        LeaseDuration = ((New-TimeSpan -Hours 8 ).ToString())
+        LeaseDuration = ((New-TimeSpan -Hours 8).ToString())
         State         = 'Active'
         AddressFamily = 'IPv4'
     }
