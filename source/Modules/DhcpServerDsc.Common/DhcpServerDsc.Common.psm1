@@ -95,6 +95,7 @@ function Assert-Module
     if (-not (Get-Module -Name $ModuleName -ListAvailable))
     {
         $errorMsg = $($script:localizedData.RoleNotFound) -f $ModuleName
+
         New-TerminatingError -ErrorId 'ModuleNotFound' -ErrorMessage $errorMsg -ErrorCategory ObjectNotFound
     }
 }

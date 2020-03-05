@@ -31,9 +31,10 @@ InModuleScope $script:subModuleName {
         IPEndRange    = '192.168.1.99'
         SubnetMask    = '255.255.255.0'
         AddressFamily = 'IPv4'
+        Verbose       = $true
     }
 
-    Describe 'Helper\Assert-ScopeParameter' {
+    Describe 'DhcpServerDsc.Common\Assert-ScopeParameter' {
         It 'Should not throw when parameters are correct' {
             { Assert-ScopeParameter @testParams } | Should -Not -Throw
         }
@@ -92,5 +93,37 @@ InModuleScope $script:subModuleName {
                 ErrorId      = 'RangeNotCorrect'
             }
         )
+    }
+
+    Describe 'DhcpServerDsc.Common\Assert-Module' {
+        BeforeAll {
+            $testModuleName = 'TestModule'
+        }
+
+        Context 'When module is not installed' {
+            BeforeAll {
+                Mock -CommandName Get-Module
+            }
+
+            It 'Should throw the correct error' {
+                { Assert-Module -ModuleName $testModuleName -Verbose } | `
+                        Should -Throw ($script:localizedData.RoleNotFound -f $testModuleName)
+            }
+        }
+
+        Context 'When module is available' {
+            BeforeAll {
+                Mock -CommandName Import-Module
+                Mock -CommandName Get-Module -MockWith {
+                    return @{
+                        Name = $testModuleName
+                    }
+                }
+            }
+
+            It 'Should not throw an error' {
+                { Assert-Module -ModuleName $testModuleName -Verbose } | Should -Not -Throw
+            }
+        }
     }
 }
