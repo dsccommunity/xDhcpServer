@@ -1,7 +1,6 @@
 # Localized resources for helper module DhcpServerDsc.Common.
 
 ConvertFrom-StringData @'
-    RoleNotFound = Please ensure that the PowerShell module for role {0} is installed
     InvalidIPAddressFormat = Value of {0} property is not in a valid IP address format. Specify a valid IP address format and try again.
     InvalidIPAddressFamily = The IP address {0} is not a valid {1} address. Specify a valid IP address in {1} format and try again.
     InvalidTimeSpanFormat  = Value of {0} property is not in a valid timespan format. Specify the timespan in days.hrs:mins:secs format and try again.
