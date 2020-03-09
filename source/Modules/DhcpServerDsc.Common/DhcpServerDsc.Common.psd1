@@ -24,7 +24,6 @@
     FunctionsToExport = @(
         'New-TerminatingError'
         'Get-ValidIPAddress'
-        'Assert-Module'
         'Assert-ScopeParameter'
         'Write-PropertyMessage'
         'Get-ValidTimeSpan'

@@ -36,7 +36,7 @@ function Get-TargetResource
 
     #region input validation
     # Check for DhcpServer module/role
-    Assert-Module -moduleName DHCPServer
+    Assert-Module -ModuleName DHCPServer
 
     # Convert the ScopeID to be a valid IPAddress
     $ScopeID = (Get-ValidIpAddress -ipString $ScopeID -AddressFamily $AddressFamily -parameterName 'ScopeID').ToString()
@@ -165,7 +165,7 @@ function Test-TargetResource
 
     #region input validation
     # Check for DhcpServer module/role
-    Assert-Module -moduleName DHCPServer
+    Assert-Module -ModuleName DHCPServer
 
     # Convert the ScopeID to be a valid IPAddress
     $ScopeID = (Get-ValidIpAddress -ipString $ScopeID -AddressFamily $AddressFamily -parameterName 'ScopeID').ToString()

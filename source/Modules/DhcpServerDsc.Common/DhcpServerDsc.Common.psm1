@@ -81,25 +81,6 @@ function Get-ValidIPAddress
     return $ipAddress
 }
 
-# Internal function to assert if the role specific module is installed or not
-function Assert-Module
-{
-    [CmdletBinding()]
-    param
-    (
-        [Parameter()]
-        [System.String]
-        $ModuleName = 'DHCPServer'
-    )
-
-    if (-not (Get-Module -Name $ModuleName -ListAvailable))
-    {
-        $errorMsg = $($script:localizedData.RoleNotFound) -f $ModuleName
-
-        New-TerminatingError -ErrorId 'ModuleNotFound' -ErrorMessage $errorMsg -ErrorCategory ObjectNotFound
-    }
-}
-
 <#
     .SYNOPSIS
         Internal function to assert if values of ScopeId/SubnetMask/IPStartRange/IPEndRange make sense.
