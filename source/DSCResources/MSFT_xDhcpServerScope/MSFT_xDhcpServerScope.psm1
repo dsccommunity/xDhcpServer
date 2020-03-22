@@ -434,7 +434,7 @@ function Update-ResourceProperties
     # Initialize the parameter collection
     if ($Apply)
     {
-        $parameters = @{ }
+        $parameters = @{}
     }
 
     # dhcpScope is set
