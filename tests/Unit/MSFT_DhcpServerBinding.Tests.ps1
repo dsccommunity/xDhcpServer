@@ -77,20 +77,20 @@ try
             Mock -CommandName Assert-Module
 
             It 'Should call "Assert-Module" to ensure "DHCPServer" module is available' {
-                $result = Get-TargetResource @testParamsPresent
+                $result = Get-TargetResource -InterfaceAlias $interfaceAlias
 
                 Assert-MockCalled -CommandName Assert-Module
             }
 
             It 'Returns a "System.Collections.Hashtable" object type' {
-                $result = Get-TargetResource @testParamsPresent
+                $result = Get-TargetResource -InterfaceAlias $interfaceAlias
                 $result | Should -BeOfType [System.Collections.Hashtable]
             }
 
             It 'Returns all correct values when binding is present'{
                 Mock -CommandName Get-DhcpServerv4Binding -MockWith {return $bindingPresent}
 
-                $result = Get-TargetResource @testParamsPresent
+                $result = Get-TargetResource -InterfaceAlias $interfaceAlias
                 $result.Ensure         | Should -Be $ensure
                 $result.InterfaceAlias | Should -Be $interfaceAlias
             }
@@ -98,7 +98,7 @@ try
             It 'Returns all correct values when binding is NOT present'{
                 Mock -CommandName Get-DhcpServerv4Binding -MockWith {return $bindingNotPreset}
 
-                $result = Get-TargetResource @testParamsPresent
+                $result = Get-TargetResource -InterfaceAlias $interfaceAlias
                 $result.Ensure         | Should -Be 'Absent'
                 $result.InterfaceAlias | Should -Be $interfaceAlias
             }
@@ -108,7 +108,7 @@ try
 
                 $expectedErrorMessage = $script:localizedData.InterfaceAliasIsMissing -f 'fake', $env:COMPUTERNAME
 
-                {Get-TargetResource @badAliasParams} | Should -Throw $expectedErrorMessage
+                {Get-TargetResource -InterfaceAlias 'fake' } | Should -Throw $expectedErrorMessage
             }
         }
 

@@ -130,7 +130,7 @@ function Test-TargetResource
     # Check for DhcpServer module/role
     Assert-Module -ModuleName 'DHCPServer'
 
-    $bindingState = Get-TargetResource -Ensure $Ensure -InterfaceAlias $InterfaceAlias
+    $bindingState = Get-TargetResource -InterfaceAlias $InterfaceAlias
 
     Write-Verbose -Message (
         $script:localizedData.FoundInterfaceState -f $InterfaceAlias, $script:ensureLookup[($bindingState.Ensure)]
