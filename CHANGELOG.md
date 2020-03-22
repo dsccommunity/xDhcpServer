@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     `Ensure` is set to `'Present'`, so there are no point for `Test-TargetResource`
     to evaluate those two properties again.
   - Added unit tests for the function `Test-TargetResource`.
+  - Reordered the resources in alphabetical order in the README.md.
 
 ### Removed
 
