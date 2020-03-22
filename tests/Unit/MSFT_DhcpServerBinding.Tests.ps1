@@ -1,35 +1,37 @@
-﻿#region HEADER
+﻿$script:dscModuleName = 'xDhcpServer'
+$script:dscResourceName = 'MSFT_xDhcpServerAuthorization'
 
-# Unit Test Template Version: 1.2.1
-$script:moduleRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
-if ( (-not (Test-Path -Path (Join-Path -Path $script:moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
-     (-not (Test-Path -Path (Join-Path -Path $script:moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1'))) )
+function Invoke-TestSetup
 {
-    & git @('clone','https://github.com/PowerShell/DscResource.Tests.git',(Join-Path -Path $script:moduleRoot -ChildPath 'DSCResource.Tests'))
+    try
+    {
+        Import-Module -Name DscResource.Test -Force -ErrorAction 'Stop'
+    }
+    catch [System.IO.FileNotFoundException]
+    {
+        throw 'DscResource.Test module dependency not found. Please run ".\build.ps1 -Tasks build" first.'
+    }
+
+    $script:testEnvironment = Initialize-TestEnvironment `
+        -DSCModuleName $script:dscModuleName `
+        -DSCResourceName $script:dscResourceName `
+        -ResourceType 'Mof' `
+        -TestType 'Unit'
+
+    # Import the stub functions.
+    Import-Module -Name "$PSScriptRoot/Stubs/DhcpServer_2016_OSBuild_14393_2395.psm1" -Force -DisableNameChecking
 }
 
-Import-Module -Name (Join-Path -Path $script:moduleRoot -ChildPath (Join-Path -Path 'DSCResource.Tests' -ChildPath 'TestHelper.psm1')) -Force
-
-$TestEnvironment = Initialize-TestEnvironment `
-    -DSCModuleName 'xDhcpServer' `
-    -DSCResourceName 'MSFT_DhcpServerBinding' `
-    -TestType Unit
-
-#endregion HEADER
-
-function Invoke-TestSetup {
+function Invoke-TestCleanup
+{
+    Restore-TestEnvironment -TestEnvironment $script:testEnvironment
 }
 
-function Invoke-TestCleanup {
-    Restore-TestEnvironment -TestEnvironment $TestEnvironment
-}
+Invoke-TestSetup
 
-# Begin Testing
 try
 {
-    Invoke-TestSetup
-
-    InModuleScope 'MSFT_DhcpServerBinding' {
+    InModuleScope $script:dscResourceName {
 
         $interfaceAlias = 'Ethernet'
         $ensure         = 'Present'

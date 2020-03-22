@@ -1,36 +1,38 @@
-﻿#region HEADER
+﻿$script:dscModuleName = 'xDhcpServer'
+$script:dscResourceName = 'MSFT_xDhcpServerAuthorization'
 
-# Unit Test Template Version: 1.2.1
-$script:moduleRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
-if ( (-not (Test-Path -Path (Join-Path -Path $script:moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
-     (-not (Test-Path -Path (Join-Path -Path $script:moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1'))) )
+function Invoke-TestSetup
 {
-    & git @('clone','https://github.com/PowerShell/DscResource.Tests.git',(Join-Path -Path $script:moduleRoot -ChildPath 'DSCResource.Tests'))
+    try
+    {
+        Import-Module -Name DscResource.Test -Force -ErrorAction 'Stop'
+    }
+    catch [System.IO.FileNotFoundException]
+    {
+        throw 'DscResource.Test module dependency not found. Please run ".\build.ps1 -Tasks build" first.'
+    }
+
+    $script:testEnvironment = Initialize-TestEnvironment `
+        -DSCModuleName $script:dscModuleName `
+        -DSCResourceName $script:dscResourceName `
+        -ResourceType 'Mof' `
+        -TestType 'Unit'
+
+    # Import the stub functions.
+    Import-Module -Name "$PSScriptRoot/Stubs/DhcpServer_2016_OSBuild_14393_2395.psm1" -Force -DisableNameChecking
 }
 
-Import-Module -Name (Join-Path -Path $script:moduleRoot -ChildPath (Join-Path -Path 'DSCResource.Tests' -ChildPath 'TestHelper.psm1')) -Force
-
-$TestEnvironment = Initialize-TestEnvironment `
-    -DSCModuleName 'xDhcpServer' `
-    -DSCResourceName 'MSFT_DhcpServerExclusionRange' `
-    -TestType Unit
-
-#endregion HEADER
-
-function Invoke-TestSetup {
+function Invoke-TestCleanup
+{
+    Restore-TestEnvironment -TestEnvironment $script:testEnvironment
 }
 
-function Invoke-TestCleanup {
-    Restore-TestEnvironment -TestEnvironment $TestEnvironment
-}
+Invoke-TestSetup
 
-# Begin Testing
 try
 {
-    Invoke-TestSetup
+    InModuleScope $script:dscResourceName {
 
-    InModuleScope 'MSFT_DhcpServerExclusionRange' {
-       
         $scopeId       = '10.1.1.0'
         $ipStartRange  = '10.1.1.10'
         $ipEndRange    = '10.1.1.20'
@@ -78,7 +80,7 @@ try
             Mock Assert-Module -ParameterFilter { $ModuleName -eq 'DHCPServer' } { }
 
             It 'Should call "Assert-Module" to ensure "DHCPServer" module is available' {
-                 
+
                 $result = Get-TargetResource @testParams
 
                 Assert-MockCalled -CommandName Assert-Module
@@ -91,9 +93,9 @@ try
             }
 
             It 'Returns all correct values'{
-                
+
                 Mock Get-DhcpServerv4ExclusionRange -MockWith $getFakeDhcpExclusionRange
-            
+
                 $result = Get-TargetResource @testParams
                 $result.Ensure        | Should Be $ensure
                 $result.ScopeId       | Should Be $scopeId
@@ -103,9 +105,9 @@ try
             }
 
             It 'Returns the properties as $null when the exclusion does not exist' {
-                
+
                 Mock Get-DhcpServerv4ExclusionRange {return $null}
-            
+
                 $result = Get-TargetResource @testParams
                 $result.Ensure        | Should Be 'Absent'
                 $result.ScopeId       | Should Be $scopeId
@@ -115,31 +117,31 @@ try
             }
         }
 
-        
+
         Describe 'xDhcpServer\Test-TargetResource' {
 
             Mock Assert-Module -ParameterFilter { $ModuleName -eq 'DHCPServer' } { }
 
             It 'Returns a "System.Boolean" object type' {
-            
+
                 Mock Get-DhcpServerv4ExclusionRange -MockWith $getFakeDhcpExclusionRange
 
                 $result = Test-TargetResource @testParams -Ensure 'Present'
                 $result | Should BeOfType [System.Boolean]
             }
-            
+
             It 'Returns $true when the exclusion exists and Ensure = Present' {
-                
+
                 Mock Get-DhcpServerv4ExclusionRange -MockWith $getFakeDhcpExclusionRange
-                
+
                 $result = Test-TargetResource @testParams -Ensure 'Present'
                 $result | Should Be $true
             }
 
             It 'Returns $false when the exclusion does not exist and Ensure = Present' {
-            
+
                 Mock Get-DhcpServerv4ExclusionRange {return $null}
-                
+
                 $result = Test-TargetResource @testParams -Ensure 'Present'
                 $result | Should Be $false
             }
@@ -158,13 +160,13 @@ try
         }
 
         Describe 'xDhcpServer\Set-TargetResource' {
-        
+
             Mock Assert-Module -ParameterFilter { $ModuleName -eq 'DHCPServer' } { }
             Mock Add-DhcpServerv4ExclusionRange
             Mock Remove-DhcpServerv4ExclusionRange
 
             It 'Should call "Add-DhcpServerv4ExclusionRange" when "Ensure" = "Present" and exclusion does not exist' {
-                
+
                 Mock Get-DhcpServerv4ExclusionRange {return $null}
 
                 Set-TargetResource @testParams -Ensure 'Present'
@@ -172,9 +174,9 @@ try
             }
 
             It 'Should call "Remove-DhcpServerv4ExclusionRange" when "Ensure" = "Absent" and exclusion does exist' {
-            
+
                 Mock Get-DhcpServerv4ExclusionRange -MockWith $getFakeDhcpExclusionRange
-                
+
                 Set-TargetResource @testParams -Ensure 'Absent'
                 Assert-MockCalled -CommandName Remove-DhcpServerv4ExclusionRange
             }
