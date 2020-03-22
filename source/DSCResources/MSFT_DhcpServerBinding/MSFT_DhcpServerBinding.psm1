@@ -1,10 +1,16 @@
-$currentPath = Split-Path -Path $MyInvocation.MyCommand.Path -Parent
+$script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '../../Modules/DscResource.Common'
+$script:moduleHelperPath = Join-Path -Path $PSScriptRoot -ChildPath '../../Modules/DhcpServerDsc.Common'
+$script:moduleOptionValueHelperPath = Join-Path -Path $PSScriptRoot -ChildPath '../../Modules/DhcpServerDsc.OptionValueHelper'
 
-Import-Module -Name (Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Helper.psm1')
+Import-Module -Name $script:moduleHelperPath
+Import-Module -Name $script:moduleOptionValueHelperPath
+Import-Module -Name $script:resourceHelperModulePath
+
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
 $script:ensureLookup = @{
-        Present = $true
-        Absent  = $false
+    Present = $true
+    Absent  = $false
 }
 
 <#
@@ -30,18 +36,27 @@ function Get-TargetResource
         $Ensure
     )
 
-    # Check for DhcpServer module/role
-    Assert-Module -ModuleName DHCPServer
+    Write-Verbose -Message (
+        $script:localizedData.GettingCurrentState -f $InterfaceAlias
+    )
 
-    [array]$bindings = Get-DhcpServerv4Binding
+    # Check for DhcpServer module/role
+    Assert-Module -ModuleName 'DHCPServer'
+
+    [System.Array] $bindings = Get-DhcpServerv4Binding
+
     if ($bindings.InterfaceAlias -inotcontains $InterfaceAlias)
     {
-        throw "InterfaceAlias $InterfaceAlias not a valid interface on $env:COMPUTERNAME"
+        $errorMessage = $script:localizedData.InterfaceAliasIsMissing -f $InterfaceAlias, $env:COMPUTERNAME
+
+        New-ObjectNotFoundException -Message $errorMessage
     }
     else
     {
-        $targetBinding = $bindings.Where({$_.InterfaceAlias -eq $InterfaceAlias})
-        $Ensure = $script:ensureLookup.GetEnumerator().Where({$_.Value -eq $targetBinding.BindingState}).Name
+        $targetBinding = $bindings.Where( { $_.InterfaceAlias -eq $InterfaceAlias })
+
+        $Ensure = $script:ensureLookup.GetEnumerator().Where( { $_.Value -eq $targetBinding.BindingState }).Name
+
         return @{
             Ensure         = $Ensure
             InterfaceAlias = $InterfaceAlias
@@ -65,7 +80,7 @@ function Set-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
-        [ValidateSet('Present','Absent')]
+        [ValidateSet('Present', 'Absent')]
         [System.String]
         $Ensure,
 
@@ -75,7 +90,7 @@ function Set-TargetResource
     )
 
     # Check for DhcpServer module/role
-    Assert-Module -ModuleName DHCPServer
+    Assert-Module -ModuleName 'DHCPServer'
 
     $parameters = @{
         BindingState   = $script:ensureLookup.$Ensure
@@ -83,6 +98,7 @@ function Set-TargetResource
     }
 
     Write-Verbose "Setting interface '$InterfaceAlias' binding state to '$($script:ensureLookup[$Ensure])'"
+
     Set-DhcpServerv4Binding @parameters
 }
 
@@ -103,7 +119,7 @@ function Test-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
-        [ValidateSet('Present','Absent')]
+        [ValidateSet('Present', 'Absent')]
         [System.String]
         $Ensure,
 
@@ -112,19 +128,29 @@ function Test-TargetResource
         $InterfaceAlias
     )
 
+    Write-Verbose -Message (
+        $script:localizedData.TestingCurrentState -f $InterfaceAlias
+    )
+
     # Check for DhcpServer module/role
-    Assert-Module -ModuleName DHCPServer
+    Assert-Module -ModuleName 'DHCPServer'
 
     $bindingState = Get-TargetResource -Ensure $Ensure -InterfaceAlias $InterfaceAlias
-    Write-Verbose "Found interface '$InterfaceAlias' with current binding state '$($script:ensureLookup[($bindingState.Ensure)])'"
+
+    Write-Verbose -Message (
+        $script:localizedData.FoundInterfaceState -f $InterfaceAlias, $script:ensureLookup[($bindingState.Ensure)]
+    )
+
     if ($bindingState.Ensure -eq $Ensure)
     {
         Write-Verbose "Interface '$InterfaceAlias' is in desired state"
+
         return $true
     }
     else
     {
         Write-Verbose "Interface '$InterfaceAlias' is NOT in desired state"
+
         return $false
     }
 }

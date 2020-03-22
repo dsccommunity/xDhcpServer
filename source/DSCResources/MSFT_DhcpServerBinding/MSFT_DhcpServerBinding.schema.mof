@@ -1,5 +1,4 @@
-
-[ClassVersion("1.0.0.0"), FriendlyName("xDhcpServerBinding")]
+[ClassVersion("1.0.0.0"), FriendlyName("DhcpServerBinding")]
 class MSFT_DhcpServerBinding : OMI_BaseResource
 {
     [Required, ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;

@@ -1,22 +1,12 @@
-$currentPath = Split-Path -Path $MyInvocation.MyCommand.Path -Parent
+$script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '../../Modules/DscResource.Common'
+$script:moduleHelperPath = Join-Path -Path $PSScriptRoot -ChildPath '../../Modules/DhcpServerDsc.Common'
+$script:moduleOptionValueHelperPath = Join-Path -Path $PSScriptRoot -ChildPath '../../Modules/DhcpServerDsc.OptionValueHelper'
 
-Import-Module -Name (Join-Path -Path (Split-Path -Path $currentPath -Parent) -ChildPath 'Helper.psm1')
+Import-Module -Name $script:moduleHelperPath
+Import-Module -Name $script:moduleOptionValueHelperPath
+Import-Module -Name $script:resourceHelperModulePath
 
-data LocalizedData
-{
-    # culture="en-US"
-    ConvertFrom-StringData @'
-SettingExclusionRange   = Setting DHCP server exclusion range with StartRange "{0}" EndRange "{1}" for ScopeId "{2}"
-TestingExclusionRange   = Testing DHCP server exclusion StartRange "{0}" EndRange "{1}" for ScopeId "{2}"
-RemovingExclusionRange  = Removing DHCP server exclusion StartRange "{0}" EndRange "{1}" for ScopeId "{2}"
-InvalidStartAndEndRange = StartRange must be less than EndRange
-NotInDesiredState       = DHCP server scope "{0}" is NOT in desired state. Expected "{1}", actual "{2}"
-InDesiredState          = DHCP server scope "{0}" is in desired state.
-RetrievingExclusion     = Getting exclusions for scope "{0}"
-FoundExclusion          = Found exclusion with StartRange "{0}" and EndRange "{1}"
-ExclusionNotFound       = Exclusion with StartRange "{0}" and EndRange "{1}" not found
-'@
-}
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
 <#
     .SYNOPSIS
@@ -24,7 +14,7 @@ ExclusionNotFound       = Exclusion with StartRange "{0}" and EndRange "{1}" not
 
     .PARAMETER ScopeId
         The Scope ID of the exclusion range.
-    
+
     .PARAMETER IPStartRange
         The starting IP Address of the exclusion range.
 
@@ -59,7 +49,7 @@ function Get-TargetResource
     )
 
     # Check for DhcpServer module/role
-    Assert-Module -ModuleName DHCPServer
+    Assert-Module -ModuleName 'DHCPServer'
 
     $ScopeId = (Get-ValidIpAddress -IpString $ScopeId -AddressFamily $AddressFamily -ParameterName 'ScopeId').IPAddressToString
     $IPStartRange = (Get-ValidIpAddress -IpString $IPStartRange -AddressFamily $AddressFamily -ParameterName 'StartRange').IPAddressToString
@@ -68,19 +58,28 @@ function Get-TargetResource
     # Check to ensure startRange is smaller than endRange
     if ($IPEndRange.Address -lt $IPStartRange.Address)
     {
-        New-TerminatingError -ErrorId RangeNotCorrect -ErrorMessage $LocalizedData.InvalidStartAndEndRange -ErrorCategory InvalidArgument
+        $errorMessage = $script:localizedData.InvalidStartAndEndRange
+
+        New-InvalidArgumentException -ArgumentName 'StartRange' -Message $errorMessage
     }
 
     # Retrieve exclusions for the scope
-    Write-Verbose -Message ($LocalizedData.RetrievingExclusion -f $ScopeId)
-    [array]$dhcpExclusionRange = Get-DhcpServerv4ExclusionRange -ScopeId $ScopeId -ErrorAction SilentlyContinue
-    $testExclusionRange = $dhcpExclusionRange | Where-Object{$_.StartRange -eq $IPStartRange -and $_.EndRange -eq $IPEndRange}
+    Write-Verbose -Message ($script:localizedData.RetrievingExclusion -f $ScopeId)
+
+    [System.Array] $dhcpExclusionRange = Get-DhcpServerv4ExclusionRange -ScopeId $ScopeId -ErrorAction 'SilentlyContinue'
+
+    $testExclusionRange = $dhcpExclusionRange |
+        Where-Object -FIlterScript {
+            $_.StartRange -eq $IPStartRange -and $_.EndRange -eq $IPEndRange
+    }
+
     $ipStart = $testExclusionRange.StartRange.IPAddressToString
     $ipEnd = $testExclusionRange.EndRange.IPAddressToString
 
-    if($testExclusionRange)
+    if ($testExclusionRange)
     {
-        Write-Verbose -Message ($LocalizedData.FoundExclusion -f $ScopeId,$ipStart,$ipEnd)
+        Write-Verbose -Message ($script:localizedData.FoundExclusion -f $ScopeId, $ipStart, $ipEnd)
+
         $ensure = 'Present'
     }
     else
@@ -103,7 +102,7 @@ function Get-TargetResource
 
     .PARAMETER ScopeId
         The Scope ID of the exclusion range.
-    
+
     .PARAMETER IPStartRange
         The starting IP Address of the exclusion range.
 
@@ -140,24 +139,26 @@ function Set-TargetResource
         $AddressFamily = 'IPv4',
 
         [Parameter()]
-        [ValidateSet('Present','Absent')]
+        [ValidateSet('Present', 'Absent')]
         [String]
         $Ensure = 'Present'
     )
 
     # Check for DhcpServer module/role
-    Assert-Module -ModuleName DHCPServer
+    Assert-Module -ModuleName 'DHCPServer'
 
-    # Add exclusion range
     if ($Ensure -eq 'Present')
     {
-        Write-Verbose -Message ($LocalizedData.SettingExclusionRange -f $IPStartRange,$IPEndRange,$ScopeId)
+        # Add exclusion range
+        Write-Verbose -Message ($script:localizedData.SettingExclusionRange -f $IPStartRange, $IPEndRange, $ScopeId)
+
         Add-DhcpServerv4ExclusionRange -ScopeId $ScopeId -StartRange $IPStartRange -EndRange $IPEndRange
     }
-    # Remove exclusion range
     else
     {
-        Write-Verbose -Message ($LocalizedData.RemovingExclusionRange -f $IPStartRange,$IPEndRange,$ScopeId)
+        # Remove exclusion range
+        Write-Verbose -Message ($script:localizedData.RemovingExclusionRange -f $IPStartRange, $IPEndRange, $ScopeId)
+
         Remove-DhcpServerv4ExclusionRange -ScopeId $ScopeId -StartRange $IPStartRange -EndRange $IPEndRange
     }
 }
@@ -168,7 +169,7 @@ function Set-TargetResource
 
     .PARAMETER ScopeId
         The Scope ID of the exclusion range.
-    
+
     .PARAMETER IPStartRange
         The starting IP Address of the exclusion range.
 
@@ -206,13 +207,13 @@ function Test-TargetResource
         $AddressFamily = 'IPv4',
 
         [Parameter()]
-        [ValidateSet('Present','Absent')]
+        [ValidateSet('Present', 'Absent')]
         [String]
         $Ensure = 'Present'
     )
 
     # Check for DhcpServer module/role
-    Assert-Module -ModuleName DHCPServer
+    Assert-Module -ModuleName 'DHCPServer'
 
     $validStartRange = Get-ValidIpAddress -IpString $IPStartRange -AddressFamily $AddressFamily -ParameterName 'StartRange'
     $validEndRange = Get-ValidIpAddress -IpString $IPEndRange -AddressFamily $AddressFamily -ParameterName 'EndRange'
@@ -220,27 +221,38 @@ function Test-TargetResource
     # Check to ensure startRange is smaller than endRange
     if ($validEndRange.Address -lt $validStartRange.Address)
     {
-        New-TerminatingError -ErrorId RangeNotCorrect -ErrorMessage $LocalizedData.InvalidStartAndEndRange -ErrorCategory InvalidArgument
+        $errorMessage = $script:localizedData.InvalidStartAndEndRange
+
+        New-InvalidArgumentException -ArgumentName 'StartRange' -Message $errorMessage
     }
 
     # Retrieve exclusions for the scope
-    Write-Verbose -Message ($LocalizedData.RetrievingExclusion -f $ScopeId)
-    [array]$dhcpExclusionRange = Get-DhcpServerv4ExclusionRange -ScopeId $ScopeId -ErrorAction SilentlyContinue
-    $testExclusionRange = $dhcpExclusionRange | Where-Object {$_.StartRange -eq $IPStartRange -and $_.EndRange -eq $IPEndRange}
+    Write-Verbose -Message ($script:localizedData.TestingExclusionRange -f $ScopeId)
+
+    [System.Array] $dhcpExclusionRange = Get-DhcpServerv4ExclusionRange -ScopeId $ScopeId -ErrorAction 'SilentlyContinue'
+
+    $testExclusionRange = $dhcpExclusionRange |
+        Where-Object -FilterScript {
+            $_.StartRange -eq $IPStartRange -and $_.EndRange -eq $IPEndRange
+        }
+
     $ipStart = $testExclusionRange.StartRange.IPAddressToString
     $ipEnd = $testExclusionRange.EndRange.IPAddressToString
-    
+
     if ($Ensure -ieq 'Present')
     {
         if ($testExclusionRange)
         {
-            Write-Verbose -Message ($LocalizedData.FoundExclusion -f $ScopeId,$ipStart,$ipEnd)
+            Write-Verbose -Message ($script:localizedData.FoundExclusion -f $ScopeId, $ipStart, $ipEnd)
+            Write-Verbose -Message ($script:localizedData.InDesiredState -f $ScopeId)
+
             return $true
         }
         else
         {
-            Write-Verbose -Message ($LocalizedData.ExclusionNotFound -f $IPStartRange,$IPEndRange)
-            Write-Verbose -Message ($LocalizedData.NotInDesiredState -f $ScopeId,$Ensure,"Absent")
+            Write-Verbose -Message ($script:localizedData.ExclusionNotFound -f $IPStartRange, $IPEndRange)
+            Write-Verbose -Message ($script:localizedData.NotInDesiredState -f $ScopeId, $Ensure, "Absent")
+
             return $false
         }
     }
@@ -248,13 +260,16 @@ function Test-TargetResource
     {
         if (-not $testExclusionRange)
         {
-            Write-Verbose -Message ($LocalizedData.ExclusionNotFound -f $IPStartRange,$IPEndRange)
+            Write-Verbose -Message ($script:localizedData.ExclusionNotFound -f $IPStartRange, $IPEndRange)
+            Write-Verbose -Message ($script:localizedData.InDesiredState -f $ScopeId)
+
             return $true
         }
         else
         {
-            Write-Verbose -Message ($LocalizedData.FoundExclusion -f $ScopeId,$ipStart,$ipEnd)
-            Write-Verbose -Message ($LocalizedData.NotInDesiredState -f $ScopeId,$Ensure,"Present")
+            Write-Verbose -Message ($script:localizedData.FoundExclusion -f $ScopeId, $ipStart, $ipEnd)
+            Write-Verbose -Message ($script:localizedData.NotInDesiredState -f $ScopeId, $Ensure, "Present")
+
             return $false
         }
     }
