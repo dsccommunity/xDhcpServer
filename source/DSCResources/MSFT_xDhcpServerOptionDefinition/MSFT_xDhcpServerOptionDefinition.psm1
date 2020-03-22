@@ -175,7 +175,7 @@ function Set-TargetResource
         $Type,
 
         [Parameter()]
-        [Boolean]
+        [System.Boolean]
         $MultiValued,
 
         [Parameter(Mandatory = $true)]
@@ -301,7 +301,7 @@ function Test-TargetResource
         $Type,
 
         [Parameter()]
-        [Boolean]
+        [System.Boolean]
         $MultiValued,
 
         [Parameter(Mandatory = $true)]
