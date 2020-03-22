@@ -73,7 +73,7 @@ try
             )
         }
 
-        Describe 'xDhcpServer\Get-TargetResource' {
+        Describe 'DhcpServerExclusionRange\Get-TargetResource' {
             Mock -CommandName Get-DhcpServerv4ExclusionRange -MockWith $getFakeDhcpExclusionRange
             Mock -CommandName Assert-Module
 
@@ -112,7 +112,7 @@ try
         }
 
 
-        Describe 'xDhcpServer\Test-TargetResource' {
+        Describe 'DhcpServerExclusionRange\Test-TargetResource' {
             Mock -CommandName Assert-Module
 
             It 'Returns a "System.Boolean" object type' {
@@ -148,7 +148,7 @@ try
             }
         }
 
-        Describe 'xDhcpServer\Set-TargetResource' {
+        Describe 'DhcpServerExclusionRange\Set-TargetResource' {
             Mock -CommandName Assert-Module
             Mock -CommandName Add-DhcpServerv4ExclusionRange
             Mock -CommandName Remove-DhcpServerv4ExclusionRange

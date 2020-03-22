@@ -72,7 +72,7 @@ try
             }
         )
 
-        Describe 'xDhcpServer\Get-TargetResource' {
+        Describe 'DhcpServerBinding\Get-TargetResource' {
             Mock -CommandName Get-DhcpServerv4Binding -MockWith {return $bindingPresent}
             Mock -CommandName Assert-Module
 
@@ -113,7 +113,7 @@ try
         }
 
 
-        Describe 'xDhcpServer\Test-TargetResource' {
+        Describe 'DhcpServerBinding\Test-TargetResource' {
             Mock -CommandName Assert-Module
 
             It 'Returns a "System.Boolean" object type' {
@@ -152,7 +152,7 @@ try
             }
         }
 
-        Describe 'xDhcpServer\Set-TargetResource' {
+        Describe 'DhcpServerBinding\Set-TargetResource' {
             Mock -CommandName Assert-Module
             Mock -CommandName Set-DhcpServerv4Binding -MockWith {return $bindingNotPreset}
 
