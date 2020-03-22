@@ -1,6 +1,6 @@
 <#
     .SYNOPSiS
-       This example sets an option ID 8 (cookie servers) on a policy at server level and at scope level.
+       This example sets an option ID 8 (cookie servers) on a policy at scope level.
 #>
 configuration Example
 {
