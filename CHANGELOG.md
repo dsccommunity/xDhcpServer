@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - xDhcpServer
-  - Added automatic release with a new CI pipeline ([issue #59](https://github.com/dsccommunity/xDhcpServer/issues/59).
+  - Added automatic release with a new CI pipeline ([issue #59](https://github.com/dsccommunity/xDhcpServer/issues/59)).
   - Conceptual help is now generated for each resource on build.
 
 ### Changed
@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - BREAKING CHANGE: The resource is now a single instance resource so
     that it is only possible to use the resource once in a configuration
     with the parameter `Ensure` set to either `Present` or `Absent`
-    ([issue #40](https://github.com/dsccommunity/xDhcpServer/issues/40).
+    ([issue #40](https://github.com/dsccommunity/xDhcpServer/issues/40)).
   - The helper function `Get-IPv4Address` was changed from using `Get-WmiObject`
     to `Get-CimInstance` when fetching the enabled IP addresses.
 - xDhcpServerOptionDefinition
@@ -34,14 +34,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - BREAKING CHANGE: Removed the deprecated resource xDhcpServerOption which
-  has been replaced by other DSC resources ([issue #46](https://github.com/dsccommunity/xDhcpServer/issues/46).
+  has been replaced by other DSC resources ([issue #46](https://github.com/dsccommunity/xDhcpServer/issues/46)).
 - Removed the file `TestSampleUsingAzure.ps1` as it was not a working example
   of running integration tests.
 
 ### [2.0.0.0] - 2018-07-25
 
 - BREAKING CHANGE: Switch to ScopeId as a key property for xDhcpServerScope
-  ([issue #48](https://github.com/dsccommunity/xDhcpServer/issues/48).
+  ([issue #48](https://github.com/dsccommunity/xDhcpServer/issues/48)).
   [Bartek Bielawski (@bielawb)](https://github.com/bielawb)
 
 ### [1.7.0.0] - 2018-06-13
