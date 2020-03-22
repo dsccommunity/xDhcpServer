@@ -1,7 +1,7 @@
 # xDhcpServer
 
-This module contains DSC resources for configuring and managing a Microsoft
-DHCP Server.
+The **xDHCPServer** module contains DSC resources for deployment and
+configuration of Microsoft DHCP Server
 
 [![Build Status](https://dev.azure.com/dsccommunity/xDhcpServer/_apis/build/status/dsccommunity.xDhcpServer?branchName=master)](https://dev.azure.com/dsccommunity/xDhcpServer/_build/latest?definitionId=22&branchName=master)
 ![Azure DevOps coverage (branch)](https://img.shields.io/azure-devops/coverage/dsccommunity/xDhcpServer/22/master)

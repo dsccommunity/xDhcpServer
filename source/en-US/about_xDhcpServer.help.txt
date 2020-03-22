@@ -2,10 +2,10 @@ TOPIC
     about_xDhcpServer
 
 SHORT DESCRIPTION
-    DSC resources for configuring and managing a Microsoft DHCP Server.
+    DSC resources for deployment and configuration of Microsoft DHCP Server.
 
 LONG DESCRIPTION
-    This module contains DSC resources for configuring and managing a Microsoft DHCP Server.
+    This module contains DSC resources for deployment and configuration of Microsoft DHCP Server.
 
 EXAMPLES
     PS C:\> Get-DscResource -Module xDhcpServer

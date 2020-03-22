@@ -101,7 +101,7 @@ function Get-TargetResource
             Description   = $null
             Type          = $null
             VendorClass   = $null
-            MultiValued   = $null
+            MultiValued   = $false
             Ensure        = 'Absent'
         }
     }
@@ -277,7 +277,8 @@ function Test-TargetResource
 
         [Parameter(Mandatory = $true)]
         [ValidateRange(1, 255)]
-        [System.UInt32] $OptionId,
+        [System.UInt32]
+        $OptionId,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -342,20 +343,39 @@ function Test-TargetResource
             $comparingIDMessage = $script:localizedData.ComparingOptionDefinitionIDMessage -f $OptionId, $VendorClass
             Write-Verbose $comparingIDMessage
 
-            # Since $OptionId and $VendorClass exist compare all the Values
-            if (($currentConfiguration.OptionId -eq $OptionId) -and ($currentConfiguration.Name -eq $Name) -and ($currentConfiguration.Description -eq $Description) -and ($currentConfiguration.VendorClass -eq $VendorClass) -and ($currentConfiguration.Type -eq $Type) -and ($currentConfiguration.MultiValued -eq $MultiValued))
+            <#
+                The parameter $OptionId and $VendorClass is in desired state since
+                Get-TargetResource returned Ensure property as 'Present'. The rest
+                of the parameters need to be evaluated if they that they are in desired
+                state.
+            #>
+            $propertiesToEvaluate = @('Name','Description','Type','MultiValued')
+
+            $result = $true
+
+            foreach ($property in $propertiesToEvaluate)
+            {
+                # Only evaluate if the configuration passed the parameter.
+                if ($PSBoundParameters.ContainsKey($property))
+                {
+                    $desiredParameterValue = Get-Variable -Name $property -ValueOnly
+
+                    if ($currentConfiguration.$property -ne $desiredParameterValue)
+                    {
+                        $result = $false
+                    }
+                }
+            }
+
+            if ($result)
             {
                 $exactMatchIDMessage = $script:localizedData.ExactMatchOptionDefinitionIDMessage -f $OptionId, $VendorClass
                 Write-Verbose $exactMatchIDMessage
-
-                $result = $true
             }
             else
             {
                 $notMatchIDMessage = $script:localizedData.NotMatchOptionDefinitionIDMessage -f $OptionId, $VendorClass
                 Write-Verbose $notMatchIDMessage
-
-                $result = $false
             }
         }
         else

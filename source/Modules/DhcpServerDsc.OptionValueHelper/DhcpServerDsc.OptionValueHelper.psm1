@@ -248,7 +248,7 @@ function Test-TargetResourceHelper
         $OptionId,
 
         [Parameter(Mandatory = $true)]
-        [String[]]
+        [System.String[]]
         $Value,
 
         [Parameter(Mandatory = $true)]
@@ -547,7 +547,7 @@ function Set-TargetResourceHelper
         $OptionId,
 
         [Parameter(Mandatory = $true)]
-        [String[]]
+        [System.String[]]
         $Value,
 
         [Parameter(Mandatory = $true)]

@@ -113,7 +113,7 @@ function Set-TargetResource
         $OptionId,
 
         [Parameter()]
-        [String[]]
+        [System.String[]]
         $Value,
 
         [Parameter()]
@@ -183,7 +183,7 @@ function Test-TargetResource
         $OptionId,
 
         [Parameter()]
-        [String[]]
+        [System.String[]]
         $Value,
 
         [Parameter()]

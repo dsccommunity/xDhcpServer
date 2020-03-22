@@ -88,26 +88,186 @@ try
         Describe 'MSFT_xDhcpServerOptionDefinition\Test-TargetResource' {
             BeforeAll {
                 Mock -CommandName Assert-Module
+
+                $mockOptionId = 22
+                $mockName = 'Test name'
+                $mockAddressFamily = 'IPv4'
+                $mockDescription = 'Test Description'
+                $mockType = 'IPv4Address'
+                $mockVendorClass = 'MockVendorClass'
+
+                $mockDefaultParameters = @{
+                    OptionId = $mockOptionId
+                    Name = $mockName
+                    VendorClass = $mockVendorClass
+                    Type = $mockType
+                    AddressFamily = $mockAddressFamily
+                }
             }
 
-            Mock -CommandName Get-DhcpServerv4OptionDefinition -MockWith {
-                return $fakeDhcpServerv4OptionDefinition
+            Context 'When the system is in the desired state' {
+                Context 'When the configuration is absent' {
+                    BeforeAll {
+                        Mock -CommandName Get-TargetResource -MockWith {
+                            return @{
+                                OptionId      = $null
+                                Name          = $null
+                                AddressFamily = $null
+                                Description   = $null
+                                Type          = $null
+                                VendorClass   = $null
+                                MultiValued   = $false
+                                Ensure        = 'Absent'
+                            }
+                        }
+
+                        $testTargetResourceParameters = $mockDefaultParameters.Clone()
+                        $testTargetResourceParameters['Ensure'] = 'Absent'
+                    }
+
+                    It 'Should return the state as $true' {
+                        $testTargetResourceResult = Test-TargetResource @testTargetResourceParameters
+                        $testTargetResourceResult | Should -Be $true
+                    }
+                }
+
+                Context 'When the configuration is present' {
+                    BeforeAll {
+                        Mock -CommandName Get-TargetResource -MockWith {
+                            return @{
+                                OptionId      = $mockOptionId
+                                Name          = $mockName
+                                AddressFamily = $mockAddressFamily
+                                Description   = $mockDescription
+                                Type          = $mockType
+                                VendorClass   = $mockVendorClass
+                                MultiValued   = $true
+                                Ensure        = 'Present'
+                            }
+                        }
+
+                        $testTargetResourceParameters = $mockDefaultParameters.Clone()
+                        $testTargetResourceParameters['Ensure'] = 'Present'
+                        $testTargetResourceParameters['Description'] = $mockDescription
+                        $testTargetResourceParameters['MultiValued'] = $true
+                    }
+
+                    It 'Should return the state as $true' {
+                        $testTargetResourceResult = Test-TargetResource @testTargetResourceParameters
+                        $testTargetResourceResult | Should -Be $true
+                    }
+                }
             }
 
-            Mock -CommandName Set-DhcpServerv4OptionDefinition
-            Mock -CommandName Add-DhcpServerv4OptionDefinition
-            Mock -CommandName Remove-DhcpServerv4OptionDefinition
+            Context 'When the system is not in the desired state' {
+                Context 'When the configuration should be absent' {
+                    BeforeAll {
+                        Mock -CommandName Get-TargetResource -MockWith {
+                            return @{
+                                OptionId      = $mockOptionId
+                                Name          = $mockName
+                                AddressFamily = $mockAddressFamily
+                                Description   = $mockDescription
+                                Type          = $mockType
+                                VendorClass   = $mockVendorClass
+                                MultiValued   = $true
+                                Ensure        = 'Present'
+                            }
+                        }
 
-            It 'Returns a "System.Boolean" object type' {
-                $result = Test-TargetResource @testParams -Ensure 'Present'
+                        $testTargetResourceParameters = $mockDefaultParameters.Clone()
+                        $testTargetResourceParameters['Ensure'] = 'Absent'
+                    }
 
-                $result | Should -BeOfType [System.Boolean]
-            }
+                    It 'Should return the state as $false' {
+                        $testTargetResourceResult = Test-TargetResource @testTargetResourceParameters
+                        $testTargetResourceResult | Should -Be $false
+                    }
+                }
 
-            It 'Passes when all parameters are correct' {
-                $result = Test-TargetResource @testParams -Ensure 'Present'
+                Context 'When the configuration should be present' {
+                    BeforeAll {
+                        Mock -CommandName Get-TargetResource -MockWith {
+                            return @{
+                                OptionId      = $null
+                                Name          = $null
+                                AddressFamily = $null
+                                Description   = $null
+                                Type          = $null
+                                VendorClass   = $null
+                                MultiValued   = $false
+                                Ensure        = 'Absent'
+                            }
+                        }
 
-                $result | Should -Be $true
+                        $testTargetResourceParameters = $mockDefaultParameters.Clone()
+                        $testTargetResourceParameters['Ensure'] = 'Present'
+                    }
+
+                    It 'Should return the state as $false' {
+                        $testTargetResourceResult = Test-TargetResource @testTargetResourceParameters
+                        $testTargetResourceResult | Should -Be $false
+                    }
+                }
+
+                Context 'When a property is not in desired state' {
+                    BeforeAll {
+                        Mock -CommandName Get-TargetResource -MockWith {
+                            return @{
+                                OptionId      = $mockOptionId
+                                Name          = $mockName
+                                AddressFamily = $mockAddressFamily
+                                Description   = $mockDescription
+                                Type          = $mockType
+                                VendorClass   = $mockVendorClass
+                                MultiValued   = $false
+                                Ensure        = 'Present'
+                            }
+                        }
+
+                        $testCases = @(
+                            @{
+                                Property = 'Name'
+                            }
+                            @{
+                                Property = 'Description'
+                            }
+                            @{
+                                Property = 'Type'
+                            }
+                            @{
+                                Property = 'MultiValued'
+                            }
+                        )
+                    }
+
+                    BeforeEach {
+                        $testTargetResourceParameters = $mockDefaultParameters.Clone()
+                        $testTargetResourceParameters['Ensure'] = 'Present'
+                    }
+
+                    It 'Should return the state as $false when property <Property> is not in desired state' -TestCases $testCases {
+                        param
+                        (
+                            [Parameter()]
+                            [System.String]
+                            $Property
+                        )
+
+                        if ($Property -eq 'Type')
+                        {
+                            $testTargetResourceParameters[$Property] = 'EncapsulatedData'
+                        }
+                        else
+                        {
+                            # Mock with 1 as it can be converted to string, int, and boolean.
+                            $testTargetResourceParameters[$Property] = 1
+                        }
+
+                        $testTargetResourceResult = Test-TargetResource @testTargetResourceParameters
+                        $testTargetResourceResult | Should -Be $false
+                    }
+                }
             }
         }
 

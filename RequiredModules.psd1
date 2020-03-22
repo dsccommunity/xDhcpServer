@@ -20,8 +20,10 @@
     xDscResourceDesigner        = 'latest'
     'DscResource.DocGenerator'  = 'latest'
 
-    # Prerequisites modules needed for examples and integration tests of
-    # the xDhcpServer module.
+    <#
+        Prerequisites modules needed for examples and integration tests of
+        the xDhcpServer module.
+    #>
     PSDscResources              = '2.12.0.0'
 
     # Build dependent modules

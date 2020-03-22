@@ -15,10 +15,10 @@
     Copyright         = 'Copyright the DSC Community contributors. All rights reserved.'
 
     # Description of the functionality provided by this module
-    Description       = 'This module contains DSC resources for configuring and managing a Microsoft DHCP Server.'
+    Description       = 'This module contains DSC resources for deployment and configuration of Microsoft DHCP Server.'
 
     # Minimum version of the Windows PowerShell engine required by this module
-    PowerShellVersion = '4.0'
+    PowerShellVersion = '5.0'
 
     # Functions to export from this module
     FunctionsToExport = @()

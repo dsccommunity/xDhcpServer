@@ -9,9 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - xDhcpServer
   - Added automatic release with a new CI pipeline ([issue #59](https://github.com/dsccommunity/xDhcpServer/issues/59).
+  - Conceptual help is now generated for each resource on build.
 
 ### Changed
 
+- xDhcpServer
+  - BREAKING CHANGE: The minimum PowerShell version is 5.0.
 - xDhcpServerAuthorization
   - BREAKING CHANGE: The resource is now a single instance resource so
     that it is only possible to use the resource once in a configuration
@@ -19,6 +22,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     ([issue #40](https://github.com/dsccommunity/xDhcpServer/issues/40).
   - The helper function `Get-IPv4Address` was changed from using `Get-WmiObject`
     to `Get-CimInstance` when fetching the enabled IP addresses.
+- xDhcpServerOptionDefinition
+  - The logic in `Test-TargetResource` was changed somewhat to remove
+    unnecessary evaluation of properties that `Get-TargetResource` already
+    did. The function `Get-TargetResource` calls `Get-DhcpServerv4OptionDefinition`
+    with `OptionId` and `VendorClass` and if an object is returned the property
+    `Ensure` is set to `'Present'`, so there are no point for `Test-TargetResource`
+    to evaluate those two properties again.
+  - Added unit tests for the function `Test-TargetResource`.
 
 ### Removed
 
