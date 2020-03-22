@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - xDhcpServer
   - Added automatic release with a new CI pipeline ([issue #59](https://github.com/dsccommunity/xDhcpServer/issues/59)).
   - Conceptual help is now generated for each resource on build.
+  - Added new resource DhcpServerBinding ([issue #55](https://github.com/dsccommunity/xDhcpServer/issues/55)).
+  - Added new resource DhcpServerExclusionRange ([issue #7](https://github.com/dsccommunity/xDhcpServer/issues/7)).
 
 ### Changed
 
@@ -30,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     `Ensure` is set to `'Present'`, so there are no point for `Test-TargetResource`
     to evaluate those two properties again.
   - Added unit tests for the function `Test-TargetResource`.
+  - Reordered the resources in alphabetical order in the README.md.
 
 ### Removed
 
