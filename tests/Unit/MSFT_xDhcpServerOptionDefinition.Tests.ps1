@@ -75,13 +75,13 @@ try
             }
 
             It 'Should call "Assert-Module" to ensure "DHCPServer" module is available' {
-                $result = Get-TargetResource -OptionId $OptionId -Name $Name -Type $Type -VendorClass $VendorClass -AddressFamily 'IPv4' -DefaultValue '' -Ensure 'Present' -Verbose
+                $result = Get-TargetResource -OptionId $OptionId -Name $Name -Type $Type -VendorClass $VendorClass -AddressFamily 'IPv4' -Ensure 'Present' -Verbose
 
                 Assert-MockCalled -CommandName Assert-Module -Exactly -Times 1 -Scope It
             }
 
             It 'Returns a "System.Collections.Hashtable" object type' {
-                $result = Get-TargetResource -OptionId $OptionId -Name $Name -Type $Type -VendorClass $VendorClass -AddressFamily 'IPv4' -DefaultValue '' -Ensure 'Present' -Verbose
+                $result = Get-TargetResource -OptionId $OptionId -Name $Name -Type $Type -VendorClass $VendorClass -AddressFamily 'IPv4' -Ensure 'Present' -Verbose
 
                 $result -is [System.Collections.Hashtable] | Should -Be $true
             }
