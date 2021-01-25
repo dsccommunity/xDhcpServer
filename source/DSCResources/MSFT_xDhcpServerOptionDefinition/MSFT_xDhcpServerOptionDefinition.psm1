@@ -67,13 +67,7 @@ function Get-TargetResource
         [Parameter(Mandatory = $true)]
         [ValidateSet('IPv4')]
         [System.String]
-        $AddressFamily,
-
-        [Parameter(Mandatory = $true)]
-        [AllowEmptyString()]
-        [System.String]
-        $DefaultValue
-
+        $AddressFamily
     )
 
     # Region Input Validation
@@ -198,12 +192,13 @@ function Set-TargetResource
         $AddressFamily,
 
         [Parameter()]
+        [AllowEmptyString()]
         [System.String]
         $DefaultValue
     )
 
     # Reading the DHCP option
-    $dhcpServerOptionDefinition = Get-TargetResource -OptionId $OptionId -Name $Name -VendorClass $VendorClass -Type $Type -AddressFamily $AddressFamily -DefaultValue $DefaultValue -ErrorAction 'SilentlyContinue'
+    $dhcpServerOptionDefinition = Get-TargetResource -OptionId $OptionId -Name $Name -VendorClass $VendorClass -Type $Type -AddressFamily $AddressFamily -ErrorAction 'SilentlyContinue'
 
     # Testing for present
     if ($Ensure -eq 'Present')
@@ -345,7 +340,7 @@ function Test-TargetResource
     # Geting the dhcp option definition
     Write-Verbose -Message $testingIDMessage
 
-    $currentConfiguration = Get-TargetResource -OptionId $OptionId -Name $Name -VendorClass $VendorClass -Type $Type -AddressFamily $AddressFamily -DefaultValue $DefaultValue -ErrorAction 'SilentlyContinue'
+    $currentConfiguration = Get-TargetResource -OptionId $OptionId -Name $Name -VendorClass $VendorClass -Type $Type -AddressFamily $AddressFamily -ErrorAction 'SilentlyContinue'
 
     if ($currentConfiguration.Ensure -eq 'Present')
     {
