@@ -14,7 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Conceptual help is now generated for each resource on build.
   - Added new resource DhcpServerBinding ([issue #55](https://github.com/dsccommunity/xDhcpServer/issues/55)).
   - Added new resource DhcpServerExclusionRange ([issue #7](https://github.com/dsccommunity/xDhcpServer/issues/7)).
-
+  - Added DefaultValue parameter to xDhcpServerOptionDefinition ([issue #75](https://github.com/dsccommunity/xDhcpServer/issues/75)).
+  
 ### Changed
 
 - xDhcpServer
