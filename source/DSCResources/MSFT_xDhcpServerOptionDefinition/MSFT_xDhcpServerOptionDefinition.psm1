@@ -28,6 +28,9 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
     .PARAMETER AddressFamily
         The option definition address family (IPv4 or IPv6). Currently only the IPv4 is supported.
+
+    .PARAMETER DefaultValue
+        Specifies the default value to set for the option definition.
 #>
 function Get-TargetResource
 {
@@ -89,6 +92,7 @@ function Get-TargetResource
             Type          = $dhcpServerOptionDefinition.Type
             VendorClass   = $dhcpServerOptionDefinition.VendorClass
             MultiValued   = $dhcpServerOptionDefinition.MultiValued
+            DefaultValue  = $dhcpServerOptionDefinition.DefaultValue
             Ensure        = 'Present'
         }
     }
@@ -102,6 +106,7 @@ function Get-TargetResource
             Type          = $null
             VendorClass   = $null
             MultiValued   = $false
+            DefaultValue  = $null
             Ensure        = 'Absent'
         }
     }
@@ -137,6 +142,9 @@ function Get-TargetResource
 
     .PARAMETER AddressFamily
         The option definition address family (IPv4 or IPv6). Currently only the IPv4 is supported.
+
+    .PARAMETER DefaultValue
+        Specifies the default value to set for the option definition.
 #>
 function Set-TargetResource
 {
@@ -181,7 +189,12 @@ function Set-TargetResource
         [Parameter(Mandatory = $true)]
         [ValidateSet('IPv4')]
         [System.String]
-        $AddressFamily
+        $AddressFamily,
+
+        [Parameter()]
+        [AllowEmptyString()]
+        [System.String]
+        $DefaultValue
     )
 
     # Reading the DHCP option
@@ -201,7 +214,7 @@ function Set-TargetResource
 
                 Remove-DhcpServerv4OptionDefinition -OptionId $OptionId -VendorClass $VendorClass
 
-                Add-DhcpServerv4OptionDefinition -OptionId $OptionId -name $Name -Type $Type -Description $Description -MultiValued:$MultiValued -VendorClass $VendorClass
+                Add-DhcpServerv4OptionDefinition -OptionId $OptionId -name $Name -Type $Type -Description $Description -MultiValued:$MultiValued -VendorClass $VendorClass -DefaultValue $DefaultValue
             }
             # If option exists we need only to adjust the parameters
             else
@@ -209,7 +222,7 @@ function Set-TargetResource
                 $settingIDMessage = $script:localizedData.SettingOptionDefinitionIDMessage -f $OptionId, $VendorClass
                 Write-Verbose -Message $settingIDMessage
 
-                Set-DhcpServerv4OptionDefinition -OptionId $OptionId -VendorClass $VendorClass -name $Name -Description $Description
+                Set-DhcpServerv4OptionDefinition -OptionId $OptionId -VendorClass $VendorClass -name $Name -Description $Description -DefaultValue $DefaultValue
             }
         }
         # If option does not exist we need to add it
@@ -218,7 +231,7 @@ function Set-TargetResource
             $scopeIDMessage = $script:localizedData.AddingOptionDefinitionIDMessage -f $OptionId, $VendorClass
             Write-Verbose -Message $scopeIDMessage
 
-            Add-DhcpServerv4OptionDefinition -OptionId $OptionId -name $Name -Type $Type -Description $Description -MultiValued:$MultiValued -VendorClass $VendorClass
+            Add-DhcpServerv4OptionDefinition -OptionId $OptionId -name $Name -Type $Type -Description $Description -MultiValued:$MultiValued -VendorClass $VendorClass -DefaultValue $DefaultValue
         }
     }
     # Testing for 'absent'
@@ -262,6 +275,9 @@ function Set-TargetResource
 
     .PARAMETER AddressFamily
         The option definition address family (IPv4 or IPv6). Currently only the IPv4 is supported.
+
+    .PARAMETER DefaultValue
+        Specifies the default value to set for the option definition.
 #>
 function Test-TargetResource
 {
@@ -307,7 +323,11 @@ function Test-TargetResource
         [Parameter(Mandatory = $true)]
         [ValidateSet('IPv4')]
         [System.String]
-        $AddressFamily
+        $AddressFamily,
+
+        [Parameter()]
+        [System.String]
+        $DefaultValue
     )
 
     # Region Input Validation
@@ -349,7 +369,7 @@ function Test-TargetResource
                 of the parameters need to be evaluated if they that they are in desired
                 state.
             #>
-            $propertiesToEvaluate = @('Name','Description','Type','MultiValued')
+            $propertiesToEvaluate = @('Name', 'Description', 'Type', 'MultiValued', 'DefaultValue')
 
             $result = $true
 
@@ -360,7 +380,8 @@ function Test-TargetResource
                 {
                     $desiredParameterValue = Get-Variable -Name $property -ValueOnly
 
-                    if ($currentConfiguration.$property -ne $desiredParameterValue)
+                    # Force string comparison, else get mixed results with DefaultValue property
+                    if ([string]$currentConfiguration.$property -ne [string]$desiredParameterValue)
                     {
                         $result = $false
                     }

@@ -121,6 +121,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **Description**: Option description.
 - **AddressFamily**: Sets the address family for the option definition.
    Currently only IPv4 is supported. { IPv4 }
+- **DefaultValue**: The default value for the option.
 - **Ensure**: Whether option should be set or removed. { *Present* | Absent }
 
 ### DhcpServerOptionValue

@@ -39,6 +39,7 @@ try
         $type = 'IPv4Address'
         $vendorClass = ''
         $multiValued = $false
+        $defaultValue = '1.2.3.4'
 
         $testParams = @{
             OptionId      = $optionId
@@ -59,6 +60,7 @@ try
             Type          = $type
             VendorClass   = $vendorClass
             MultiValued   = $multiValued
+            DefaultValue  = $defaultValue
         }
 
         Describe 'MSFT_xDhcpServerOptionDefinition\Get-TargetResource' {
@@ -95,13 +97,15 @@ try
                 $mockDescription = 'Test Description'
                 $mockType = 'IPv4Address'
                 $mockVendorClass = 'MockVendorClass'
+                $mockDefaultValue = '1.2.3.4'
 
                 $mockDefaultParameters = @{
-                    OptionId = $mockOptionId
-                    Name = $mockName
-                    VendorClass = $mockVendorClass
-                    Type = $mockType
+                    OptionId      = $mockOptionId
+                    Name          = $mockName
+                    VendorClass   = $mockVendorClass
+                    Type          = $mockType
                     AddressFamily = $mockAddressFamily
+                    DefaultValue  = $mockDefaultValue
                 }
             }
 
@@ -117,6 +121,7 @@ try
                                 Type          = $null
                                 VendorClass   = $null
                                 MultiValued   = $false
+                                DefaultValue  = $null
                                 Ensure        = 'Absent'
                             }
                         }
@@ -142,6 +147,7 @@ try
                                 Type          = $mockType
                                 VendorClass   = $mockVendorClass
                                 MultiValued   = $true
+                                DefaultValue  = $mockDefaultValue
                                 Ensure        = 'Present'
                             }
                         }
@@ -150,6 +156,7 @@ try
                         $testTargetResourceParameters['Ensure'] = 'Present'
                         $testTargetResourceParameters['Description'] = $mockDescription
                         $testTargetResourceParameters['MultiValued'] = $true
+                        $testTargetResourceParameters['DefaultValue'] = $mockDefaultValue
                     }
 
                     It 'Should return the state as $true' {
@@ -171,6 +178,7 @@ try
                                 Type          = $mockType
                                 VendorClass   = $mockVendorClass
                                 MultiValued   = $true
+                                DefaultValue  = $mockDefaultValue
                                 Ensure        = 'Present'
                             }
                         }
@@ -330,7 +338,6 @@ try
                 Assert-MockCalled -CommandName Add-DhcpServerv4OptionDefinition -Exactly -Times 1 -Scope It
             }
 
-
             It 'Should call "Remove-DhcpServerv4OptionDefinition" and then "Add-DhcpServerv4OptionDefinition" when "Ensure" = "Present" and Type has changed' {
                 Mock -CommandName Get-DhcpServerv4OptionDefinition -MockWith {
                     return $fakeDhcpServerv4OptionDefinition
@@ -344,7 +351,6 @@ try
                 Assert-MockCalled -CommandName Remove-DhcpServerv4OptionDefinition -Exactly -Times 1 -Scope It
                 Assert-MockCalled -CommandName Add-DhcpServerv4OptionDefinition -Exactly -Times 1 -Scope It
             }
-
 
             It 'Should call "Remove-DhcpServerv4OptionDefinition" and then "Add-DhcpServerv4OptionDefinition" when "Ensure" = "Present" and MultiValued has changed' {
                 Mock -CommandName Get-DhcpServerv4OptionDefinition -MockWith {
@@ -374,7 +380,6 @@ try
                 Assert-MockCalled -CommandName Add-DhcpServerv4OptionDefinition -Exactly -Times 1 -Scope It
             }
 
-
             It 'Should call "Remove-DhcpServerv4OptionDefinition" and then "Add-DhcpServerv4OptionDefinition" when "Ensure" = "Present" and VendorClass and Description has changed' {
                 Mock -CommandName Get-DhcpServerv4OptionDefinition -MockWith {
                     return $fakeDhcpServerv4OptionDefinition
@@ -397,6 +402,19 @@ try
 
                 $TempParams = $testParams.Clone()
                 $TempParams.Description = 'New Description'
+
+                Set-TargetResource @testParams -Ensure 'Present'
+
+                Assert-MockCalled -CommandName Set-DhcpServerv4OptionDefinition -Exactly -Times 1 -Scope It
+            }
+
+            It 'Should call "Set-DhcpServerv4OptionDefinition" when "Ensure" = "Present" and DefaultValue has changed' {
+                Mock -CommandName Get-DhcpServerv4OptionDefinition -MockWith {
+                    return $fakeDhcpServerv4OptionDefinition
+                }
+
+                $TempParams = $testParams.Clone()
+                $TempParams.DefaultValue = '1.2.3.5'
 
                 Set-TargetResource @testParams -Ensure 'Present'
 

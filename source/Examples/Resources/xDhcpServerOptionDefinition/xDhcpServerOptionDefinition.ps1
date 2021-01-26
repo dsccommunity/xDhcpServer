@@ -34,4 +34,16 @@ configuration Example
         VendorClass   = ''  #default option class
         Description   = 'Sample description'
     }
+
+    xDhcpServerOptionDefinition 'DHCPServerOptionDefinition3'
+    {
+        Ensure        = 'Present'
+        Name          = 'PXEClient'
+        OptionID      = '060'
+        Type          = 'String'
+        AddressFamily = 'IPv4'
+        VendorClass   = ''  #default option class
+        Description   = 'Sample description'
+        DefaultValue  = 'PXEClient'
+    }
 }
