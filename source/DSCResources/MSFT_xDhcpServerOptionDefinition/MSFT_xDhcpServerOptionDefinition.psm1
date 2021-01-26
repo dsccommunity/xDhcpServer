@@ -380,7 +380,8 @@ function Test-TargetResource
                 {
                     $desiredParameterValue = Get-Variable -Name $property -ValueOnly
 
-                    if ($currentConfiguration.$property -ne $desiredParameterValue)
+                    # Force string comparison, else get mixed results with DefaultValue property
+                    if ([string]$currentConfiguration.$property -ne [string]$desiredParameterValue)
                     {
                         $result = $false
                     }
