@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - xDhcpServerReservation
-  - Fixed a bug that was caused by invalid filter script for `Where-Object` ([issue #73](https://github.com/dsccommunity/xDhcpServer/issues/73)).
+  - Fixed a bug that was caused by invalid filter script for `Where-Object`
+    ([issue #73](https://github.com/dsccommunity/xDhcpServer/issues/73)).
 
 ## [3.0.0] - 2021-01-25
 

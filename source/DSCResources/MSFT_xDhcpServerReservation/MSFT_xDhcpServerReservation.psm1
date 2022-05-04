@@ -243,7 +243,7 @@ function Update-ResourceProperties
     Write-Verbose -Message $reservationMessage
 
     $reservation = Get-DhcpServerv4Reservation -ScopeID $ScopeID | Where-Object -FilterScript {
-        IPAddress -eq $IPAddress
+        $_.IPAddress -eq $IPAddress
     }
 
     # Initialize the parameter collection
