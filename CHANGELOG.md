@@ -1,9 +1,13 @@
-# Change log for xDhcpServer
+# Changelog for xDhcpServer
 
 The format is based on and uses the types of changes according to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Changed
+
+- Update the pipeline files to the latest in Sampler
 
 ## [3.0.0] - 2021-01-25
 
