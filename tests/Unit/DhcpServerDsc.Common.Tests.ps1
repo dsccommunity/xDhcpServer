@@ -71,7 +71,7 @@ InModuleScope $script:subModuleName {
             @{
                 Parameter    = 'ScopeId'
                 Value        = '192.168.1.42'
-                ErrorPattern = 'Value of byte 4 in ScopeId (42) is not valid.'
+                ErrorPattern = 'Value of byte 4 in IPEndRange (99) is not valid. Binary AND with byte 4 in SubnetMask (0) should be equal to byte 4 in ScopeId (42).'
                 ErrorId      = 'ScopeIdOrMaskIncorrect'
             }
             @{
