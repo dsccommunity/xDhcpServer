@@ -189,7 +189,6 @@ function Set-TargetResource
         $AddressFamily,
 
         [Parameter()]
-        [AllowEmptyString()]
         [System.String]
         $DefaultValue
     )
