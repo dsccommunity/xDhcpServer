@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - xDhcpServer
-  - Update the pipeline files to the latest in Sampler
+  - Update the pipeline files to the latest in Sampler.
+  - Renamed default branch to `main`.
 
 ### Fixed
 
