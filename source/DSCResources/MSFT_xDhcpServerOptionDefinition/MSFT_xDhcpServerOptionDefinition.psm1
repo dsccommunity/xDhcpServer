@@ -28,9 +28,6 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
     .PARAMETER AddressFamily
         The option definition address family (IPv4 or IPv6). Currently only the IPv4 is supported.
-
-    .PARAMETER DefaultValue
-        Specifies the default value to set for the option definition.
 #>
 function Get-TargetResource
 {
@@ -138,7 +135,7 @@ function Get-TargetResource
         The data type of the option definition.
 
     .PARAMETER MultiValued
-        Whether the option definition is multivalued or not.
+        Whether the option definition is multi-valued or not.
 
     .PARAMETER AddressFamily
         The option definition address family (IPv4 or IPv6). Currently only the IPv4 is supported.
@@ -206,7 +203,7 @@ function Set-TargetResource
         # Testing if option exists
         if ($dhcpServerOptionDefinition.Ensure -eq 'Present')
         {
-            # If it exists and any of multivalued, type or vendorclass is being changed remove then re-add the whole option definition
+            # If it exists and any of multi-valued, type or vendor class is being changed remove then re-add the whole option definition
             if (($dhcpServerOptionDefinition.Type -ne $Type) -or ($dhcpServerOptionDefinition.MultiValued -ne $MultiValued) -or ($dhcpServerOptionDefinition.VendorClass -ne $VendorClass))
             {
                 $scopeIDMessage = $script:localizedData.RecreatingOptionDefinitionIDMessage -f $OptionId, $VendorClass
@@ -214,7 +211,21 @@ function Set-TargetResource
 
                 Remove-DhcpServerv4OptionDefinition -OptionId $OptionId -VendorClass $VendorClass
 
-                Add-DhcpServerv4OptionDefinition -OptionId $OptionId -name $Name -Type $Type -Description $Description -MultiValued:$MultiValued -VendorClass $VendorClass -DefaultValue $DefaultValue
+                $addDhcpServerv4OptionDefinitionParameters = @{
+                    OptionId = $OptionId
+                    Name = $Name
+                    Type = $Type
+                    Description = $Description
+                    MultiValued = $MultiValued
+                    VendorClass = $VendorClass
+                }
+
+                if ($PSBoundParameters.ContainsKey('DefaultValue'))
+                {
+                    $addDhcpServerv4OptionDefinitionParameters.DefaultValue = $DefaultValue
+                }
+
+                Add-DhcpServerv4OptionDefinition @addDhcpServerv4OptionDefinitionParameters
             }
             # If option exists we need only to adjust the parameters
             else
@@ -222,7 +233,19 @@ function Set-TargetResource
                 $settingIDMessage = $script:localizedData.SettingOptionDefinitionIDMessage -f $OptionId, $VendorClass
                 Write-Verbose -Message $settingIDMessage
 
-                Set-DhcpServerv4OptionDefinition -OptionId $OptionId -VendorClass $VendorClass -name $Name -Description $Description -DefaultValue $DefaultValue
+                $setDhcpServerv4OptionDefinitionParameters = @{
+                    OptionId = $OptionId
+                    Name = $Name
+                    Description = $Description
+                    VendorClass = $VendorClass
+                }
+
+                if ($PSBoundParameters.ContainsKey('DefaultValue'))
+                {
+                    $setDhcpServerv4OptionDefinitionParameters.DefaultValue = $DefaultValue
+                }
+
+                Set-DhcpServerv4OptionDefinition @setDhcpServerv4OptionDefinitionParameters
             }
         }
         # If option does not exist we need to add it
@@ -231,7 +254,21 @@ function Set-TargetResource
             $scopeIDMessage = $script:localizedData.AddingOptionDefinitionIDMessage -f $OptionId, $VendorClass
             Write-Verbose -Message $scopeIDMessage
 
-            Add-DhcpServerv4OptionDefinition -OptionId $OptionId -name $Name -Type $Type -Description $Description -MultiValued:$MultiValued -VendorClass $VendorClass -DefaultValue $DefaultValue
+            $addDhcpServerv4OptionDefinitionParameters = @{
+                OptionId = $OptionId
+                Name = $Name
+                Type = $Type
+                Description = $Description
+                MultiValued = $MultiValued
+                VendorClass = $VendorClass
+            }
+
+            if ($PSBoundParameters.ContainsKey('DefaultValue'))
+            {
+                $addDhcpServerv4OptionDefinitionParameters.DefaultValue = $DefaultValue
+            }
+
+            Add-DhcpServerv4OptionDefinition @addDhcpServerv4OptionDefinitionParameters
         }
     }
     # Testing for 'absent'
@@ -380,10 +417,20 @@ function Test-TargetResource
                 {
                     $desiredParameterValue = Get-Variable -Name $property -ValueOnly
 
-                    # Force string comparison, else get mixed results with DefaultValue property
-                    if ([string]$currentConfiguration.$property -ne [string]$desiredParameterValue)
+                    if ($property -eq 'DefaultValue')
                     {
-                        $result = $false
+                        # Force string comparison, else get mixed results with DefaultValue property
+                        if ([System.String] $currentConfiguration.$property -ne [System.String] $desiredParameterValue)
+                        {
+                            $result = $false
+                        }
+                    }
+                    else
+                    {
+                        if ($currentConfiguration.$property -ne $desiredParameterValue)
+                        {
+                            $result = $false
+                        }
                     }
                 }
             }
