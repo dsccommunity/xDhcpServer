@@ -5,10 +5,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- xDhcpServerOptionDefinition
+  - Added DefaultValue parameter to xDhcpServerOptionDefinition ([issue #75](https://github.com/dsccommunity/xDhcpServer/issues/75)).
+
 ### Changed
 
 - xDhcpServer
-  - Update the pipeline files to the latest in Sampler
+  - Update the pipeline files to the latest in Sampler.
+  - Renamed default branch to `main`.
 
 ### Fixed
 
