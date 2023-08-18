@@ -604,7 +604,7 @@ function Set-TargetResourceHelper
             {
                 $serverSettingValueMessage = $script:localizedData.ServerSettingValueMessage -f $OptionId, $VendorClass, $UserClass
                 Write-Verbose $serverSettingValueMessage
-                Set-DhcpServerv4OptionValue -OptionId $OptionId -Value $Value -VendorClass $VendorClass -UserClass $UserClass
+                Set-DhcpServerv4OptionValue -OptionId $OptionId -Value $Value -VendorClass $VendorClass -UserClass $UserClass -Force
             }
 
             # Ensure = 'Absent'
@@ -637,7 +637,7 @@ function Set-TargetResourceHelper
                 # If value should be present we just set it
                 $scopeSettingValueMessage = $script:localizedData.ScopeSettingValueMessage -f $OptionId, $VendorClass, $UserClass, $ScopeId
                 Write-Verbose $scopeSettingValueMessage
-                Set-DhcpServerv4OptionValue -ScopeId $ScopeId -OptionId $OptionId -Value $Value -VendorClass $VendorClass -UserClass $UserClass
+                Set-DhcpServerv4OptionValue -ScopeId $ScopeId -OptionId $OptionId -Value $Value -VendorClass $VendorClass -UserClass $UserClass -Force
             }
 
             # Ensure = 'Absent'
@@ -674,7 +674,7 @@ function Set-TargetResourceHelper
                     # If value should be present we just set it
                     $policyWithScopeSettingValueMessage = $script:localizedData.PolicyWithScopeSettingValueMessage -f $OptionId, $VendorClass, $PolicyName, $ScopeId
                     Write-Verbose $policyWithScopeSettingValueMessage
-                    Set-DhcpServerv4OptionValue -PolicyName $PolicyName -OptionId $OptionId -ScopeId $ScopeId -Value $Value -VendorClass $VendorClass
+                    Set-DhcpServerv4OptionValue -PolicyName $PolicyName -OptionId $OptionId -ScopeId $ScopeId -Value $Value -VendorClass $VendorClass -Force
                 }
 
                 # Ensure = 'Absent'
@@ -706,7 +706,7 @@ function Set-TargetResourceHelper
                     # If value should be present we just set it
                     $policySettingValueMessage = $script:localizedData.PolicySettingValueMessage -f $OptionId, $VendorClass, $PolicyName
                     Write-Verbose $policySettingValueMessage
-                    Set-DhcpServerv4OptionValue -PolicyName $PolicyName -OptionId $OptionId -Value $Value -VendorClass $VendorClass
+                    Set-DhcpServerv4OptionValue -PolicyName $PolicyName -OptionId $OptionId -Value $Value -VendorClass $VendorClass -Force
                 }
                 else
                 {
@@ -738,7 +738,7 @@ function Set-TargetResourceHelper
                 # If value should be present we just set it
                 $reservedIPSettingValueMessage = $script:localizedData.ReservedIPSettingValueMessage -f $OptionId, $VendorClass, $UserClass, $ReservedIP
                 Write-Verbose $reservedIPSettingValueMessage
-                Set-DhcpServerv4OptionValue -ReservedIP $ReservedIP -OptionId $OptionId -Value $Value -VendorClass $VendorClass -UserClass $UserClass
+                Set-DhcpServerv4OptionValue -ReservedIP $ReservedIP -OptionId $OptionId -Value $Value -VendorClass $VendorClass -UserClass $UserClass -Force
             }
 
             # Ensure = 'Absent'

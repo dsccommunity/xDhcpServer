@@ -54,6 +54,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     to evaluate those two properties again.
   - Added unit tests for the function `Test-TargetResource`.
   - Reordered the resources in alphabetical order in the README.md.
+- DhcpServerOptionValue
+  - Added -Force flag to all Set-DhcpServerV4OptionValue calls to resolve errors
+    when unnessesary validation is performed by the Cmdlet.
+    ([issue #56](https://github.com/dsccommunity/xDhcpServer/issues/56))
 
 ### Removed
 
