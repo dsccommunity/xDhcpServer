@@ -1,51 +1,44 @@
 @{
+    # Script module or binary module file associated with this manifest.
+    RootModule           = 'xDhcpServer.psm1'
+
     # Version number of this module.
-    moduleVersion     = '0.0.1'
+    moduleVersion        = '0.0.1'
 
     # ID used to uniquely identify this module
-    GUID              = '286890c9-a6c3-4605-9cd5-03c8413c8325'
+    GUID                 = '286890c9-a6c3-4605-9cd5-03c8413c8325'
 
     # Author of this module
-    Author            = 'DSC Community'
+    Author               = 'DSC Community'
 
     # Company or vendor of this module
-    CompanyName       = 'DSC Community'
+    CompanyName          = 'DSC Community'
 
     # Copyright statement for this module
-    Copyright         = 'Copyright the DSC Community contributors. All rights reserved.'
+    Copyright            = 'Copyright the DSC Community contributors. All rights reserved.'
 
     # Description of the functionality provided by this module
-    Description       = 'This module contains DSC resources for deployment and configuration of Microsoft DHCP Server.'
+    Description          = 'This module contains DSC resources for deployment and configuration of Microsoft DHCP Server.'
 
     # Minimum version of the Windows PowerShell engine required by this module
-    PowerShellVersion = '5.0'
+    PowerShellVersion    = '5.0'
 
     # Functions to export from this module
-    FunctionsToExport = @()
+    FunctionsToExport    = @()
 
     # Cmdlets to export from this module
-    CmdletsToExport   = @()
+    CmdletsToExport      = @()
 
     # Variables to export from this module
-    VariablesToExport = @()
+    VariablesToExport    = @()
 
     # Aliases to export from this module
-    AliasesToExport   = @()
+    AliasesToExport      = @()
 
-    DscResourcesToExport = @(
-        'DhcpPolicyOptionValue'
-        'DhcpReservedIPOptionValue'
-        'DhcpScopeOptionValue'
-        'DhcpServerOptionValue'
-        'xDhcpServerAuthorization'
-        'xDhcpServerClass'
-        'xDhcpServerOptionDefinition'
-        'xDhcpServerReservation'
-        'xDhcpServerScope'
-    )
+    DscResourcesToExport = @()
 
     # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
-    PrivateData       = @{
+    PrivateData          = @{
         PSData = @{
             # Set to a prerelease string value if the release should be a prerelease.
             Prerelease   = ''
@@ -60,7 +53,7 @@
             ProjectUri   = 'https://github.com/dsccommunity/xDhcpServer'
 
             # A URL to an icon representing this module.
-            IconUri = 'https://dsccommunity.org/images/DSC_Logo_300p.png'
+            IconUri      = 'https://dsccommunity.org/images/DSC_Logo_300p.png'
 
             # ReleaseNotes of this module
             ReleaseNotes = ''
