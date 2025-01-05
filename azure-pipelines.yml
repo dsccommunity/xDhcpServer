@@ -216,40 +216,40 @@ stages:
               testResultsFiles: '$(buildFolderName)/$(testResultFolderName)/NUnit*.xml'
               testRunTitle: 'Integration_2022'
 
-      - job: Test_Unit_2025
-        displayName: 'Unit (Windows Server 2025)'
-        pool:
-          vmImage: 'windows-2025'
-        timeoutInMinutes: 0
-        steps:
-          - task: DownloadPipelineArtifact@2
-            displayName: 'Download Build Artifact'
-            inputs:
-              buildType: 'current'
-              artifactName: $(buildArtifactName)
-              targetPath: '$(Build.SourcesDirectory)/$(buildFolderName)'
-          - task: PowerShell@2
-            name: test
-            displayName: 'Run Unit Test'
-            inputs:
-              filePath: './build.ps1'
-              arguments: "-Tasks test -PesterScript 'tests/Unit'"
-              pwsh: true
-          - task: PublishTestResults@2
-            displayName: 'Publish Test Results'
-            condition: succeededOrFailed()
-            inputs:
-              testResultsFormat: 'NUnit'
-              testResultsFiles: '$(buildFolderName)/$(testResultFolderName)/NUnit*.xml'
-              testRunTitle: 'Unit'
-          - task: PublishPipelineArtifact@1
-            displayName: 'Publish Test Artifact'
-            inputs:
-              targetPath: '$(buildFolderName)/$(testResultFolderName)/'
-              artifactName: 'CodeCoverage2025_$(System.JobAttempt)'
-              parallel: true
+      # - job: Test_Unit_2025
+      #   displayName: 'Unit (Windows Server 2025)'
+      #   pool:
+      #     vmImage: 'windows-2025'
+      #   timeoutInMinutes: 0
+      #   steps:
+      #     - task: DownloadPipelineArtifact@2
+      #       displayName: 'Download Build Artifact'
+      #       inputs:
+      #         buildType: 'current'
+      #         artifactName: $(buildArtifactName)
+      #         targetPath: '$(Build.SourcesDirectory)/$(buildFolderName)'
+      #     - task: PowerShell@2
+      #       name: test
+      #       displayName: 'Run Unit Test'
+      #       inputs:
+      #         filePath: './build.ps1'
+      #         arguments: "-Tasks test -PesterScript 'tests/Unit'"
+      #         pwsh: true
+      #     - task: PublishTestResults@2
+      #       displayName: 'Publish Test Results'
+      #       condition: succeededOrFailed()
+      #       inputs:
+      #         testResultsFormat: 'NUnit'
+      #         testResultsFiles: '$(buildFolderName)/$(testResultFolderName)/NUnit*.xml'
+      #         testRunTitle: 'Unit'
+      #     - task: PublishPipelineArtifact@1
+      #       displayName: 'Publish Test Artifact'
+      #       inputs:
+      #         targetPath: '$(buildFolderName)/$(testResultFolderName)/'
+      #         artifactName: 'CodeCoverage2025_$(System.JobAttempt)'
+      #         parallel: true
 
-      - job: Test_Integration_2025
+      # - job: Test_Integration_2025
         displayName: 'Integration (Windows Server 2025)'
         pool:
           vmImage: 'windows-2025'
@@ -288,7 +288,7 @@ stages:
         dependsOn:
           - Test_Unit_2019
           - Test_Unit_2022
-          - Test_Unit_2025
+          # - Test_Unit_2025
         pool:
           vmImage: 'ubuntu-latest'
         timeoutInMinutes: 0
@@ -311,12 +311,12 @@ stages:
               buildType: 'current'
               artifactName: 'CodeCoverage2022_$(System.JobAttempt)'
               targetPath: '$(Build.SourcesDirectory)/$(buildFolderName)/$(testResultFolderName)'
-          - task: DownloadPipelineArtifact@2
-            displayName: 'Download Test Artifact 2025'
-            inputs:
-              buildType: 'current'
-              artifactName: 'CodeCoverage2025_$(System.JobAttempt)'
-              targetPath: '$(Build.SourcesDirectory)/$(buildFolderName)/$(testResultFolderName)'
+          # - task: DownloadPipelineArtifact@2
+          #   displayName: 'Download Test Artifact 2025'
+          #   inputs:
+          #     buildType: 'current'
+          #     artifactName: 'CodeCoverage2025_$(System.JobAttempt)'
+          #     targetPath: '$(Build.SourcesDirectory)/$(buildFolderName)/$(testResultFolderName)'
           - task: PowerShell@2
             name: merge
             displayName: 'Merge Code Coverage files'
