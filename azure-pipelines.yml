@@ -250,38 +250,38 @@ stages:
       #         parallel: true
 
       # - job: Test_Integration_2025
-        displayName: 'Integration (Windows Server 2025)'
-        pool:
-          vmImage: 'windows-2025'
-        timeoutInMinutes: 0
-        steps:
-          - task: DownloadPipelineArtifact@2
-            displayName: 'Download Build Artifact'
-            inputs:
-              buildType: 'current'
-              artifactName: $(buildArtifactName)
-              targetPath: '$(Build.SourcesDirectory)/$(buildFolderName)'
-          - task: PowerShell@2
-            name: configureWinRM
-            displayName: 'Configure WinRM'
-            inputs:
-              targetType: 'inline'
-              script: 'winrm quickconfig -quiet'
-              pwsh: false
-          - task: PowerShell@2
-            name: test
-            displayName: 'Run Integration Test'
-            inputs:
-              filePath: './build.ps1'
-              arguments: "-Tasks test -CodeCoverageThreshold 0 -PesterScript 'tests/Integration'"
-              pwsh: false
-          - task: PublishTestResults@2
-            displayName: 'Publish Test Results'
-            condition: succeededOrFailed()
-            inputs:
-              testResultsFormat: 'NUnit'
-              testResultsFiles: '$(buildFolderName)/$(testResultFolderName)/NUnit*.xml'
-              testRunTitle: 'Integration_2025'
+        # displayName: 'Integration (Windows Server 2025)'
+        # pool:
+        #   vmImage: 'windows-2025'
+        # timeoutInMinutes: 0
+        # steps:
+        #   - task: DownloadPipelineArtifact@2
+        #     displayName: 'Download Build Artifact'
+        #     inputs:
+        #       buildType: 'current'
+        #       artifactName: $(buildArtifactName)
+        #       targetPath: '$(Build.SourcesDirectory)/$(buildFolderName)'
+        #   - task: PowerShell@2
+        #     name: configureWinRM
+        #     displayName: 'Configure WinRM'
+        #     inputs:
+        #       targetType: 'inline'
+        #       script: 'winrm quickconfig -quiet'
+        #       pwsh: false
+        #   - task: PowerShell@2
+        #     name: test
+        #     displayName: 'Run Integration Test'
+        #     inputs:
+        #       filePath: './build.ps1'
+        #       arguments: "-Tasks test -CodeCoverageThreshold 0 -PesterScript 'tests/Integration'"
+        #       pwsh: false
+        #   - task: PublishTestResults@2
+        #     displayName: 'Publish Test Results'
+        #     condition: succeededOrFailed()
+        #     inputs:
+        #       testResultsFormat: 'NUnit'
+        #       testResultsFiles: '$(buildFolderName)/$(testResultFolderName)/NUnit*.xml'
+        #       testRunTitle: 'Integration_2025'
 
       - job: Code_Coverage
         displayName: 'Publish Code Coverage'
