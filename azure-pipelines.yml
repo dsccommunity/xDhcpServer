@@ -107,7 +107,7 @@ stages:
             inputs:
               testResultsFormat: 'NUnit'
               testResultsFiles: '$(buildFolderName)/$(testResultFolderName)/NUnit*.xml'
-              testRunTitle: 'Unit'
+              testRunTitle: 'Unit2019'
           - task: PublishPipelineArtifact@1
             displayName: 'Publish Test Artifact'
             inputs:
@@ -146,7 +146,7 @@ stages:
             inputs:
               testResultsFormat: 'NUnit'
               testResultsFiles: '$(buildFolderName)/$(testResultFolderName)/NUnit*.xml'
-              testRunTitle: 'Integration_2019'
+              testRunTitle: 'Integration2019'
 
       - job: Test_Unit_2022
         displayName: 'Unit (Windows Server 2022)'
@@ -173,7 +173,7 @@ stages:
             inputs:
               testResultsFormat: 'NUnit'
               testResultsFiles: '$(buildFolderName)/$(testResultFolderName)/NUnit*.xml'
-              testRunTitle: 'Unit'
+              testRunTitle: 'Unit2022'
           - task: PublishPipelineArtifact@1
             displayName: 'Publish Test Artifact'
             inputs:
@@ -212,7 +212,7 @@ stages:
             inputs:
               testResultsFormat: 'NUnit'
               testResultsFiles: '$(buildFolderName)/$(testResultFolderName)/NUnit*.xml'
-              testRunTitle: 'Integration_2022'
+              testRunTitle: 'Integration2022'
 
       # - job: Test_Unit_2025
       #   displayName: 'Unit (Windows Server 2025)'
@@ -239,7 +239,7 @@ stages:
       #       inputs:
       #         testResultsFormat: 'NUnit'
       #         testResultsFiles: '$(buildFolderName)/$(testResultFolderName)/NUnit*.xml'
-      #         testRunTitle: 'Unit'
+      #         testRunTitle: 'Unit2025'
       #     - task: PublishPipelineArtifact@1
       #       displayName: 'Publish Test Artifact'
       #       inputs:
@@ -279,7 +279,7 @@ stages:
         #     inputs:
         #       testResultsFormat: 'NUnit'
         #       testResultsFiles: '$(buildFolderName)/$(testResultFolderName)/NUnit*.xml'
-        #       testRunTitle: 'Integration_2025'
+        #       testRunTitle: 'Integration2025'
 
       - job: Code_Coverage
         displayName: 'Publish Code Coverage'
@@ -326,10 +326,10 @@ stages:
             displayName: 'Publish Code Coverage to Azure DevOps'
             inputs:
               codeCoverageTool: 'JaCoCo'
-              summaryFileLocation: '$(buildFolderName)/$(testResultFolderName)/JaCoCo_coverage.xml'
+              summaryFileLocation: '$(buildFolderName)/$(testResultFolderName)/CodeCov_Merged.xml'
               pathToSources: '$(Build.SourcesDirectory)/$(sourceFolderName)/'
           - script: |
-              bash <(curl -s https://codecov.io/bash) -f "./$(buildFolderName)/$(testResultFolderName)/JaCoCo_coverage.xml"
+              bash <(curl -s https://codecov.io/bash) -f "./$(buildFolderName)/$(testResultFolderName)/CodeCov_Merged.xml"
             displayName: 'Publish Code Coverage to Codecov.io'
 
   - stage: Deploy
