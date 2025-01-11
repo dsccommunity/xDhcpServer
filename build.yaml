@@ -56,6 +56,9 @@ BuildWorkflow:
     - Convert_Pester_Coverage
     - Pester_if_Code_Coverage_Under_Threshold
 
+  merge:
+    - Merge_CodeCoverage_Files
+
   publish:
     - publish_module_to_gallery
     - Publish_Release_To_GitHub
@@ -73,8 +76,12 @@ Pester:
     - tests/Unit
   Tag:
   CodeCoverageThreshold: 65
-  CodeCoverageOutputFile: JaCoCo_coverage.xml
+  CodeCoverageOutputFile: CodeCoverage.xml
   CodeCoverageOutputFileEncoding: ascii
+
+CodeCoverage:
+  CodeCoverageMergedOutputFile: CodeCov_Merged.xml
+  CodeCoverageFilePattern: Codecov*.xml
 
 DscTest:
   ExcludeTag:

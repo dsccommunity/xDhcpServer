@@ -5,6 +5,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `azure-pipelines`
+  - Separate 2019, 2022 jobs and merge task.
+
 ### Changed
 
 - Update repository files to latest versions
