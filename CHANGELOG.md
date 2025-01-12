@@ -5,6 +5,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Deprecated
+
+- **The module _xDhcpServer_ will be renamed to _DhcpServerDsc_
+  ([issue #89](https://github.com/dsccommunity/xDhcpServer/issues/89)).
+  The version `v3.1.2` will be the the last release of _xDhcpServer_.
+  Version `v4.0.0` will be released as _DhcpServerDsc_, it will be
+  released shortly after the `v3.1.2` release to be able to start transition
+  to the new module. The prefix 'MSFT' will be removed from all resources in
+  _DhcpServerDsc_.**
+
 ### Added
 
 - `azure-pipelines`
