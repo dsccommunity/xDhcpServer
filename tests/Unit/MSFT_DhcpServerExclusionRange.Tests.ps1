@@ -1,4 +1,4 @@
-﻿$script:dscModuleName = 'xDhcpServer'
+﻿$script:dscModuleName = 'DhcpServerDsc'
 $script:dscResourceName = 'MSFT_DhcpServerExclusionRange'
 
 function Invoke-TestSetup
@@ -144,7 +144,7 @@ try
             }
 
             It 'Throws RangeNotCorrect exception when the start range is greater than the end range' {
-                { Test-TargetResource @badRangeParams } | Should -Throw "StartRange must be less than EndRange"
+                { Test-TargetResource @badRangeParams } | Should -Throw 'StartRange must be less than EndRange'
             }
         }
 
