@@ -5,6 +5,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `xDhcpServer`
+  - BREAKING CHANGE
+    - Renamed _xDhcpServer_ to _DhcpServerDsc_ - Fixes [#89](https://github.com/dsccommunity/DhcpServerDsc/issues/89).
+    - Updated all references to old module name.
+
 ## [3.1.2] - 2025-01-19
 
 ### Deprecated
