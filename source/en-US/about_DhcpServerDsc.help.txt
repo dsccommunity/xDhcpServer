@@ -1,5 +1,5 @@
 TOPIC
-    about_xDhcpServer
+    about_DhcpServerDsc
 
 SHORT DESCRIPTION
     DSC resources for deployment and configuration of Microsoft DHCP Server.
@@ -8,7 +8,7 @@ LONG DESCRIPTION
     This module contains DSC resources for deployment and configuration of Microsoft DHCP Server.
 
 EXAMPLES
-    PS C:\> Get-DscResource -Module xDhcpServer
+    PS C:\> Get-DscResource -Module DhcpServerDsc
 
 NOTE:
     Thank you to the DSC Community contributors who contributed to this module by
@@ -16,10 +16,10 @@ NOTE:
 
 TROUBLESHOOTING NOTE:
     Go to the Github repository for read about issues, submit a new issue, and read
-    about new releases. https://github.com/dsccommunity/xDhcpServer
+    about new releases. https://github.com/dsccommunity/DhcpServerDsc
 
 SEE ALSO
-    - https://github.com/dsccommunity/xDhcpServer
+    - https://github.com/dsccommunity/DhcpServerDsc
 
 KEYWORDS
     DSC, DscResource, DHCP

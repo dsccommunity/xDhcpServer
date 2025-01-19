@@ -1,6 +1,6 @@
 @{
     # Script module or binary module file associated with this manifest.
-    RootModule           = 'xDhcpServer.psm1'
+    RootModule           = 'DhcpServerDsc.psm1'
 
     # Version number of this module.
     moduleVersion        = '0.0.1'
@@ -47,10 +47,10 @@
             Tags         = @('DesiredStateConfiguration', 'DSC', 'DSCResourceKit', 'DSCResource')
 
             # A URL to the license for this module.
-            LicenseUri   = 'https://github.com/dsccommunity/xDhcpServer/blob/main/LICENSE'
+            LicenseUri   = 'https://github.com/dsccommunity/DhcpServerDsc/blob/main/LICENSE'
 
             # A URL to the main website for this project.
-            ProjectUri   = 'https://github.com/dsccommunity/xDhcpServer'
+            ProjectUri   = 'https://github.com/dsccommunity/DhcpServerDsc'
 
             # A URL to an icon representing this module.
             IconUri      = 'https://dsccommunity.org/images/DSC_Logo_300p.png'
