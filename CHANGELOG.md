@@ -5,6 +5,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.2] - 2025-01-19
+
 ### Deprecated
 
 - **The module _xDhcpServer_ will be renamed to _DhcpServerDsc_
